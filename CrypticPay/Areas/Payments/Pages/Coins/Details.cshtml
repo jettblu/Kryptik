@@ -1,0 +1,56 @@
+﻿@page
+@model CrypticPay.Areas.Payments.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>CrypticPayCoins</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.ApiTag)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.ApiTag)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.Ticker)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.Ticker)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.ThumbnailPath)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.ThumbnailPath)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.IsSupported)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.IsSupported)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CrypticPayCoins.DateCreated)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CrypticPayCoins.DateCreated)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.CrypticPayCoins.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

@@ -1,0 +1,67 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<center>
+
+
+    <h4> Verify Mobile </h4>
+    <div class="row">
+        <div class="card horizontal hoverable col l4 s10 offset-l4 offset-s1" style="border-radius: 25px 25px 25px 25px">
+
+            <div class="row card-content">
+                <form id="registerConfirm" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="row">
+
+                        <p style="size: 24px; font-weight: lighter; align: left;">Enter the confirmation code sent to @Model.PhoneNumber.</p>
+
+                        <div class="input-field col s12 l12">
+
+                            <input type="hidden" asp-for="UserName" />
+                            <label asp-for="VerificationCode">Code</label>
+                            <input asp-for="VerificationCode" class="form-control" type="text" />
+                            <span asp-validation-for="VerificationCode" class="text-danger"></span>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+       </div>
+</center>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+
+
+
+
+
+
+@*uncomment below for email confirmation*@
+@*@{
+        if (@Model.DisplayConfirmAccountLink)
+        {
+    <p>
+        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
+        Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+    </p>
+        }
+        else
+        {
+    <p>
+            Please check your email to confirm your account.
+    </p>
+        }
+    }*@

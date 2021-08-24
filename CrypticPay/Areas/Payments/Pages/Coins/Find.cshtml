@@ -1,0 +1,109 @@
+﻿@page
+@model CrypticPay.Areas.Payments.Pages.Coins.FindModel
+
+@{
+    ViewData["Title"] = "Find Currencies";
+}
+
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div id="toasts"></div>
+
+<center>
+    <img src="~/Media/binoculars.svg" width="80px"></img>
+</center>
+
+<div class="row">
+
+
+    <div class="col s12 l6 offset-l3">
+        <form id="searchForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="complete" asp-page-handler="Search">
+            <div class="input-field searchBox card hoverable">
+                <i id="searchIcon" class="material-icons black-text medium prefix" style="padding-top: 7px;">search</i>
+                <input id="search" type="search" placeholder="Name or Ticker" asp-for="Input.SearchString" required>
+                <i id="clearIcon" class="material-icons">close</i>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="row" id="placeHolder">
+    <center>
+        <span class="info-header">Find currencies. Send crypto.</span>
+    </center>
+</div>
+
+<div class="row" id="searchResults">
+
+
+</div>
+
+
+
+    <script type="text/javascript">
+
+    $("#searchForm").keyup(function () {
+        $("#searchForm").submit();
+    });
+
+    @*$(".coinResult").hover(function () {
+        console.log("Levitate");
+        var color = $(this).data("color");
+        console.log(color);
+        $(this).css("box-shadow", `2px 4px 5px 0 ${color}, 2px 5px 3px -3px ${color}, 2px 5px 10px 0 ${color}`);
+    });*@
+
+
+
+    complete = function (res) {
+        var result = res.responseJSON;
+        $("#placeHolder").empty();
+        $("#searchResults").empty();
+        if (result.coinCount == 0) {
+            console.log("Zero matching currencies.");
+            var placeholderHtml = $(`<center>
+            <span class="info-header">Find currencies. Send crypto.</span>
+            </center>`);
+
+            $("#placeHolder").append(placeholderHtml);
+        }
+        else {
+            console.log("Currencies found.");
+            $(result.coins).each(function (index) {
+                var currCoin = result.coins[index];
+                var resultHtml = $(`<a href="/Payments/Assets?cname=${currCoin.apiTag}">
+                    <div class="col s10 l6 offset-l3 offset-s1 card hoverable coinResult" style="color: ${currCoin.color}">
+
+                        <div class="col s1 l1">
+
+                            <img src="${currCoin.thumbnailPath}" alt="user photo" class="circle coinPhotoMedium">
+
+                        </div>
+
+                        <div class="col s4 l4 offset-l1 offset-s2" style="padding-left: 0px; padding-top: 12px">
+                            <span class="searchUserFullName">${currCoin.name} <span class="timestamp">(${currCoin.ticker})</span></span>
+                        </div>
+                    </div>
+                </a>`);
+                $("#searchResults").append(resultHtml);
+            });
+
+        }
+
+    };
+
+
+    </script>
+
+
+
+    <script src="~/js/searchManager.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+            integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+            crossorigin="anonymous"></script>
+

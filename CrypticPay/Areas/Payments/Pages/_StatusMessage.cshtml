@@ -1,0 +1,30 @@
+﻿@model string
+
+@if (!String.IsNullOrEmpty(Model))
+{
+    var statusMessageClass = "success";
+
+    if (Model.StartsWith("Error"))
+    {
+        statusMessageClass = "error";
+    }
+
+    if (Model.StartsWith("Info"))
+    {
+        statusMessageClass = "info";
+    }
+
+    <div id="toasts" class="center">
+        <div class="toast @statusMessageClass">
+            @Model
+        </div>
+    </div>
+
+
+    <script>
+        console.log("HIT!!!!!");
+        notif = document.getElementById("toasts");
+        setTimeout(() => notif.remove(), 3100);
+    </script>
+
+}

@@ -1,0 +1,215 @@
+﻿@page
+@model CrypticPay.Areas.Identity.Pages.Account.ProfileModel
+@inject UserManager<CrypticPayUser> UserManager
+
+@{
+    var userInfo = UserManager.GetUserAsync(User).Result;
+}
+
+<div id="toasts"></div>
+<div id="statusHolder">
+
+
+</div>
+
+<center>
+    <a class="modal-trigger center" href="#modalAvatar">
+        <img src="@userInfo.ProfilePhotoPath" alt="" class="circle profilePhoto">
+    </a>
+    <p class="profileFullName">@userInfo.Name</p>
+    @{
+        string friendCountString;
+        if (userInfo.FriendCount == 1)
+        {
+            friendCountString = $"{userInfo.FriendCount} friend";
+        }
+        else
+        {
+            friendCountString = $"{userInfo.FriendCount} friends";
+        }
+    }
+    <p class="profileUserName">@userInfo.UserName <span class="black-text">&#8226;</span> <span class="info-header" id="friendCount">@friendCountString</span></p>
+
+
+
+
+    <div class="row">
+
+        <ul class="collapsible col s10 l6 offset-l3 m8 offset-m2 offset-s1 white rounded">
+            <li>
+
+                <div class="collapsible-header white rounded" id="friendRequestTitle" style="border: none;">
+
+
+                </div>
+                <form id="formFriend" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="UpdateFriend">
+                    <input id="friendName" asp-for="Input.FriendName" type="hidden" />
+                    <input asp-for="Input.Id" type="hidden" />
+                    <input id="friendAccepted" asp-for="Input.FriendAccepted" type="hidden" />
+                </form>
+
+                <div class="collapsible-body">
+                    <div class="row" id="friendRequestHolder">
+
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <form id="formBal" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="showBal" asp-page-handler="ObtainWalletData">
+        <button class="btn btn-search" data-shown="false" id="btnBal">Reveal Accounts</button>
+    </form>
+
+
+</center>
+
+
+
+
+<div class="row" id="balContainer">
+
+</div>
+
+
+<div class="section"></div>
+<div class="section hide-on-small-only"></div>
+
+
+<script src="~/js/Utils.js"></script>
+<script src="~/js/profileManager.js"></script>
+<script src="~/js/NotificationsAsync.js"></script>
+
+<script>
+
+
+
+        function PopulateFriendRequests(pendingFriends) {
+
+        console.log("Populating friend content.");
+        var friendRequestContent;
+        var badgeContent;
+        $("#friendRequestHolder").empty();
+
+            if (pendingFriends.length == 0) {
+            var basePath = window.location.origin;
+            friendRequestContent = `<span class="info-header">
+            No incoming friend requests.
+            </span> 
+            <img src="${basePath}/Media/ghost.gif"class="animation-small"/>`;
+
+            $("#friendRequestHolder").append(friendRequestContent);
+
+            badgeContent = `
+                    <i class="material-icons">people_outline</i>
+                    Friends`;
+
+            $("#friendRequestTitle").empty();
+            $("#friendRequestTitle").append(badgeContent);
+        }
+        else {
+
+            badgeContent = `
+                    <i class="material-icons">people_outline</i>
+                    Friends
+<span class="new badge"
+style="background-color: #30beff">${pendingFriends.length}</span>`;
+            $("#friendRequestTitle").empty();
+            $("#friendRequestTitle").append(badgeContent);
+            console.log(pendingFriends);
+            pendingFriends.forEach(loadFriendRequest);
+        };
+
+    }
+
+
+    function loadFriendRequest(friendInfo) {
+        console.log("loading friend");
+        console.log(friendInfo);
+        var friendContent;
+        var pendingUser = friendInfo.Friend;
+        var time = friendInfo.Friendship.RequestTime;
+        friendContent = `<div class="col s12 l12 card hoverable">
+                                    <div class="col s1 l1">
+                                        <img src="${pendingUser.ProfilePhotoPath}"
+alt="user photo" class="circle profilePhotoSearch">
+                                    </div>
+                                    <div class="col s4 l4 offset-l1 offset-s2" style="padding-left: 0px; padding-top: 0px">
+                                        <span class="searchUserFullName" style="align: left">${pendingUser.Name}</span>
+                                        <h6 class="searchUsertag">${pendingUser.UserName}</h6>
+                                    </div>
+
+                                    <span class="timestamp">
+                                        ${time}
+                                    </span>
+                                    <div class="col s12 card-action">
+                                        <div class="col s12 l6">
+                                            <button type="submit" value="${pendingUser.UserName}" name="${pendingUser.UserName}" class="btn btn-accept accept">Accept</button>
+                                        </div>
+                                        <div class="col s12 l6">
+                                            <button type="submit" value="${pendingUser.UserName}" name="${pendingUser.UserName}" class="btn btn-reject reject">Reject</button>
+                                        </div>
+                                    </div>
+
+                                </div>`;
+
+        $("#friendRequestHolder").append(friendContent);
+    }
+
+
+     $(document).ready(function () {
+         console.log("ready!");
+        var friendsData = @Html.Raw(Model.FriendOnGetInfo);
+         PopulateFriendRequests(friendsData.FriendsPending);
+        });
+
+
+
+    complete = function (res) {
+        var result = capitalize(res.responseJSON);
+        console.log(result);
+        PopulateFriendRequests(result.FriendsPending);
+        UpdateFriendCount(result.FriendCount);
+        ShowNotification(result.NotificationMessage);
+    };
+
+
+    showBal = function (res) {
+        var result = res.responseText;
+        $("#balContainer").empty();
+        $("#balContainer").append(result);
+        DisplayHideButton();
+        console.log("Balances updated!");
+    };
+
+
+    function capitalize(object) {
+        var isArray = Array.isArray(object);
+        for (let key in object) {
+            let value = object[key];
+            let newKey = key;
+            if (!isArray) { // if it is an object
+                delete object[key]; // firstly remove the key
+                newKey = key[0].toUpperCase() + key.slice(1);; // secondly generate new key (capitalized)
+            }
+            let newValue = value;
+            if (typeof value != "object") { // if it is not an object (array or object in fact), stops here
+                if (typeof value == "string") {
+                    newValue = value[0].toUpperCase() + value.slice(1);; // if it is a string, capitalize it
+                }
+            } else { // if it is an object, recursively capitalize it
+                newValue = capitalize(value);
+            }
+            object[newKey] = newValue;
+        }
+        return object;
+    }
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>

@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CrypticPay</title>
+    <!-- <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- MATERIALIZE COMPONENTS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
+
+
+</head>
+
+<body>
+    <script>
+        $(document).ready(function () {
+            $(".button-collapse").sideNav();
+        });
+    </script>
+
+
+
+    <nav class="z-depth-0 hide-on-large-only">
+        <div class="nav-wrapper">
+            <a href="#" data-activates="slideOut" class="button-collapse"><i class="white-text material-icons">menu</i></a>
+        </div>
+    </nav>
+
+    <div class="row">
+        <ul id="nav-mobile" class="side-nav fixed col l2">
+            <partial name="_LoginPartial" />
+
+        </ul>
+    </div>
+
+
+    <ul class="right side-nav white-text z-depth-0" id="slideOut">
+        <br>
+        <partial name="_LoginPartial" />
+        <li>
+            <a class="navLinks" asp-area="Payments" asp-page="/Coins/Find"><i class="tiny material-icons navIcon" style="margin-right: 2px;">attach_money</i>Assets</a>
+        </li>
+        <div class="center-align">
+            <button asp-area="Payments" asp-page="/Send" class="btn btn-action bottomNavContent">New</button>
+        </div>
+    </ul>
+    <main>
+
+
+
+        @RenderBody()
+
+
+
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        @RenderSection("Scripts", required: false)
+
+
+
+    </main>
+</body>
+
+</html>

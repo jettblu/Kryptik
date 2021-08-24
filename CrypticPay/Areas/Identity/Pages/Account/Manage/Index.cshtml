@@ -1,0 +1,217 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+
+
+<center>
+
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+        <div class="row">
+
+            <form id="profile-form" method="post" asp-page-handler="UpdateBasicDetails">
+
+                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                    <div class="row">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <label for="user" asp-for="Input.NewUserName">CrypticTag</label>
+                                <input id="user" asp-for="Input.NewUserName" class="form-control" type="text" onchange="this.form.submit()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                    <div class="row">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <label for="name" asp-for="Input.Name">Full Name</label>
+                                <input id="name" asp-for="Input.Name" class="form-control" type="text" onchange="this.form.submit()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="row">
+
+
+                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                    <div class="row">
+                        <form id="number-form" method="post" asp-page-handler="UpdatePhoneDetails">
+                            <div class="row">
+                                <div class="col s12">
+
+                                    <label for="country" asp-for="Input.PhoneNumberCountryCode">Country</label>
+                                    <select id="country" class="browser-default" asp-for="Input.PhoneNumberCountryCode" asp-items="Model.AvailableCountries">
+                                    </select>
+
+                                </div>
+
+                                <div class="input-field col s7">
+                                    <label for="number" asp-for="Input.PhoneNumber">Number</label>
+                                    <input id="number" asp-for="Input.PhoneNumber" type="text" class="form-control" onkeydown="return keyispressed(event)" />
+                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="col s12">
+                                    <button id="phone-button" type="submit" class="btn btn-primary">Verify</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+
+
+                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                    <div class="row">
+                        <form id="email-form" method="post" method="post" asp-page-handler="ChangeEmail">
+                            <div class="col s12">
+                                <label asp-for="Input.NewEmail"></label>
+                                @if (Model.IsEmailConfirmed)
+                                {
+                                    <div class="col s12">
+                                        <i class="material-icons small green-text">check_circle</i>
+                                    </div>
+                                }
+                                <input type="text" asp-for="Input.NewEmail" class="form-control" />
+                                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                            </div>
+                            <div class="col s12">
+                                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary">Change email</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+            <div class="row">
+
+                <div class="card horizontal hoverable col l4 s12 offset-l1 ">
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="col s3 l12 m12">
+                                <!-- Switch -->
+                                <label style="align: left">2fa</label>
+                                <div class="switch">
+                                    <label>
+                                        <span id="authOnLabel">
+                                            Off
+                                        </span>
+                                        <input type="checkbox" align="center" id="authSwitch">
+                                        <span class="lever"></span>
+                                        <span id="authOffLabel">
+                                            On
+                                        </span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col s12">
+                            <a class="modal-trigger center" href="#modalPassword">Change Password</a>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="col l4 s12 offset-l1 ">
+                    <br>
+                    <div class="row">
+                        <form id="signOutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                            <button type="submit" class="navLinks btn btn-signout">Logout</button>
+                        </form>
+                    </div>
+                    <a class="@ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Modal Structure -->
+        <div id="modalPassword" class="modal hoverable">
+            <form method="post" id="pwordForm" asp-page-handler="ChangePassword">
+                <div class="row modal-content white">
+                    <i class="black-text material-icons modal-close small right">close</i>
+                    <h4 class="blue-text">Change Password</h4>
+                    <input asp-for="Input.Code" type="hidden" />
+                    <input asp-for="Input.EnableTwofactorAuth" type="hidden" id="authHiddenValue" />
+
+                    <div class="col s12 l6 pword-field">
+                        <label asp-for="Input.Password">New Password</label>
+                        <input id="pword" asp-for="Input.Password" type="Password" />
+                    </div>
+
+                    <div class="col s12 l6 pword-field">
+                        <label asp-for="Input.ConfirmPassword">Confirm</label>
+                        <input id="pwordConfirm" asp-for="Input.ConfirmPassword" type="Password" />
+                    </div>
+                    <div class="row">
+                        <div class="col s6">
+                            <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword()" id="show">
+                            <label for="show">Show</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Reset</button>
+                </div>
+
+            </form>
+        </div>
+
+
+
+
+
+</center>
+
+
+<script>
+    $(document).ready(function () {
+        $('.modal').modal();
+    });
+</script>
+
+
+<script>
+    function keyispressed(e) {
+        var charval = String.fromCharCode(e.keyCode);
+        // allow backspace and decimal
+        if (e.keyCode == 8 || e.keyCode == 110) {
+            console.log(charval);
+            return true;
+        }
+        // don't allow any other characters
+        if (isNaN(charval)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<script src="~/js/styleManager.js"></script>
+<script src="~/js/registerManager.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

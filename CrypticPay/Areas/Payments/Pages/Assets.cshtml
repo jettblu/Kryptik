@@ -1,0 +1,136 @@
+﻿@page
+
+@model CrypticPay.Areas.Payments.AssetsModel
+@{
+    ViewData["Title"] = "Assets";
+}
+
+<form id="chartForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="completed" asp-page-handler="UpdateChart">
+    <input id="lookback" asp-for="Input.LookBack" type="hidden" />
+    <input id="assetId" asp-for="AssetId" type="hidden" />
+</form>
+
+<div class="row">
+    <div class="col l8 offset-l2 s10 offset-s1 m8 offset-m2 card hoverable rounded coinResult" style="color: @Model._assetData.Coin.Color">
+
+        <div class="row">
+            <p class="asset-header" id="assetName"></p>
+            <p class="price-header">$<span id="assetPrice">34,000</span>
+            <p class="percent-header" id="assetPercent"></p>
+        </div>
+
+        <div class="row">
+            <canvas id="assetChart"></canvas>
+        </div>
+
+        <div class="card-action" style="margin-bottom: 4px;">
+            <center>
+
+
+
+                <div class="time" value="1d">
+                    1d
+                </div>
+                <div class="time" id="startTimeBlock"value="1w">
+                    1w
+                </div>
+                <div class="time" value="1m">
+                    1m
+                </div>
+                <div class="time" value="3m">
+                    3m
+                </div>
+                <div class="time" value="1y">
+                    1y
+                </div>
+                <div class="time" value="All">
+                    All
+                </div>
+
+
+
+            </center>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+    var chart;
+
+
+
+    function completed (res) {
+        console.log("Async update initiated.")
+        res.responseJSON.priceString = res.responseJSON.priceString.replace(/['"]+/g, '')
+        var result = res.responseJSON;
+        PopulateChart(result.chartJson, result.currentPrice, result.priceString , result.coin.name, result.isGreen, result.coin.color)
+    };
+
+
+    function PopulateChart(chartJson, currPrice, priceString, coinName, isGreen, color) {
+
+        var ctx = $("#assetChart")[0].getContext('2d');;
+
+
+
+        @*console.log(res.responseJSON.chartJson.data.datasets[0].backgroundColor);*@
+
+        // prevent old data from appearing
+        if (chart) {
+            chart.destroy();
+        }
+
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, `${color}`);
+        gradient.addColorStop(1, '#ffffff');
+
+        chartJson.data.datasets[0].backgroundColor = gradient;
+
+        chart = new Chart(ctx, chartJson);
+        $("#assetPrice").text(currPrice);
+        $("#assetPercent").text(priceString);
+        $("#assetName").text(coinName);
+        if (isGreen == "true" || isGreen == true) {
+            console.log("in the green!");
+            $("#assetPercent").css('color', `${color}`);
+        }
+        else {
+            console.log("in the red!");
+            $("#assetPercent").css('color', 'red');;
+        }
+
+        console.log("Chart refreshed!");
+
+    };
+
+
+
+    $(document).ready(function () {
+        console.log("ready!");
+
+        PopulateChart(@Html.Raw(Model.JsonChart), @Model._assetData.CurrentPrice, @Html.Raw(@Model._assetData.PriceString), "@Model._assetData.Coin.Name",  @Model._assetData.IsGreen, "@Model._assetData.Coin.Color");
+
+        $("#startTimeBlock").css("background-color", "#42bff5");
+
+    });
+
+@*    $("#indicator").change(function () {
+        console.log("Chart refreshed!");
+        var ctx = $("#myChart");
+        var chart = new Chart(ctx, @Html.Raw(Model.JsonChart));
+    });*@
+
+
+
+</script>
+
+<script src="~/js/chartManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
+

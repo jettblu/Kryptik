@@ -1,0 +1,102 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<center>
+
+
+
+
+    <h4>Payments made <span class="change-text">easy</span></h4>
+    <div class="row">
+        <div class="card horizontal hoverable col l4 s10 offset-l4 offset-s1" style="border-radius: 25px 25px 25px 25px">
+
+            <div class="row card-content">
+                <h5>Sign In</h5>
+                <form id="account" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="row">
+
+                        <div class="input-field col s12 l12">
+                            <label for="uname" asp-for="Input.UserName"><i class="tiny material-icons">person_outline</i> Cryptic Tag</label>
+                            <input id="uname" type="text" asp-for="Input.UserName" />
+                            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                        </div>
+
+                        <div class="pword-field col s12 l12">
+                            <label for="pword" asp-for="Input.Password"><i class="tiny material-icons">lock_outline</i> Password</label>
+                            <input id="pword" type="password" asp-for="Input.Password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col s6">
+                            <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword()" id="show">
+                            <label for="show">Show</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s12">
+                            <button type="submit" class="btn btn-primary">Log in</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <p>
+                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                        </p>
+                        <p>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+</center>
+
+@*    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4>Use another service to log in.</h4>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                            for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>*@
+
+<script src="~/js/registerManager.js"></script>
+<script src="~/js/changeText.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

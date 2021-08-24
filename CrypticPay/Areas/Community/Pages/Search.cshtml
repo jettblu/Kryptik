@@ -1,0 +1,61 @@
+﻿@page
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+@model CrypticPay.Areas.Community.SearchModel
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<center>
+    <img src="~/Media/binoculars.svg" width="80px"/>
+</center>
+
+<div class="row">
+
+
+    <div class="col s12 l6 offset-l3">
+        <form method="post" id="searchForm" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="Search">
+            <div class="input-field searchBox card hoverable">
+                <i id="searchIcon" class="material-icons black-text medium prefix" style="padding-top: 7px;">search</i>
+                <input id="search" type="search" placeholder="Name, number, or @@CrypticTag" asp-for="Input.SearchString" required>
+                <i id="clearIcon" class="material-icons">close</i>
+                @*<center>
+                        <button id="updateSearch" type="submit" class="btn btn-search">Search</button>
+                    </center>*@
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="row" id="placeHolder">
+    <center>
+        <span class="info-header">Find friends. Send crypto.</span>
+        <img src="~/Media/search.gif" class="animation-small"/>
+    </center>
+</div>
+
+
+
+<div class="row" id="searchResults">
+
+</div>
+
+
+<form method="post" asp-page-handler="Test">
+    <center>
+        <button type="submit" class="btn btn-search">Test</button>
+    </center>
+</form>
+
+
+<script src="~/js/searchManager.js"></script>
+<script src="~/js/searchFriendsManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
+
+

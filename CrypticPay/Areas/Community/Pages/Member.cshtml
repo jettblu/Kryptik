@@ -1,0 +1,121 @@
+﻿@page
+@model CrypticPay.Areas.Community.Pages.MemberModel
+@{
+    ViewData["Title"] = "Member";
+}
+
+
+<h4>Member</h4>
+
+<div id="statusHolder">
+
+
+</div>
+
+<center>
+
+    <a class="modal-trigger center" href="#modalAvatar">
+        <img src="@Model.PhotoPath" alt="" class="circle profilePhoto">
+    </a>
+    <p class="profileFullName">@Model.PartnerName</p>
+    <p class="profileUserName">@Model.PartnerTag</p>
+
+    <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+    <form id="friend-form" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="ManageFriend">
+        <input asp-for="Input.UserName" type="hidden" />
+        <input asp-for="Input.FriendStatus" type="hidden" />
+        <input asp-for="Input.AddFriend" id="addFriend" value=false type="hidden" />
+
+        <div id="friendHolder">
+
+
+        </div>
+
+    </form>
+
+
+</center>
+
+
+
+<script src="~/js/NotificationsAsync.js"></script>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        console.log("ready!");
+
+        console.log(@Model.FriendInfo.FriendStatus);
+
+        PopulateFriend(@Model.FriendInfo.FriendStatus, @Model.FriendInfo.FriendshipLengthHours, @Model.FriendInfo.FriendshipLengthDays);
+
+    });
+
+
+
+    function PopulateFriend(friendStatus, hours, days) {
+
+        var memberContent;
+
+        console.log(friendStatus);
+
+        $("#friendHolder").empty();
+
+        switch (friendStatus) {
+            case 2:
+                console.log("Add friendship");
+                memberContent = `
+                <button type="submit" class="btn btn-friend">Add Friend</button>`;
+                $("#addFriend").val(true);
+                break;
+            case 0:
+                console.log("Remove friendship.");
+                $("#addFriend").val(false);
+                if (days < 2) {
+
+                    memberContent =
+                        `
+                <button type="submit" class="btn btn-reject">Remove Friend</button>
+                <br />
+                <p class="center-align timestamp">Friends for ${hours} hours!</p>`
+                }
+                else {
+                    memberContent =
+                        `
+                <button type="submit" class="btn btn-reject">Remove Friend</button>
+                <br />
+                 <p class="center-align timestamp">Friends for ${days} days!</p>`
+                }
+                break;
+            case 1:
+                console.log("Pending friendship");
+                memberContent = `<p class="center-align timestamp">Pending friendship.</p> `
+                break;
+            default:
+                break;
+        }
+
+        $("#friendHolder").append(memberContent);
+
+
+
+    }
+
+    complete = function (res) {
+        var result = res.responseJSON;
+        PopulateFriend(result.friendStatus, result.friendshipLengthHours, result.friendshipLengthDays);
+        ShowNotification(result.notificationMessage);
+    };
+
+
+</script>
+
+
+<link rel="stylesheet" href="https://mojoaxel.github.io/bootstrap-select-country/dist/css/bootstrap-select-country.min.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>

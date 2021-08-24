@@ -1,0 +1,592 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+/*general html style*/
+header, main, footer {
+    padding-left: 300px;
+    padding-right: 80px;
+}
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+}
+
+.container {
+    margin-top: 45px;
+    position: relative;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*navbar style*/
+
+nav {
+    background-color: #1faede;
+}
+
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+
+.navLinks {
+    color: white;
+    font-family: 'Verdana';
+}
+
+    .navLinks:hover {
+        color: #02ed2d;
+    }
+
+
+.userContent {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+
+
+.side-nav {
+    color: white;
+    background-image: linear-gradient( to bottom, #1faede, #47edff);
+}
+
+
+.profileFullNameNav {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 2px;
+    margin-bottom: 0px;
+    
+}
+
+    .profileFullNameNav:hover {
+        color: #02ed2d;
+    }
+
+
+
+/* Provide sufficient contrast against white background */
+
+a {
+    color: #00b6ff;
+}
+
+    a:hover {
+        color: #00a6ff;
+        cursor: pointer;
+    }
+
+.btn-primary {
+    color: #fff;
+    background-color: #26b7ff;
+    border-color: #1861ac;
+}
+
+    .btn-primary:hover {
+        background-color: #5eff99;
+    }
+
+.btn-signout {
+    color: #00527a;
+    background-color: white;
+    border-color: #69d4ff;
+}
+
+    .btn-signout:hover {
+        color: red;
+        background-color: #ededed;
+    }
+
+
+/* user style */
+
+.profilePhoto {
+    max-width: 90px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.profileFullName {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 2px;
+    margin-bottom: 0px;
+}
+
+.profileUserName {
+    font-style: italic;
+    font-size: 16px;
+    color: #42c5f5;
+    margin-top: 2px
+}
+
+
+/* search style */
+
+
+.searchUserResult {
+    display: inline;
+    float: left
+}
+
+.searchUserTag {
+    font-size: 14px;
+    font-weight: lighter;
+}
+
+.searchUserFullName {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.profilePhotoSearch {
+    max-width: 50px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.btn-search {
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    color: black;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.btn-search:hover {
+        background-color: #5eff99;
+}
+
+.btn-friend {
+    border-radius: 25px 25px 25px 25px;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    color: black;
+    text-align: center;
+}
+
+.btn-friend:hover {
+        background-color: #5eff99;
+}
+
+
+.btn-accept {
+    border-radius: 25px 25px 25px 25px;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5ee4ff;
+    color: black;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+    .btn-accept:hover {
+        background-color: #5eff99;
+    }
+
+.btn-reject {
+    border-radius: 25px 25px 25px 25px;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ff7575;
+    color: black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+    .btn-reject:hover {
+        background-color: #ff5e5e;
+    }
+
+
+.btn-delete {
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ff7575;
+    color: black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+    .btn-delete:hover {
+        background-color: #ff5e5e;
+    }
+
+
+
+
+/* label focus color */
+.input-field input:focus + label {
+    color: #00c3ff !important;
+}
+/* label underline focus color */
+.row .input-field input:focus {
+    border-bottom: 1px solid #00c3ff !important;
+    box-shadow: 0 1px 0 0 #00c3ff !important
+}
+
+.row .pword-field input:focus {
+    border-bottom: 1px solid #00c3ff !important;
+    box-shadow: 0 1px 0 0 #00c3ff !important
+}
+
+/* label focus color */
+.input-field textarea:focus + label {
+    color: #00c3ff !important;
+}
+/* label underline focus color */
+.row .input-field textarea:focus {
+    border-bottom: 1px solid #00c3ff !important;
+    box-shadow: 0 1px 0 0 #00c3ff !important
+}
+
+
+#toasts {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.toast {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+    z-index: 99;
+    font-weight: 400;
+}
+
+    .toast.info {
+        background-image: linear-gradient(to right, #4ad8ff, #05a0fa);
+        color: white;
+    }
+
+    .toast.success {
+        background-image: linear-gradient(to right, #4ad8ff, #09ed7b);
+        color: white;
+    }
+
+    .toast.error {
+        background-image: linear-gradient(to right, #4ad8ff, #ff4a4a);
+        color: white;
+    }
+
+
+/* Styles for validation helpers*/
+.field-validation-error {
+    color: #ff0000;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #ff0000 !important;
+    background-color: #ffeeee !important;
+}
+
+.validation-summary-errors {
+    font-weight: bold !important;
+    color: #ff0000 !important;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* switch color style */
+
+.switch label input[type=checkbox]:checked + .lever {
+    background-color: #00c3ff;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+        background-color: #00c3ff;
+    }
+
+
+/* checkbox color */
+
+
+.checkbox-blue[type="checkbox"]:checked + label:after {
+    border: 2px solid #00a6ff;
+    background-color: #00b6ff;
+    color: white;
+}
+
+
+/* textChange style */
+
+.change-text {
+    color: #00b6ff;
+    font-style: italic;
+    /* font-size: 30px; */
+    /* font-family: 'Roboto Slab', serif; */
+}
+
+
+@keyframes blinking {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    51% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.change-text:after {
+    content: '_';
+    animation: blinking 1.2s infinite;
+}
+
+
+/* indicator text style*/
+
+.info-header {
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+}
+
+.asset-header {
+    font-weight: bold;
+    font-size: 28px;
+    color: black;
+    margin-bottom: 0px;
+}
+
+.price-header {
+    font-weight: 400;
+    font-size: 20px;
+    color: #212121;
+    margin-top: 0px;
+}
+
+
+/* search style*/
+
+.searchBox {
+    padding: 7px;
+    border-radius: 25px 25px 25px 25px;
+    border-color: black;
+    border-width: 2px;
+    ;
+    border-style: solid;
+}
+
+
+.searchBox:hover {
+        border-color: #00b6ff;
+}
+
+
+
+/* general style*/
+
+.rounded {
+    border-radius: 25px 25px 25px 25px;
+}
+
+.blueSoft {
+    background-color: #3ad9fc;
+}
+
+.timestamp {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: lighter;
+}
+
+/**** Chart Style ****/
+
+.time {
+    width: 54px;
+    height: 30px;
+    border-radius: 25px 25px 25px 25px;
+    color: #5eff99;
+    background-color: none;
+    font-weight: bold;
+    font-size: 20px;
+    display: inline-block;
+    drop-shadow: 0 0 0.75rem crimson;
+}
+
+    .time:hover {
+        cursor: pointer;
+    }
+
+
+/**** Coin Style ****/
+
+
+.coinPhotoMedium {
+    width: 50px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.coinResult:hover {
+    box-shadow: 2px 4px 5px 0 currentColor, 2px 5px 3px -3px currentColor, 2px 5px 10px 0 currentColor;
+}
+
+
+
+
+.inputAmount {
+    font-size: calc(5em + 1vw) !important;
+    font-family: "Roboto";
+    color: #00b7ff;
+}
+
+.row .amount-field input:focus {
+    border-bottom: none !important;
+    box-shadow: none !important
+}
+
+
+.row .amount-field input {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 10px;
+    border-bottom: none !important;
+    box-shadow: none !important
+}
+
+
+/* transacton style */
+
+
+.inputBox {
+    padding: 8px;
+    border-radius: 5px 5px 5px 5px;
+    border: 2px solid #eee;
+}
+
+    .inputBox:hover {
+        cursor: pointer;
+    }
+
+
+    .inputBox:focus-within {
+        border: 2px solid #5ee4ff;
+    }
+
+.labelSend {
+    color: #b5b5b5;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+    color: #00c3ff !important;
+}
+
+.autocomplete-content li .highlight {
+    color: #00ff6e !important;
+}
+
+
+.btn-action {
+    border-radius: 3px 3px 3px 3px;
+    background-color: #1faede;
+    color: white;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-family: Verdana;
+}
+
+    .btn-action:hover {
+        background-color: #47edff;
+    }
+
+.bottomNavContent {
+    margin-top: 290px;
+}
+
+
+/* Asset History Style */
+
+.asset-header-history {
+    font-weight: bold;
+    font-size: 24px;
+    color: #616161;
+    padding-top: 8px;
+    display: inline-block;
+}
+
+.asset-img-history {
+    width: 35px;
+    margin-top: 7px;
+    left: 0px;
+    margin-right: 4px;
+    position: absolute;
+    top: 0px;
+    left: 8px;
+    display: inline-block
+}
+
+.asset-coins-history {
+    font-weight: 400;
+    font-size: 32px;
+    color: #212121;
+    margin-top: 0px;
+    padding-top: 0px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.asset-ref-history {
+    font-weight: 200;
+    color: #b0b0b0;
+    font-size: 16px;
+}
+
+.qr-medium {
+    margin-top: 1px;
+    margin: 3px;
+    width: 140px;
+    text-align: center;
+}
+
+.text-light {
+    font-weight: 300;
+    font-size: 16px;
+    color: #969696;
+}
+
+.selectable:hover{cursor: pointer}
+
+
+.animation-small {
+    width: 48px;
+    display: block;
+    margin: 5px;
+}

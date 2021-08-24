@@ -1,0 +1,82 @@
+﻿@page
+@model CrypticPay.Areas.Payments.SendModel
+@{
+
+    ViewData["Title"] = "Send";
+}
+
+
+
+
+<div class="section hide-on-small-only"></div>
+<div class="section hide-on-small-only"></div>
+
+
+
+<center>
+    <form>
+        <div class="row">
+            <div class="amount-field col s12 l12 m12">
+                <input class="input-number inputAmount center" id="amount" type="text" value="1" min="1" max="100000">
+            </div>
+        </div>
+
+
+        <div class="row">
+
+
+
+            <div class="row">
+                <div class="input-field col s10 l4 offset-l4 offset-s1">
+                    <input type="text" id="autocomplete-input" class="autocomplete">
+                    <label for="autocomplete-input" class="labelSend">Coin</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s10 l4 offset-l4 offset-s1 inputBox">
+                    <span class="labelSend">To:</span>
+                    <div class="input-field inline">
+                        <input id="last_name" type="text" placeholder="Kryptik Tag or SMS" class="validate align-right">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s10 l4 offset-l4 offset-s1 inputBox">
+                    <span class="labelSend">For:</span>
+                    <div class="input-field inline">
+                        <input id="last_name" type="text" placeholder="Dinner, movie, etc." class="validate align-right">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="update-profile-button" type="submit" class="btn btn-primary">Send</button>
+
+    </form>
+
+</center>
+
+<div class="section"></div>
+
+
+
+<script type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js">
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var amount = $('#amount');
+        amount.focus();
+        amount.val("$0");
+        $('input.autocomplete').autocomplete({
+            data: @Html.Raw(Model.DataJson),
+       });
+    });
+</script>
+
+<script src="~/js/amountManager.js"></script>

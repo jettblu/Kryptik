@@ -1,0 +1,87 @@
+﻿@page
+@model CrypticPay.Areas.Payments.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>CrypticPayCoins</h4>
+<hr />
+
+<center>
+
+    <div class="row">
+        <div class="card col s12 l6 offset-l3 rounded">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="input-field col l8 offset-l2 s12">
+                    <label asp-for="CrypticPayCoins.Name">Name</label>
+                    <input type="text" asp-for="CrypticPayCoins.Name" />
+                    <span asp-validation-for="CrypticPayCoins.Name" class="text-danger"></span>
+                </div>
+
+                <div class="input-field col l5 offset-l2 s12">
+                    <label asp-for="CrypticPayCoins.ApiTag">ID</label>
+                    <input type="text" asp-for="CrypticPayCoins.ApiTag" />
+                    <span asp-validation-for="CrypticPayCoins.ApiTag" class="text-danger"></span>
+                </div>
+
+                <div class="input-field col l3 s12">
+                    <label asp-for="CrypticPayCoins.Ticker">Ticker</label>
+                    <input type="text" asp-for="CrypticPayCoins.Ticker" />
+                    <span asp-validation-for="CrypticPayCoins.Ticker" class="text-danger"></span>
+                </div>
+
+                <div class="input-field col l8 offset-l2 s12">
+                    <label asp-for="CrypticPayCoins.ThumbnailPath">Image Path</label>
+                    <input type="text" asp-for="CrypticPayCoins.ThumbnailPath" />
+                    <span asp-validation-for="CrypticPayCoins.ThumbnailPath" class="text-danger"></span>
+                </div>
+
+
+                <div class="row">
+                    <div class="col s12 l12 m12">
+                        <!-- Switch -->
+                        <div class="switch">
+                            <label>
+                                <span id="IsSupported" style="color: #03befc; font-weight: bold;">
+                                    Not Supported
+                                </span>
+                                <input type="checkbox" align="center" id="authSwitch" asp-for="CrypticPayCoins.IsSupported">
+                                <span class="lever"></span>
+                                <span id="authOffLabel">
+                                    Supported
+                                </span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CrypticPayCoins.DateCreated" class="control-label"></label>
+                    <input asp-for="CrypticPayCoins.DateCreated" class="form-control" />
+                    <span asp-validation-for="CrypticPayCoins.DateCreated" class="text-danger"></span>
+                </div>
+
+                <div class="input-field">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+            <br>
+            <br>
+        </div>
+    </div>
+
+</center>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

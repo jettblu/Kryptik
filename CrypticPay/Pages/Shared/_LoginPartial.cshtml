@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Areas.Identity.Data
+
+@inject SignInManager<CrypticPayUser> SignInManager
+@inject UserManager<CrypticPayUser> UserManager
+
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var userInfo = UserManager.GetUserAsync(User).Result;
+
+    <div class="userContent">
+        <div class="center-align">
+            <img src="@userInfo.ProfilePhotoPath" alt="" class="circle profilePhoto">
+            <h6><a asp-area="Identity" asp-page="/Account/Profile" title="Profile" class="profileFullNameNav">@userInfo.Name</a></h6>
+        </div>
+        <li>
+            <a class="navLinks" asp-area="Community" asp-page="/Search"><i class="tiny material-icons navIcon" style="margin-right: 2px;">people</i>Search</a>
+        </li>
+        <li>
+            <a class="navLinks" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="tiny material-icons navIcon" style="margin-right: 2px;">account_circle</i>Settings</a>
+        </li>
+    </div>
+
+    <li>
+        <a class="navLinks" asp-area="Payments" asp-page="/Coins/Find"><i class="tiny material-icons navIcon" style="margin-right: 2px;">attach_money</i>Assets</a>
+    </li>
+    <a asp-area="Payments" asp-page="/Send">
+        <div class="center-align">
+            <button class="btn btn-action bottomNavContent">New</button>
+        </div>
+    </a>
+
+}
+else
+{
+    <div class="userContent">
+        <li>
+            <a class="navLinks" asp-area="Identity" asp-page="/Account/Register"><i class="tiny material-icons navIcon" style="margin-right: 2px;">add_circle</i>Register</a>
+        </li>
+        <li>
+            <a class="navLinks" asp-area="Identity" asp-page="/Account/Login"><i class="tiny material-icons navIcon" style="margin-right: 2px;">account_circle</i>Login</a>
+        </li>
+    </div>
+}
+
+
+
+@*<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" >
+                <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+    </ul>*@

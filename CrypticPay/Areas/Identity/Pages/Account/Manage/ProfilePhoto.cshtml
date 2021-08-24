@@ -1,0 +1,39 @@
+﻿@page
+@model ProfilePhotoModel
+@{
+    ViewData["Title"] = "Profile Photo";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<center>
+
+    <div class="row">
+        <div class="card horizontal hoverable col l8 s12 offset-l2 " style="border-radius: 25px 25px 25px 25px">
+            <div class="row">
+                <form method="post" class="col s12" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn green">
+                                <span>File</span>
+                                <input type="file" asp-for="Input.NewPhoto">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input type="text" class="file-path" placeholder="Choose an image" accept="image/png, image/jpeg">
+                            </div>
+                        </div>
+                        <div class="col s12">
+                            <button id="update-profilePhoto-button" type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</center>
