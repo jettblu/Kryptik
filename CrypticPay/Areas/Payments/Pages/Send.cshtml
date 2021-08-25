@@ -21,41 +21,54 @@
             </div>
         </div>
 
-
-        <div class="row">
-
-
-
-            <div class="row">
-                <div class="input-field col s10 l4 offset-l4 offset-s1">
-                    <input type="text" id="autocomplete-input" class="autocomplete">
-                    <label for="autocomplete-input" class="labelSend">Coin</label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col s10 l4 offset-l4 offset-s1 inputBox">
-                    <span class="labelSend">To:</span>
-                    <div class="input-field inline">
-                        <input id="last_name" type="text" placeholder="Kryptik Tag or SMS" class="validate align-right">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col s10 l4 offset-l4 offset-s1 inputBox">
-                    <span class="labelSend">For:</span>
-                    <div class="input-field inline">
-                        <input id="last_name" type="text" placeholder="Dinner, movie, etc." class="validate align-right">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <button id="update-profile-button" type="submit" class="btn btn-primary">Send</button>
+        <input type="hidden" id="mainCoin" />
+        <input type="hidden" id="mainTo" />
+        <input type="hidden" id="mainFor" />
 
     </form>
+
+
+    <div class="row">
+
+
+
+        <div class="row">
+            <div class="input-field col s10 l4 offset-l4 offset-s1">
+                <input type="text" id="autocomplete-input" class="autocomplete">
+                <label for="autocomplete-input" class="labelSend">Coin</label>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col s10 l4 offset-l4 offset-s1 inputBox">
+                <span class="labelSend">To:</span>
+                <div class="input-field inline">
+                    <i id="clearIcon" style="position: absolute; right: 0px;" class="material-icons tiny" hidden>close</i>
+                    <form method="post" id="searchForm" data-ajax="true" data-ajax-method="post" data-ajax-complete="ShowSearchFriendsResult" asp-page-handler="SearchUsers">
+                        <input id="to" type="text" placeholder="Kryptik Tag or SMS" class="validate align-right" asp-for="Input.SearchStringAsync">
+                    </form>
+                </div>
+            </div>
+            <div id="searchFriendContainer">
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s10 l4 offset-l4 offset-s1 inputBox">
+                <span class="labelSend">For:</span>
+                <div class="input-field inline">
+                    <input id="for" type="text" placeholder="Dinner, movie, etc." class="validate align-right">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <button id="update-profile-button" type="submit" class="btn btn-primary">Send</button>
+
+
 
 </center>
 
@@ -63,11 +76,10 @@
 
 
 
+<script src="~/js/sendManager.js"></script>
 <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js">
 </script>
-
-
 <script type="text/javascript">
     $(document).ready(function () {
         var amount = $('#amount');
@@ -78,5 +90,8 @@
        });
     });
 </script>
-
 <script src="~/js/amountManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
+

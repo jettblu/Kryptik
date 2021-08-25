@@ -1,0 +1,27 @@
+﻿@model List<CrypticPayUser>
+
+@{
+    if (Model.Count != 0)
+    {
+        foreach (var currUser in Model)
+        {
+            <a class="userToSelect" data-user="@currUser.UserName">
+                <div class="col s10 l6 offset-l3 offset-s1 card hoverable">
+
+                    <div class="col s1 l1">
+
+                        <img src="@currUser.ProfilePhotoPath" alt="user photo" class="circle profilePhotoSearch">
+
+                    </div>
+
+                    <div class="col s4 l4 offset-l1 offset-s2" style="padding-left: 0px; padding-top: 0px">
+                        <span class="searchUserFullName">@currUser.Name</span>
+                        <h6 class="searchUsertag">@currUser.UserName</h6>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+}
+
+

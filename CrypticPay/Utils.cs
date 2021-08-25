@@ -534,6 +534,26 @@ namespace CrypticPay
             return walletCoinContainer;
         }
 
+
+        public static List<CrypticPayUser> SearchUsers(CrypticPayUser user, CrypticPayContext context, string query, int amount=0)
+        {
+            var customers = from m in context.Users
+                            select m;
+
+            // uncomment below to return page if search bypasses client side checks and is empty
+
+            /*if (string.IsNullOrEmpty(query))
+            {
+                StatusMessage = "Please enter a valid query.";
+                return Page();
+            }*/
+
+
+
+            // match customer name, username, or number based on query. Exclude current user from result
+            return customers.Where(s => (s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)) && s.UserName != user.UserName).ToList();
+        }
+
         
 
     }

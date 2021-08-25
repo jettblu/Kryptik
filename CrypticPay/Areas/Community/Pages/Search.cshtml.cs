@@ -55,8 +55,7 @@ namespace CrypticPay.Areas.Community
         {
             var user = await _userManager.GetUserAsync(User);
             var query = Input.SearchString;
-            var customers = from m in _context.Users
-                         select m;
+
 
             // uncomment below to return page if search bypasses client side checks and is empty
 
@@ -66,11 +65,10 @@ namespace CrypticPay.Areas.Community
                 return Page();
             }*/
 
-            
+
 
             // match customer name, username, or number based on query
-            Users = customers.Where(s => s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)).ToList();
-
+            Users = Utils.SearchUsers(user, _context, query);
             return new JsonResult(Users);
         }
 
