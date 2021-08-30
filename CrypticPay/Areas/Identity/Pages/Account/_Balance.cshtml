@@ -2,6 +2,11 @@
 @model WalletHandler.WalletandCoins
 
 @{
+    if(Model.User.WalletKryptik == null)
+    {
+        <center><p>No wallet has been created for (@Model.User.Name). Create a wallet <a asp-area="Payments" asp-page="/Wallet/Manage">here</a>. </p></center>
+        return;
+    }
     var index = 0;
     foreach (var account in Model.User.WalletKryptik.CurrencyWallets)
     {
@@ -19,6 +24,7 @@
                 <span class="asset-header-history">@currCoin.Name</span>
             </div>
             <div class="divider" style="margin-top: 5px;"></div>
+
             <div class="card-content">
                 <div class="row">
                     <div class="col s12">
@@ -27,6 +33,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="card-action right-align rounded" style="margin-bottom: 3px;">
                 <a href="#" class="activator">Address</a>
             </div>

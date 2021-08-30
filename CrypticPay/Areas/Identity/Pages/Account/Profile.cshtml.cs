@@ -111,10 +111,14 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             // load relational data for user
             var currUser = _contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).Where(us => us.Id == userId).FirstOrDefault();
             var walletCoinContainer = Utils.GetCoinsForWallet(currUser, _contextCoins);
-            var resultBalUpdate = await _walletHandler.UpdateBalances(walletCoinContainer);
-            // update user after updating balances
-            _contextUsers.Users.Update(currUser);
-            _contextUsers.SaveChanges();
+            if(currUser.WalletKryptik != null)
+            {
+                var resultBalUpdate = await _walletHandler.UpdateBalances(walletCoinContainer);
+                // update user after updating balances
+                _contextUsers.Users.Update(currUser);
+                _contextUsers.SaveChanges();
+            }
+           
 
             return new PartialViewResult()
             {

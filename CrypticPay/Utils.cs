@@ -526,6 +526,12 @@ namespace CrypticPay
             var walletCoinContainer = new WalletHandler.WalletandCoins();
             walletCoinContainer.User = user;
             walletCoinContainer.Coins = new List<CrypticPayCoins>();
+            // if wallet is null there are no coins to check. Return.
+            if(user.WalletKryptik == null)
+            {
+                return walletCoinContainer;
+            }
+
             foreach (var account in user.WalletKryptik.CurrencyWallets)
             {
                 var coin = contextCoins.Coins.Find(account.CoinId);
