@@ -1,5 +1,7 @@
 ﻿using CrypticPay.Areas.Identity.Data;
 using CrypticPay.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using NBitcoin;
 using System;
@@ -38,12 +40,59 @@ namespace CrypticPay.Services
             public bool ShowData { get; set; }
         }
 
-        // signs crypto transaction on server before broadcasting to network
-        public void SignTransactionLocally()
+
+        public Globals.Status ConstructTransaction(string toString, CrypticPayCoins coin, CrypticPayContext contextUsers)
         {
-            var transaction = Network.Main.CreateTransactionBuilder();
+            try
+            {
+                var publicToAddress = GetBlockChainAddress(toString, coin, contextUsers);
+                var signed = SignTransactionLocally(publicToAddress);
+                return Globals.Status.Success;
+            }
+            catch
+            {
+                return Globals.Status.Failure;
+            }
+            
+            
+        }
+
+
+        //ADD HANDLING FOR PHONE NUMBER HERE OR IN CALLER
+        // gets blockchain address from input
+        public string GetBlockChainAddress(string inputTo, CrypticPayCoins coin, CrypticPayContext contextUsers)
+        {
+            string publicSendAddress;
+            // first check to see if the input refers to a user or to a valid public address
+            try
+            {
+                
+                var userTo = GetUserandWallet(inputTo, contextUsers);
+                publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).DepositAddress;
+            }
+            catch
+            {   
+                // add handling for invalid blockchain addresses to protect user from mistakes
+                publicSendAddress = inputTo;
+            }
+            return publicSendAddress;
+        }
+
+        public CrypticPayUser GetUserandWallet(string userId, CrypticPayContext contextUsers)
+        {
+            // load relational data for user
+            var currUser = contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).Where(us => us.Id == userId || us.UserName == userId).FirstOrDefault();
+            return currUser;
+        }
+
+        // signs crypto transaction on server before broadcasting to network
+        public string SignTransactionLocally(string pubAddress)
+        {
+            var transactionString = "";
+            var transactionBuilder = Network.Main.CreateTransactionBuilder();
             //https://github.com/NicolasDorier/NBitcoin.Docs/blob/master/WalletDesign.md
             //transaction.BuildTransaction(true);
+            return transactionString;
         }
 
 

@@ -2,6 +2,7 @@
 using CrypticPay.Data;
 using CrypticPay.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QRCoder;
 using System;
@@ -554,13 +555,13 @@ namespace CrypticPay
                 return Page();
             }*/
 
-
-
             // match customer name, username, or number based on query. Exclude current user from result
             return customers.Where(s => (s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)) && s.UserName != user.UserName).ToList();
         }
 
-        
+
+
+
 
     }
 

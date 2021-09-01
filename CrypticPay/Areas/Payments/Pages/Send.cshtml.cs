@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CrypticPay.Areas.Identity.Data;
 using CrypticPay.Data;
+using CrypticPay.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -18,14 +21,16 @@ namespace CrypticPay.Areas.Payments
         private readonly CrypticPayCoinContext _contextCoins;
         private readonly Data.CrypticPayContext _context;
         private readonly UserManager<CrypticPayUser> _userManager;
+        private WalletHandler _walletHandler;
 
-        public SendModel(CrypticPayCoinContext contextCoins, CrypticPayContext contextUsers, UserManager<CrypticPayUser> userManager)
+
+        public SendModel(CrypticPayCoinContext contextCoins, CrypticPayContext contextUsers, UserManager<CrypticPayUser> userManager, WalletHandler walletHandler)
         {
 
             _contextCoins = contextCoins;
             _context = contextUsers;
             _userManager = userManager;
-
+            _walletHandler = walletHandler;
         }
 
 
@@ -36,6 +41,12 @@ namespace CrypticPay.Areas.Payments
         {
             public string SearchString { get; set; }
             public string SearchStringAsync { get; set; }
+            [Required]
+            public string To { get; set; }
+            [Required]
+            public string For { get; set; }
+            [Required]
+            public string CoinName { get; set; }
         }
 
         public Dictionary<string, string> Data { get; set; }
@@ -84,10 +95,15 @@ namespace CrypticPay.Areas.Payments
             };
         }
 
-        public async Task<IActionResult> OnPostCreateTransaction()
+        public void OnPostCreateTransaction()
         {
-            var user = await _userManager.GetUserAsync(User);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currUser = _walletHandler.GetUserandWallet(userId, _context);
+            var coinToSend = Utils.FindCryptoIdByName(Input.CoinName, _contextCoins);
+
             
+            
+
         }
 
         
