@@ -83,5 +83,13 @@ namespace CrypticPay.Areas.Payments
                 }
             };
         }
+
+        public async Task<IActionResult> OnPostCreateTransaction()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            
+        }
+
+        
     }
 }

@@ -6,6 +6,7 @@
 
 $("#clearIcon").on('click', function () {
     $("#to").val("");
+    $("#searchFriendContainer").empty();
     $(this).hide();
 });
 
@@ -36,4 +37,15 @@ $("#to").on('change', function () {
 
 $("#for").on('change', function () {
     $("#mainFor").val($("#for").val());
+});
+
+$("#create-transaction-button").on('click', function () {
+    $("#transactionForm").submit();
+    // empty search container if still full
+    $("##searchFriendContainer").empty();
+    // empty send and status container
+    $("#sendContainer").empty();
+    $("#statusContainer").empty();
+    var basePath = window.location.origin;
+    $("#statusContainer").append(`<center><p>Creating transaction. This may take a moment.</p> <img src="${basePath}/Media/rocket.gif" class="animation-small"/></center>`);
 });

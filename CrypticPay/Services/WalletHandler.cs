@@ -38,6 +38,14 @@ namespace CrypticPay.Services
             public bool ShowData { get; set; }
         }
 
+        // signs crypto transaction on server before broadcasting to network
+        public void SignTransactionLocally()
+        {
+            var transaction = Network.Main.CreateTransactionBuilder();
+            //https://github.com/NicolasDorier/NBitcoin.Docs/blob/master/WalletDesign.md
+            //transaction.BuildTransaction(true);
+        }
+
 
         public async Task<Globals.Status> CreateWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins)
         {
