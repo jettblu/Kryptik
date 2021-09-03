@@ -14,6 +14,8 @@ $("#searchFriendContainer").on('click', ".userToSelect", function () {
     var userName = $(this).data('user');
     $("#to").val(userName);
     $("#searchFriendContainer").empty();
+    // indicate user has been chosen
+    $("#to").data('selected') = true;
 });
 
 
@@ -48,4 +50,21 @@ $("#create-transaction-button").on('click', function () {
     $("#statusContainer").empty();
     var basePath = window.location.origin;
     $("#statusContainer").append(`<center><p>Creating transaction. This may take a moment.</p> <img src="${basePath}/Media/rocket.gif" class="animation-small"/></center>`);
+});
+
+
+$(document).click(function () {
+    if ($("#to").data('selected') == false) {
+        $("#to").val("");
+        $("#searchFriendContainer").empty();
+    }
+});
+
+$(".to").click(function (event) {
+    event.stopPropagation();
+});
+
+$(".menuWraper").click(function (event) {
+    alert('clicked inside');
+    event.stopPropagation();
 });

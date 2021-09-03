@@ -58,7 +58,7 @@ namespace CrypticPay.Services
         }
 
 
-        //ADD HANDLING FOR PHONE NUMBER HERE OR IN CALLER
+        //ADD HANDLING FOR PHONE NUMBER HERE OR.... IN CALLER
         // gets blockchain address from input
         public string GetBlockChainAddress(string inputTo, CrypticPayCoins coin, CrypticPayContext contextUsers)
         {
@@ -87,7 +87,7 @@ namespace CrypticPay.Services
 
         // signs crypto transaction on server before broadcasting to network
         public string SignTransactionLocally(string pubAddress)
-        {
+        {   
             var transactionString = "";
             var transactionBuilder = Network.Main.CreateTransactionBuilder();
             //https://github.com/NicolasDorier/NBitcoin.Docs/blob/master/WalletDesign.md

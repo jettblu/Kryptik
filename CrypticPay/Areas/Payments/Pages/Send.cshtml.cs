@@ -42,12 +42,18 @@ namespace CrypticPay.Areas.Payments
             public string SearchString { get; set; }
             public string SearchStringAsync { get; set; }
             [Required]
+            public string Amount { get; set; }
+            [Required]
             public string To { get; set; }
             [Required]
             public string For { get; set; }
             [Required]
             public string CoinName { get; set; }
         }
+
+
+        
+
 
         public Dictionary<string, string> Data { get; set; }
         public string DataJson { get; set; }
@@ -85,12 +91,19 @@ namespace CrypticPay.Areas.Payments
             // match customer name, username, or number based on query
             var users = Utils.SearchUsers(user, _context, query);
 
+            var searchModel = new SearchData()
+            {
+                IsNumber = false,
+                Query = query,
+                Users = users
+            };
+
             return new PartialViewResult()
             {
                 ViewName = "_userSearchResult",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
-                    Model = users
+                    Model = searchModel
                 }
             };
         }

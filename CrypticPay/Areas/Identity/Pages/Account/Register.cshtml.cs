@@ -135,6 +135,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                 catch
                 {
                     ModelState.AddModelError("", "Please double check your phone number and try again.");
+                    StatusMessage = "Error: Please double check your phone number and try again..";
                     return Page();
                 }
 

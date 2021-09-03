@@ -1,9 +1,13 @@
-﻿@model List<CrypticPayUser>
+﻿@using CrypticPay.Data
+
+@model SearchData
+
 
 @{
-    if (Model.Count != 0)
+
+    if (Model.Users.Count != 0)
     {
-        foreach (var currUser in Model)
+        foreach (var currUser in Model.Users)
         {
             <a class="userToSelect" data-user="@currUser.UserName">
                 <div class="col s10 l6 offset-l3 offset-s1 card hoverable">
@@ -21,6 +25,19 @@
                 </div>
             </a>
         }
+
+    }
+    else
+    {   
+        // don't display anything if query is blank
+
+        if(Model.Query.Length == 0) return;
+        <a>
+            <div class="col s10 l6 offset-l3 offset-s1 card hoverable">
+                <p class="info-header">No results for "@Model.Query".</p>
+                <p>Search for friends using their name or username.</p>
+            </div>
+        </a>
     }
 }
 

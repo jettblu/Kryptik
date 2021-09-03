@@ -21,7 +21,7 @@
         <form id="transactionForm" data-ajax="true" data-ajax-method="post" data-ajax-complete="CreateTrasaction" asp-page-handler="CreateTransaction">
             <div class="row">
                 <div class="amount-field col s12 l12 m12">
-                    <input class="input-number inputAmount center" id="amount" type="text" value="1" min="1" max="100000">
+                    <input class="input-number inputAmount center" asp-validation-for="Input.Amount" asp-for="Input.Amount" id="amount" type="text" value="1" min="1" max="100000">
                 </div>
             </div>
 
@@ -53,7 +53,7 @@
                     <div class="input-field inline">
                         <i id="clearIcon" style="position: absolute; right: 0px;" class="material-icons tiny" hidden>close</i>
                         <form method="post" id="searchForm" data-ajax="true" data-ajax-method="post" data-ajax-complete="ShowSearchFriendsResult" asp-page-handler="SearchUsers">
-                            <input required id="to" type="text" placeholder="Kryptik Tag or SMS" class="validate align-right" asp-for="Input.SearchStringAsync">
+                            <input id="to" data-selected="false" type="text" placeholder="Kryptik Tag or SMS" class="validate align-right" asp-for="Input.SearchStringAsync">
                         </form>
                     </div>
                 </div>
