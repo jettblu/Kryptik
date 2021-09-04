@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -48,7 +49,6 @@ namespace CrypticPay.Areas.Community
         {
             var user = await _userManager.GetUserAsync(User);
             
-            var tester = user.Approved;
         }
 
         public async Task<JsonResult> OnPostSearchAsync()
@@ -74,7 +74,10 @@ namespace CrypticPay.Areas.Community
 
         public async Task OnPostTestAsync()
         {
-            var currUser = await _userManager.GetUserAsync(User);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var coin = Utils.FindCryptoByTicker("ETH", _contextCoins);
+            var transactions = await _walletHandler.GetTransactions(userId, _context, coin);
+            /*var currUser = await _userManager.GetUserAsync(User);
             // wait for wallet to be created
             var response = await _walletHandler.CreateWallet(currUser, _contextCoins);
             // Ensure user's wallet changes are saved
@@ -82,7 +85,7 @@ namespace CrypticPay.Areas.Community
             _context.Users.Update(currUser);
             _context.SaveChanges();
             // decrypt mnemonic
-            var phrase = _walletHandler.DecryptMnemonic(currUser);
+            var phrase = _walletHandler.DecryptMnemonic(currUser);*/
         }
 
     }

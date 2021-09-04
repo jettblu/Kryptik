@@ -510,16 +510,26 @@ namespace CrypticPay
             return coins;
         }
 
-        public static string FindCryptoIdByName(string name, CrypticPayCoinContext contextCoins)
+        public static CrypticPayCoins FindCryptoByName(string name, CrypticPayCoinContext contextCoins)
         {
             var coins = from m in contextCoins.Coins
                         select m;
 
             // find crypto by api tag
 
-            return coins.First(m => m.Name == name).Id;
+            return coins.First(m => m.Name == name);
         }
 
+
+        public static CrypticPayCoins FindCryptoByTicker(string ticker, CrypticPayCoinContext contextCoins)
+        {
+            var coins = from m in contextCoins.Coins
+                        select m;
+
+            // find crypto by api tag
+
+            return coins.First(c => c.Ticker == ticker);
+        }
 
         // gets coin object corresponding to each crypto in kryptik wallet
         public static WalletHandler.WalletandCoins GetCoinsForWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins)

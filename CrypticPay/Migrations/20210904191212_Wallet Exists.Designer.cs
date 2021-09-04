@@ -4,14 +4,16 @@ using CrypticPay.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CrypticPay.Migrations
 {
     [DbContext(typeof(CrypticPayContext))]
-    partial class CrypticPayContextModelSnapshot : ModelSnapshot
+    [Migration("20210904191212_Wallet Exists")]
+    partial class WalletExists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -18,7 +18,7 @@ namespace CrypticPay.Areas.Identity.Data
         public DateTime DOB { get; set; }
         [PersonalData]
         public int FriendCount { get; set; }
-        public bool Approved { get; set; }
+        public bool WalletKryptikExists { get; set; }
         public Wallet WalletKryptik { get; set; }
     }
 }

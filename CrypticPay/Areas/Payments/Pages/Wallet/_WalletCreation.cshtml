@@ -1,0 +1,13 @@
+﻿@using CrypticPay
+@model CrypticPay.Globals.Status
+
+@{
+    if(Model == Globals.Status.Failure)
+    {
+        <p>There was an issue creating your wallet. Please contact support or try again later.</p>
+    }
+    else
+    {   
+        <p>Your Kryptik wallet has been created. You may now send crypto to anyone, anywhere at anytime!</p>
+    }
+}

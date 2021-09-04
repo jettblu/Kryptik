@@ -1,6 +1,33 @@
 ﻿@page
 @model CrypticPay.Areas.Payments.Pages.Wallet.ManageModel
 @{
+    ViewData["Title"] = "Wallet";
+}
+@*<center>
+    <img src="/Media/blockchain.gif" class="animation-medium" />
+</center>*@
+@{
+    if (Model.CurrUser.WalletKryptikExists)
+    {
+        <h4>Wallet Manager</h4>
+        <p>Your Kryptik wallet was created on @(Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString()).</p>
+    }
+    else
+    {
+        <h4>Create A Wallet</h4>
+
+        <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="walletComplete" asp-page-handler="CreateWallet">
+            <center>
+                <button id="btnCreateWallet" class="btn btn-search">Create Wallet</button>
+            </center>
+        </form>
+    }
 }
 
-<h4>Create A Wallet</h4>
+<div id="walletContainer"></div>
+
+
+<script src="~/js/CreateWalletManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>

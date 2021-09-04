@@ -112,7 +112,7 @@ namespace CrypticPay.Areas.Payments
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currUser = _walletHandler.GetUserandWallet(userId, _context);
-            var coinToSend = Utils.FindCryptoIdByName(Input.CoinName, _contextCoins);
+            var coinToSend = Utils.FindCryptoByName(Input.CoinName, _contextCoins);
 
             
             
