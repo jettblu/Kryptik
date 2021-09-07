@@ -3,24 +3,71 @@
 @{
     ViewData["Title"] = "Wallet";
 }
-@*<center>
-    <img src="/Media/blockchain.gif" class="animation-medium" />
-</center>*@
+
 @{
     if (Model.CurrUser.WalletKryptikExists)
     {
         <h4>Wallet Manager</h4>
-        <p>Your Kryptik wallet was created on @(Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString()).</p>
+
+
+        <div class="row">
+            <div class="col l6 offset-l3 s10 offset-s1 m8 offset-m2 card hoverable rounded">
+
+                <div class="row">
+                    <h1 class="asset-header textGradientBlue">Kryptik Wallet</h1>
+                </div>
+
+                <div class="row">
+                    <p><span class="info-header">Date Created</span>: @(Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString())</p>
+                    <p><span class="info-header">Coins Supported</span>: 7</p>
+                    <p><span class="info-header">Wallet Type</span><a href="#typeModal" class="modal-trigger"><i class="material-icons" style="font-size: 14px; color: grey">info</i></a>: Custodial <a href="">change</a></p>
+                </div>
+
+                <!-- Update to include modal (aligned) and password protection -->
+                <div class="card-action right" style="margin-bottom: 4px;">
+                    <button class="btn btn-search">Download Seed</button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Modal Structure -->
+        <div id="typeModal" class="modal hoverable rounded">
+            <div class="modal-content">
+                <h4 style="color: #00c72e;">Wallet Type</h4>
+                <p>
+                    Crypto wallets can be either custodial or non custodial. Custodial wallets allow a third party to manage your private key and execute transactions on your behalf. Non-custodial wallets require the user to safely manage their private key.
+                </p>
+                <p>By default, Kryptik wallets are custodial. This setting can be changed anytime and your seed phrase is always availabe to download.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="white modal-close waves-effect waves-blue btn-flat" style="margin-right: 10px;">Close</a>
+            </div>
+        </div>
+
     }
     else
     {
-        <h4>Create A Wallet</h4>
+        <div class="row">
 
-        <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="walletComplete" asp-page-handler="CreateWallet">
-            <center>
-                <button id="btnCreateWallet" class="btn btn-search">Create Wallet</button>
-            </center>
-        </form>
+            <div class="s12 hide-on-large-only center">
+                <img src="kryptikConcept.jpg" style="width: 180px;" />
+            </div>
+
+            <div class="col offset-l2 l4 s10 offset-s1">
+                <h1 class="heading textGradientBlue" style="margin-bottom: 3px;">A crypto wallet for everyone.</h1>
+                <h1 class="subHeading" style="margin-top: 0px;">Send crypto to anyone, anywhere, at anytime.</h1>
+                <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="walletComplete" asp-page-handler="CreateWallet">
+                    <button id="btnCreateWallet" class="btn btn-search">Create Wallet</button>
+                </form>
+            </div>
+
+            <div class="col l6 s12 hide-on-med-and-down">
+                <img src="~/Media/kryptikWall.jpg" style="width: 180px;" />
+            </div>
+
+        </div>
     }
 }
 

@@ -36,14 +36,27 @@ namespace CrypticPay.Services
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
-            var currency = Tatum.Model.Currency.ETH.ToString();
+            var currency = Tatum.Model.Currency.LTC.ToString();
             var currencyWallet = GetCurrencyWallet(coin, user);
+            // visit https://tatum.io/apidoc#operation/getTransactionsByAccountId for more info on construction
             var filterTrans = new Tatum.Model.Requests.TransactionFilterAccount() {
                 Currency = currency,
-                Id = currencyWallet.AccountId
+                Id = currencyWallet.AccountId,
+                CounterAccount = currencyWallet.AccountId,
             };
             var transactions = await _tatumClient.GetTransactionsForAccount(filterTrans);
+            
+            var filterLedger = new Tatum.Model.Requests.TransactionFilterLedger() { Account = currencyWallet.AccountId, Currency = currency};
+            var trans = await _tatumClient.GetTransactionsForLedger(filterLedger);
+
+
+            var tester = await _tatumClient.GenerateDepositAddress(currencyWallet.AccountId, 89);
             return transactions;
+        }
+
+        public void TatumTest()
+        {
+            
         }
 
         public class WalletandCoins
@@ -143,10 +156,10 @@ namespace CrypticPay.Services
         
             var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);*/
 
-            var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Xpub = wallBtc.XPub, Customer = customer });
+            var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Xpub = wallBtc.XPub, Customer = customer});
             var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Xpub = wallBch.XPub, Customer = customer });
             var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
-            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer });
+            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer});
 
 
             var rand = new Random();

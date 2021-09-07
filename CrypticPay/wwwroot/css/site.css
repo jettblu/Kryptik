@@ -596,3 +596,28 @@ a {
     display: block;
     margin: 5px;
 }
+
+
+.heading {
+    font-family: 'Open Sans', 'Arial';
+    font-weight: bold;
+    font-size: 38px;
+    color: #002021;
+}
+
+.subHeading {
+    font-family: 'Verdanas', 'Arial';
+    font-weight: 400;
+    font-size: 26px;
+    color: #002c5c;
+}
+
+.textGradientBlue {
+    background-color: #f3ec78;
+    background-image: linear-gradient(45deg, #4dcfff, white);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+}

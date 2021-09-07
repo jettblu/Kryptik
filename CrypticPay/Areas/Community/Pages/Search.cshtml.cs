@@ -75,7 +75,7 @@ namespace CrypticPay.Areas.Community
         public async Task OnPostTestAsync()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var coin = Utils.FindCryptoByTicker("ETH", _contextCoins);
+            var coin = Utils.FindCryptoByTicker("LTC", _contextCoins);
             var transactions = await _walletHandler.GetTransactions(userId, _context, coin);
             /*var currUser = await _userManager.GetUserAsync(User);
             // wait for wallet to be created

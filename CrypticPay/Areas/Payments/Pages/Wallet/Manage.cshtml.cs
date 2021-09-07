@@ -41,15 +41,14 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
         public async Task<IActionResult> OnPostCreateWalletAsync()
         {
             Globals.Status walletCreationStatus;
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currUser = _walletHandler.GetUserandWallet(userId, _context);
             try
-            {
-                var currUser = await _userManager.GetUserAsync(User);
-                // wait for wallet to be created
+            {                // wait for wallet to be created
                 var response = await _walletHandler.CreateWallet(currUser, _contextCoins);
                 // Ensure user's wallet changes are saved
                 currUser.WalletKryptikExists = true;
-                _context.Users.Update(currUser);
-                _context.SaveChanges();
+                await _userManager.UpdateAsync(currUser);
                 walletCreationStatus = Globals.Status.Success;
             }
             catch
