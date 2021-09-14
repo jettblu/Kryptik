@@ -101,12 +101,12 @@ namespace CrypticPay
 
 
             services.Configure<TwilioVerifySettings>(Configuration.GetSection("TwilioAccountDetails"));
-            
+               
             services.Configure<StorageAccountOptions>(Configuration.GetSection("StorageAccount"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<CrypticPayUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -124,6 +124,8 @@ namespace CrypticPay
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            Seeds.DefaultRoles.SeedAsync(userManager, roleManager).Wait();
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CrypticPay.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CrypticPay.Areas.Payments
 {
+    [Authorize(Roles = "SuperAdmin")]
     public class CreateModel : PageModel
     {
         private readonly CrypticPay.Data.CrypticPayCoinContext _context;

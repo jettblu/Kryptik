@@ -33,6 +33,21 @@ namespace CrypticPay.Services
             
         }
 
+
+        public async Task<Globals.Status> MatchDepositAddresses(string userId, CrypticPayContext contextUsers)
+        {
+            var rand = new Random();
+            var user = GetUserandWallet(userId, contextUsers);
+            foreach (var account in user.WalletKryptik.CurrencyWallets)
+            {
+
+                var btcAddress = await _tatumClient.GenerateDepositAddress(account.AccountId, rand.Next(1, 1000000));
+      
+
+            }
+            return Globals.Status.Done;
+        }
+
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
@@ -136,6 +151,7 @@ namespace CrypticPay.Services
             var wallBch = Tatum.Wallet.Create(Tatum.Model.Currency.BCH, mnemonic, testnet: isTestNet);
             var wallEth = Tatum.Wallet.Create(Tatum.Model.Currency.ETH, mnemonic, testnet: isTestNet);
             var wallLtc = Tatum.Wallet.Create(Tatum.Model.Currency.LTC, mnemonic, testnet: isTestNet);
+                      
             
 
             var customer = new Tatum.Model.Requests.CreateCustomer()
@@ -157,6 +173,7 @@ namespace CrypticPay.Services
             var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);*/
 
             var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Xpub = wallBtc.XPub, Customer = customer});
+            
             var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Xpub = wallBch.XPub, Customer = customer });
             var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
             var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer});
@@ -166,8 +183,10 @@ namespace CrypticPay.Services
 
             user.WalletKryptik = new Data.Wallet();
 
-
-            var btcAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
+            // comment below is format for generating local addy
+            /*var btcAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);*/
+            var btcAddressReq = await _tatumClient.GenerateDepositAddress(btcAccount.Id, 89);
+            var btcAddress = btcAddressReq.BlockchainAddress;
             var btcQr = Utils.QrForWebGenerator(btcAddress);
             var currencyWalletBtc = new CurrencyWallet()
             {
@@ -180,7 +199,8 @@ namespace CrypticPay.Services
                 CreationTime = DateTime.Now
             };
 
-            var bchAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BCH, wallBch.XPub, rand.Next(1, 1000000), testnet: isTestNet);
+            var bchAddressReq = await _tatumClient.GenerateDepositAddress(ltcAccount.Id, 89);
+            var bchAddress = bchAddressReq.BlockchainAddress;
             var bchQr = Utils.QrForWebGenerator(bchAddress);
             var currencyWalletBch = new CurrencyWallet()
             {
@@ -193,7 +213,8 @@ namespace CrypticPay.Services
                 CreationTime = DateTime.Now
             };
 
-            var ethAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.ETH, wallEth.XPub, rand.Next(1, 1000000), testnet: isTestNet);
+            var ethAddressReq = await _tatumClient.GenerateDepositAddress(ethAccount.Id, 89);
+            var ethAddress = ethAddressReq.BlockchainAddress;
             var ethQr = Utils.QrForWebGenerator(ethAddress);
             var currencyWalletEth = new CurrencyWallet()
             {
@@ -206,7 +227,8 @@ namespace CrypticPay.Services
                 CreationTime = DateTime.Now
             };
 
-            var ltcAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.LTC, wallLtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
+            var ltcAddressReq = await _tatumClient.GenerateDepositAddress(ltcAccount.Id, 89);
+            var ltcAddress = ltcAddressReq.BlockchainAddress;
             var ltcQr = Utils.QrForWebGenerator(ltcAddress);
 
             var currencyWalletLtc = new CurrencyWallet()

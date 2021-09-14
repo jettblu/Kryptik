@@ -569,6 +569,11 @@ namespace CrypticPay
             return customers.Where(s => (s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)) && s.UserName != user.UserName).ToList();
         }
 
+        public static void AddToRole(CrypticPayUser user, UserManager<CrypticPayUser> userManager, Globals.Roles role)
+        {
+            userManager.AddToRoleAsync(user, role.ToString()).Wait();
+        }
+
 
 
 

@@ -23,5 +23,12 @@ namespace CrypticPay
             BlockedFriends = 3
         }
 
+        public enum Roles {
+            SuperAdmin,
+            Admin,
+            Basic
+        }
+
+
     }
 }

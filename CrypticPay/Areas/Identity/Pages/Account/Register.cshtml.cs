@@ -150,6 +150,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                     ProfilePhotoPath = profilePhoto
                 };
 
+                
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
 

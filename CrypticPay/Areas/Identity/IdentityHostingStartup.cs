@@ -21,6 +21,7 @@ namespace CrypticPay.Areas.Identity
                         context.Configuration.GetConnectionString("CrypticPayContextConnection")));
 
                 services.AddDefaultIdentity<CrypticPayUser>(options => options.SignIn.RequireConfirmedPhoneNumber = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<CrypticPayContext>();
                 services.Configure<DataProtectionTokenProviderOptions>(options => 
                 {   
