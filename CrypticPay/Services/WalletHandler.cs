@@ -142,10 +142,20 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
+        public void getKeyfromMnem(CrypticPayUser user)
+        {
+            var words = DecryptMnemonic(user);
+            var mnemo = new Mnemonic(words,
+                Wordlist.English);
+            var hdRoot = mnemo.DeriveExtKey("my password");
+
+        }
+
 
         public async Task<Globals.Status> CreateWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins, bool isTestNet = false)
         {
             var mnemonic = GenerateMnemonic();
+
 
             var wallBtc = Tatum.Wallet.Create(Tatum.Model.Currency.BTC, mnemonic, testnet: isTestNet);
             var wallBch = Tatum.Wallet.Create(Tatum.Model.Currency.BCH, mnemonic, testnet: isTestNet);
@@ -178,13 +188,15 @@ namespace CrypticPay.Services
             var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
             var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer});
 
-
             var rand = new Random();
 
             user.WalletKryptik = new Data.Wallet();
+            var key = new Key();
+
 
             // comment below is format for generating local addy
-            /*var btcAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);*/
+            var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
+            
             var btcAddressReq = await _tatumClient.GenerateDepositAddress(btcAccount.Id, 89);
             var btcAddress = btcAddressReq.BlockchainAddress;
             var btcQr = Utils.QrForWebGenerator(btcAddress);
@@ -493,6 +505,8 @@ namespace CrypticPay.Services
                     }
                 }
             }
+
+            plaintext = plaintext.Replace("\0", "");
 
             return plaintext;
         }
