@@ -17,6 +17,8 @@ namespace CrypticPay.Data
         public string DepositQrBlockchain { get; set; }
         public string AccountId { get; set; }
         public double AccountBalanceFiat { get; set; }
+        public BlockchainAddress AddressOnChain { get; set; }
+        public string AddressKey { get; set; }
         public double AccountBalanceCrypto { get; set; }
         public Wallet WalletKryptik { get; set; }
         [DataType(DataType.Date)]

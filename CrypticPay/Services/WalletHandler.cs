@@ -48,6 +48,15 @@ namespace CrypticPay.Services
             return Globals.Status.Done;
         }
 
+
+/*        public Key GenerateKey(string currency)
+        {
+            var words = DecryptMnemonic(user);
+            var mnemo = new Mnemonic(words,
+                Wordlist.English);
+            var hdRoot = mnemo.DeriveExtKey("my password");
+        }*/
+
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
@@ -69,10 +78,6 @@ namespace CrypticPay.Services
             return transactions;
         }
 
-        public void TatumTest()
-        {
-            
-        }
 
         public class WalletandCoins
         {
@@ -142,12 +147,112 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
-        public void getKeyfromMnem(CrypticPayUser user)
+        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, bool isTestnet=false)
         {
-            var words = DecryptMnemonic(user);
+            // increment index, so we can generate new address from extended key
+
+            int indexAddy = 0;
+            if (currWallet.AddressOnChain != null)
+            {
+                indexAddy = currWallet.AddressOnChain.Index + 1;
+            }
+            
+     
+
+            var words = DecryptMnemonic(currWallet.WalletKryptik.Owner);
             var mnemo = new Mnemonic(words,
                 Wordlist.English);
-            var hdRoot = mnemo.DeriveExtKey("my password");
+
+            var seed = mnemo.DeriveSeed();
+
+
+
+            if(coin.Ticker == "ETH")
+            {
+                // we do not need to case for testnet here as eth address is cross network compatible
+                var ethAccount = new Nethereum.HdWallet.Wallet(seed).GetAccount(indexAddy);
+                return new BlockchainAddress()
+                {
+                    Address = ethAccount.Address,
+                    Index = indexAddy
+                };
+            }
+
+
+
+            // extended private key as derived from mnemonic
+            var masterKey = mnemo.DeriveExtKey();
+            // xpub as derived from master key
+            var masterPubKey = masterKey.Neuter();
+            // Generate public key k from xpub
+            ExtPubKey pubKeyK = masterPubKey.Derive((uint)indexAddy);
+            //Get corresponding private key for pub key k
+            ExtKey privKeyK = masterKey.Derive((uint)indexAddy);
+
+            Network network;
+            bool isSegwit = true;
+
+            if (isTestnet)
+            {
+                switch (coin.Ticker)
+                {
+                    case "BTC":
+                        network = Network.TestNet;
+                        break;
+
+                    case "LTC":
+                        network = NBitcoin.Altcoins.Litecoin.Instance.Testnet;
+                        break;
+
+                    case "BCH":
+                        network = NBitcoin.Altcoins.BCash.Instance.Testnet;
+                        break;
+
+                    default:
+                        throw new Exception("Coin type not found. Network could not be specified.");
+                }
+            }
+            else
+            {
+
+                switch (coin.Ticker)
+                {
+                    case "BTC":
+                        network = Network.Main;
+                        break;
+
+                    case "LTC":
+                        network = NBitcoin.Altcoins.Litecoin.Instance.Mainnet;
+                        break;
+
+                    case "BCH":
+                        network = NBitcoin.Altcoins.BCash.Instance.Mainnet;
+                        break;
+
+                    default:
+                        throw new Exception("Coin type not found. Network could not be specified.");
+                }
+               
+            }
+
+            ScriptPubKeyType keyType;
+            if (isSegwit)
+            {
+                keyType = ScriptPubKeyType.Segwit;
+            }
+            else
+            {
+                keyType = ScriptPubKeyType.Legacy;
+            }
+            
+
+            var addy = pubKeyK.PubKey.GetAddress(keyType, network);
+
+            return new BlockchainAddress()
+            {
+                Address = addy.ToString(),
+                Index = indexAddy
+            };
 
         }
 
@@ -188,7 +293,7 @@ namespace CrypticPay.Services
             var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
             var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer});
 
-            var rand = new Random();
+            var rand = new Random(); 
 
             user.WalletKryptik = new Data.Wallet();
             var key = new Key();
@@ -198,6 +303,9 @@ namespace CrypticPay.Services
             var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
             
             var btcAddressReq = await _tatumClient.GenerateDepositAddress(btcAccount.Id, 89);
+            
+            
+
             var btcAddress = btcAddressReq.BlockchainAddress;
             var btcQr = Utils.QrForWebGenerator(btcAddress);
             var currencyWalletBtc = new CurrencyWallet()
@@ -275,9 +383,10 @@ namespace CrypticPay.Services
             
         }
 
+        // generate 12 word mnemonic
         public string GenerateMnemonic()
         {
-            var phraseObj = new Mnemonic(Wordlist.English);
+            var phraseObj = new Mnemonic(Wordlist.English, WordCount.Twelve);
             string mnemonic = string.Join(" ", phraseObj.Words);
             return mnemonic;
         }

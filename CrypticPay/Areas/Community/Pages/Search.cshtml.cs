@@ -76,7 +76,9 @@ namespace CrypticPay.Areas.Community
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = _walletHandler.GetUserandWallet(userId, _context);
-            _walletHandler.getKeyfromMnem(user);
+            var coin = Utils.FindCryptoByTicker("BTC", _contextCoins);
+            var currWallet = _walletHandler.GetCurrencyWallet(coin, user);
+            _walletHandler.CreateAddress(currWallet, coin);
             
             /*var mnemonic = _walletHandler.DecryptMnemonic(user);*/
             /*var resultv = await _walletHandler.MatchDepositAddresses(userId, _context);*/

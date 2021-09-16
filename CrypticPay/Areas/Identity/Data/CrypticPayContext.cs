@@ -32,8 +32,14 @@ namespace CrypticPay.Data
                 .HasMany(p => p.CurrencyWallets)
                 .WithOne(b => b.WalletKryptik)
                 .OnDelete(DeleteBehavior.Cascade);
-            
-            
+
+            builder.Entity<BlockchainAddress>()
+                .HasOne(p => p.CurrencyWallet)
+                .WithOne(b => b.AddressOnChain)
+                .HasForeignKey<CurrencyWallet>(b => b.AddressKey)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }
