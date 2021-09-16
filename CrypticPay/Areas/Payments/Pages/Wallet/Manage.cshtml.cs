@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -30,8 +31,27 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             _walletHandler = walletHandler;
         }
 
-        
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public class InputModel
+        {
+
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+        }
+
+
         public void OnGet()
+        {
+            LoadUserData();
+        }
+
+        public void LoadUserData()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             CurrUser = _walletHandler.GetUserandWallet(userId, _context);
@@ -66,5 +86,40 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             };
 
         }
-    }
+
+        public async Task<PageResult> OnPostDeleteWallet()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currUser = _walletHandler.GetUserandWallet(userId, _context);
+            // reset propert for page load
+            CurrUser = currUser;
+            var pwordCheck = await _userManager.CheckPasswordAsync(currUser, Input.Password);
+
+            if (!pwordCheck)
+            {
+                StatusMessage = "Error: Invalid Password";
+                
+                return Page();
+            }
+            try
+            {
+                if(currUser.WalletKryptikExists && currUser.WalletKryptik != null)
+                     {  
+                        
+                         _context.Remove(currUser.WalletKryptik);
+                         currUser.WalletKryptikExists = false;
+                         _context.SaveChanges();
+                         StatusMessage = "Wallet deleted.";
+                      }
+            }
+            catch
+            {
+                StatusMessage = "Error occured while deleting wallet.";
+            }
+
+            LoadUserData();
+            return Page();
+        }
+
+        }
 }

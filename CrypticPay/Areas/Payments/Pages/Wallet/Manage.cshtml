@@ -4,6 +4,15 @@
     ViewData["Title"] = "Wallet";
 }
 
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<script>
+    $(document).ready(function () {
+        $('#deleteModal').modal();
+        $('#typeModal').modal();
+    });
+</script>
+
 @{
     if (Model.CurrUser.WalletKryptikExists)
     {
@@ -23,14 +32,52 @@
                     <p><span class="info-header">Wallet Type</span><a href="#typeModal" class="modal-trigger"><i class="material-icons" style="font-size: 14px; color: grey">info</i></a>: Custodial <a href="">change</a></p>
                 </div>
 
-                
+
                 <div class="card-action right" style="margin-bottom: 4px;">
-                    <p class="text-red" id="deleteWall">Delete</p>
+                    <a class="red-text modal-trigger" href="#deleteModal">Delete</a>
                     <!-- Update to include modal (aligned) and password protection -->
-                    <button class="btn btn-search">Download Seed</button>
+                    <a class="modal-trigger btn btn-search" href="#typeModal">Download Seed</a>
                 </div>
 
             </div>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="deleteModal" class="modal hoverable rounded">
+            <form method="post" id="pwordForm" asp-page-handler="DeleteWallet">
+                <div class="modal-content">
+                    <i class="black-text material-icons modal-close small right">close</i>
+                    <div class="row">
+
+
+
+                        <h4 class="blue-text">Enter Password</h4>
+                        <p class="red-text darken-2"><strong>Deleting your Kryptik wallet can not be undone. Please ensure you have backed up your wallet to avoid losing your crypto.</strong></p>
+
+
+                        <div class="row">
+                            <div class="col s12 l6 pword-field">
+                                <label asp-for="Input.Password">Password</label>
+                                <input id="pword" asp-for="Input.Password" type="Password" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s6">
+                                <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword()" id="show">
+                                <label for="show">Show</label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-delete" type="submit" style="margin-right: 20px; margin-bottom: 5px;">Delete Wallet</button>
+                </div>
+            </form>
+
         </div>
 
 
@@ -44,7 +91,7 @@
                 <p>By default, Kryptik wallets are custodial. This setting can be changed anytime and your seed phrase is always availabe to download.</p>
             </div>
             <div class="modal-footer">
-                <a href="#!" class="white modal-close waves-effect waves-blue btn-flat" style="margin-right: 10px;">Close</a>
+                <a href="#!" class="white modal-close waves-effect waves-blue btn-flat" style="margin-right: 20px; margin-bottom: 5px;">Close</a>
             </div>
         </div>
 
@@ -76,7 +123,14 @@
 <div id="walletContainer"></div>
 
 
+
+
+<script src="~/js/registerManager.js"></script>
 <script src="~/js/CreateWalletManager.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
         integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
         crossorigin="anonymous"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

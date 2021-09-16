@@ -11,3 +11,6 @@ $("#btnCreateWallet").on("click", function () {
     $(this).submit();
     $(this).hide();
 });
+
+
+
