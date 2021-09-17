@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
+
 namespace CrypticPay.Areas.Payments.Pages.Wallet
 {
     public class ManageModel : PageModel
@@ -63,18 +64,13 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             Globals.Status walletCreationStatus;
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currUser = _walletHandler.GetUserandWallet(userId, _context);
-            try
-            {                // wait for wallet to be created
+              // wait for wallet to be created
                 var response = await _walletHandler.CreateWallet(currUser, _contextCoins);
                 // Ensure user's wallet changes are saved
                 currUser.WalletKryptikExists = true;
                 await _userManager.UpdateAsync(currUser);
                 walletCreationStatus = Globals.Status.Success;
-            }
-            catch
-            {
-                walletCreationStatus = Globals.Status.Failure;
-            }
+            
 
             return new PartialViewResult()
             {

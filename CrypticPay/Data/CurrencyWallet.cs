@@ -11,7 +11,6 @@ namespace CrypticPay.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        public string Xpub { get; set; }
         public string CoinId { get; set; }
         public string DepositAddress { get; set; }
         public string DepositQrBlockchain { get; set; }

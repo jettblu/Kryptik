@@ -13,6 +13,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Tatum;
 using Tatum.Clients;
+using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
+using Nethereum.Util;
+using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.HdWallet;
 
 namespace CrypticPay.Services
 {
@@ -33,20 +38,6 @@ namespace CrypticPay.Services
             
         }
 
-
-        public async Task<Globals.Status> MatchDepositAddresses(string userId, CrypticPayContext contextUsers)
-        {
-            var rand = new Random();
-            var user = GetUserandWallet(userId, contextUsers);
-            foreach (var account in user.WalletKryptik.CurrencyWallets)
-            {
-
-                var btcAddress = await _tatumClient.GenerateDepositAddress(account.AccountId, rand.Next(1, 1000000));
-      
-
-            }
-            return Globals.Status.Done;
-        }
 
 
 /*        public Key GenerateKey(string currency)
@@ -87,19 +78,20 @@ namespace CrypticPay.Services
         }
 
 
-        public Globals.Status ConstructTransaction(string toString, CrypticPayCoins coin, CrypticPayContext contextUsers)
+        public Globals.Status ConstructTransaction(string toString, Data.Transaction tx, CrypticPayContext contextUsers, CrypticPayCoinContext contextCoins)
         {
+            var coin = Utils.FindCryptoByID(contextCoins, tx.CoinId);
             try
             {
-                var publicToAddress = GetBlockChainAddress(toString, coin, contextUsers);
-                var signed = SignTransactionLocally(publicToAddress);
+                var publicToAddress = GetBlockChainAddress(toString, coin, contextUsers, tx);
+                
+                var signed = SignTransactionLocally(publicToAddress, tx);
                 return Globals.Status.Success;
             }
             catch
             {
                 return Globals.Status.Failure;
             }
-            
             
         }
 
@@ -112,7 +104,7 @@ namespace CrypticPay.Services
 
         //ADD HANDLING FOR PHONE NUMBER HERE OR.... IN CALLER
         // gets blockchain address from input
-        public string GetBlockChainAddress(string inputTo, CrypticPayCoins coin, CrypticPayContext contextUsers)
+        public string GetBlockChainAddress(string inputTo, CrypticPayCoins coin, CrypticPayContext contextUsers, Data.Transaction tx)
         {
             string publicSendAddress;
             // first check to see if the input refers to a user or to a valid public address
@@ -120,7 +112,8 @@ namespace CrypticPay.Services
             {
                 
                 var userTo = GetUserandWallet(inputTo, contextUsers);
-                publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).DepositAddress;
+                tx.UserTo = userTo;
+                publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).AddressOnChain.Address;
             }
             catch
             {   
@@ -138,7 +131,7 @@ namespace CrypticPay.Services
         }
 
         // signs crypto transaction on server before broadcasting to network
-        public string SignTransactionLocally(string pubAddress)
+        public string SignTransactionLocally(string pubAddress, Data.Transaction tx)
         {   
             var transactionString = "";
             var transactionBuilder = Network.Main.CreateTransactionBuilder();
@@ -147,21 +140,27 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
-        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, bool isTestnet=false)
+        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, bool isTestnet=false, string mnemonic="")
         {
             // increment index, so we can generate new address from extended key
 
             int indexAddy = 0;
-            if (currWallet.AddressOnChain != null)
+            string words;
+            Mnemonic mnemo;
+
+
+            if (currWallet != null && currWallet.AddressOnChain != null)
             {
                 indexAddy = currWallet.AddressOnChain.Index + 1;
+                words = DecryptMnemonic(currWallet.WalletKryptik.Owner);
             }
-            
-     
+            else
+            {
+                words = mnemonic;
+            }
 
-            var words = DecryptMnemonic(currWallet.WalletKryptik.Owner);
-            var mnemo = new Mnemonic(words,
-                Wordlist.English);
+
+            mnemo = new Mnemonic(words, Wordlist.English);
 
             var seed = mnemo.DeriveSeed();
 
@@ -170,11 +169,14 @@ namespace CrypticPay.Services
             if(coin.Ticker == "ETH")
             {
                 // we do not need to case for testnet here as eth address is cross network compatible
-                var ethAccount = new Nethereum.HdWallet.Wallet(seed).GetAccount(indexAddy);
+                var ethWallet = new Nethereum.HdWallet.Wallet(seed);
+                var ethAccount = ethWallet.GetAccount(indexAddy);
+                var xpub = ethWallet.GetMasterExtPubKey();
                 return new BlockchainAddress()
                 {
                     Address = ethAccount.Address,
-                    Index = indexAddy
+                    Index = indexAddy,
+                    XpubMaster = xpub.ToString()
                 };
             }
 
@@ -226,6 +228,8 @@ namespace CrypticPay.Services
                         break;
 
                     case "BCH":
+                        // bch does NOT support segregated witness addresses as of 9-17-21
+                        isSegwit = false;
                         network = NBitcoin.Altcoins.BCash.Instance.Mainnet;
                         break;
 
@@ -249,12 +253,20 @@ namespace CrypticPay.Services
             var addy = pubKeyK.PubKey.GetAddress(keyType, network);
 
             return new BlockchainAddress()
-            {
+            {   
+
                 Address = addy.ToString(),
-                Index = indexAddy
+                Index = indexAddy,
+                XpubMaster = masterPubKey.PubKey.ToString()
             };
 
         }
+
+        public bool IsValidResponse(Tatum.Model.Responses.Address responseAddy, BlockchainAddress localAddy)
+        {
+            return localAddy.Address == responseAddy.BlockchainAddress;
+        }
+
 
 
         public async Task<Globals.Status> CreateWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins, bool isTestNet = false)
@@ -262,13 +274,19 @@ namespace CrypticPay.Services
             var mnemonic = GenerateMnemonic();
 
 
-            var wallBtc = Tatum.Wallet.Create(Tatum.Model.Currency.BTC, mnemonic, testnet: isTestNet);
-            var wallBch = Tatum.Wallet.Create(Tatum.Model.Currency.BCH, mnemonic, testnet: isTestNet);
-            var wallEth = Tatum.Wallet.Create(Tatum.Model.Currency.ETH, mnemonic, testnet: isTestNet);
-            var wallLtc = Tatum.Wallet.Create(Tatum.Model.Currency.LTC, mnemonic, testnet: isTestNet);
-                      
-            
+            // create blockchain data for each wallet
+            var btc = Utils.FindCryptoByTicker("BTC", contextCoins);
+            var bch = Utils.FindCryptoByTicker("BCH", contextCoins);
+            var eth = Utils.FindCryptoByTicker("ETH", contextCoins);
+            var ltc = Utils.FindCryptoByTicker("LTC", contextCoins);
 
+            // currency wallet is null, as kryptik wallet has yet to be created
+            var chainDataBtc = CreateAddress(null, btc, isTestNet, mnemonic);
+            var chainDataBch = CreateAddress(null, bch, isTestNet, mnemonic);
+            var chainDataEth = CreateAddress(null, eth, isTestNet, mnemonic);
+            var chainDataLtc = CreateAddress(null, ltc, isTestNet, mnemonic);
+
+            // create customer which will be connection between seperate tatum accounts
             var customer = new Tatum.Model.Requests.CreateCustomer()
             {
                 AccountingCurrency = "USD",
@@ -277,86 +295,101 @@ namespace CrypticPay.Services
 
             // uncomment below for batch account creation
 
-/*            var accountsToCreate = new List<Tatum.Model.Requests.CreateAccount>();
+            var accountsToCreate = new List<Tatum.Model.Requests.CreateAccount>();
 
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Xpub = wallBtc.XPub, Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Xpub = wallBch.XPub, Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer });
+            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer });
+            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
+            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
+            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer });
 
-        
-            var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);*/
 
-            var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Xpub = wallBtc.XPub, Customer = customer});
+            var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);
+
+            /*var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer});
             
-            var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Xpub = wallBch.XPub, Customer = customer });
-            var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Xpub = wallEth.XPub, Customer = customer });
-            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Xpub = wallLtc.XPub, Customer = customer});
+            var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
+            var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
+            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer});*/
 
-            var rand = new Random(); 
+            var btcAccount = accountsCreated[0];
+            var bchAccount = accountsCreated[1];
+            var ethAccount = accountsCreated[2];
+            var ltcAccount = accountsCreated[3];
+
 
             user.WalletKryptik = new Data.Wallet();
-            var key = new Key();
+
+            // comment below is format for generating local addy with tatum
+            // var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
 
 
-            // comment below is format for generating local addy
-            var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
-            
-            var btcAddressReq = await _tatumClient.GenerateDepositAddress(btcAccount.Id, 89);
-            
-            
-
-            var btcAddress = btcAddressReq.BlockchainAddress;
+            var respBtcAddy = await _tatumClient.AssignDepositAddress(btcAccount.Id, chainDataBtc.Address);
+            // ensure deposit address is same on Tatum 
+            if (!IsValidResponse(respBtcAddy, chainDataBtc)){
+                throw new Exception("Error: Remote and local deposit addresses are not the same.");
+            };  
+            var btcAddress = chainDataBtc.Address;
             var btcQr = Utils.QrForWebGenerator(btcAddress);
             var currencyWalletBtc = new CurrencyWallet()
             {
                 AccountId = btcAccount.Id,
                 CoinId = Utils.FindCryptoByName("Bitcoin", contextCoins).Id,
-                Xpub = wallBtc.XPub,
-                DepositAddress = btcAddress,
+                AddressOnChain = chainDataBtc,
                 DepositQrBlockchain = btcQr,
                 WalletKryptik = user.WalletKryptik,
                 CreationTime = DateTime.Now
             };
 
-            var bchAddressReq = await _tatumClient.GenerateDepositAddress(ltcAccount.Id, 89);
-            var bchAddress = bchAddressReq.BlockchainAddress;
+            var respBchAddy = await _tatumClient.AssignDepositAddress(bchAccount.Id, chainDataBch.Address);
+            // ensure deposit address is same on Tatum 
+            if (!IsValidResponse(respBchAddy, chainDataBch))
+            {
+                throw new Exception("Error: Remote and local deposit addresses are not the same.");
+            };
+            var bchAddress = chainDataBtc.Address;
             var bchQr = Utils.QrForWebGenerator(bchAddress);
             var currencyWalletBch = new CurrencyWallet()
             {
                 AccountId = bchAccount.Id,
                 CoinId = Utils.FindCryptoByName("Bitcoin Cash", contextCoins).Id,
-                Xpub = wallBch.XPub,
-                DepositAddress = bchAddress,
+                AddressOnChain = chainDataBch,
                 DepositQrBlockchain = bchQr,
                 WalletKryptik = user.WalletKryptik,
                 CreationTime = DateTime.Now
             };
 
-            var ethAddressReq = await _tatumClient.GenerateDepositAddress(ethAccount.Id, 89);
-            var ethAddress = ethAddressReq.BlockchainAddress;
+            var respEthcAddy = await _tatumClient.AssignDepositAddress(ethAccount.Id, chainDataEth.Address);
+            // ensure deposit address is same on Tatum 
+            if (!IsValidResponse(respBtcAddy, chainDataBtc))
+            {
+                throw new Exception("Error: Remote and local deposit addresses are not the same.");
+            };
+            var ethAddress = chainDataEth.Address;
             var ethQr = Utils.QrForWebGenerator(ethAddress);
             var currencyWalletEth = new CurrencyWallet()
             {
                 AccountId = ethAccount.Id,
                 CoinId = Utils.FindCryptoByName("Ethereum", contextCoins).Id,
-                Xpub = wallEth.XPub,
-                DepositAddress = ethAddress,
+                AddressOnChain = chainDataEth,
                 DepositQrBlockchain = ethQr,
                 WalletKryptik = user.WalletKryptik,
                 CreationTime = DateTime.Now
             };
 
-            var ltcAddressReq = await _tatumClient.GenerateDepositAddress(ltcAccount.Id, 89);
-            var ltcAddress = ltcAddressReq.BlockchainAddress;
+            var respLtcAddy = await _tatumClient.AssignDepositAddress(ltcAccount.Id, chainDataLtc.Address);
+            // ensure deposit address is same on Tatum 
+            if (!IsValidResponse(respLtcAddy, chainDataLtc))
+            {
+                throw new Exception("Error: Remote and local deposit addresses are not the same.");
+            };
+            var ltcAddress = chainDataBtc.Address;
             var ltcQr = Utils.QrForWebGenerator(ltcAddress);
 
             var currencyWalletLtc = new CurrencyWallet()
             {
                 AccountId = ltcAccount.Id,
                 CoinId = Utils.FindCryptoByName("Litecoin", contextCoins).Id,
-                Xpub = wallLtc.XPub,
-                DepositAddress = ltcAddress,
+                AddressOnChain = chainDataLtc,
                 DepositQrBlockchain = ltcQr,
                 WalletKryptik = user.WalletKryptik,
                 CreationTime = DateTime.Now

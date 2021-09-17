@@ -114,6 +114,17 @@ namespace CrypticPay.Areas.Payments
             var currUser = _walletHandler.GetUserandWallet(userId, _context);
             var coinToSend = Utils.FindCryptoByName(Input.CoinName, _contextCoins);
 
+            var tx = new Transaction()
+            {
+                UserFrom = currUser,
+                Amount = Input.Amount,
+                CoinId = coinToSend.Id,
+                // update to reflect actual values
+                PrivacyLevel = Privacy.Public,
+                BroadcastType = BroadCast.Offchain,
+                StatusCurrent = Status.Pending
+            };
+
             
             
 

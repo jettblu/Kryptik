@@ -4,14 +4,16 @@ using CrypticPay.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CrypticPay.Migrations
 {
     [DbContext(typeof(CrypticPayContext))]
-    partial class CrypticPayContextModelSnapshot : ModelSnapshot
+    [Migration("20210917203831_switch xpub loc")]
+    partial class switchxpubloc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
