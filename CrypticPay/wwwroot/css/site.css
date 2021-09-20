@@ -621,3 +621,42 @@ a {
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
 }
+
+/**** Progress Style ****/
+
+.Progressbar {
+    position: relative;
+    margin-top: 22px;
+    height: 32px;
+    border-radius: 1000px;
+    background-color: #484848;
+    clip-path: inset(0 0 0 0 round 1000px);
+}
+
+.Progressbar__value {
+    height: 32px;
+    transition: width 0.4s ease-in-out;
+    border-radius: 1000px 0 0 1000px;
+    background-color: #12c0ff;
+    will-change: width;
+}
+
+.Progressbar > progress {
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    pointer-events: none;
+}
+
+/**** Flow btn Style ****/
+
+.btn-flow {
+    color: #fff;
+    background-color: #c4c4c4;
+    border-color: #52b4ff;
+}
+
+    .btn-flow:hover {
+        background-color: #5eff99;
+    }
