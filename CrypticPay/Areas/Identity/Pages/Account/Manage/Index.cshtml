@@ -15,8 +15,9 @@
         <div class="row">
 
             <form id="profile-form" method="post" asp-page-handler="UpdateBasicDetails">
+                
 
-                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                <div class="card hoverable horizontal col l4 s12 offset-l1">
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s12">
@@ -27,7 +28,8 @@
                     </div>
                 </div>
 
-                <div class="card hoverable horizontal col l4 s12 offset-l2 ">
+                <div class="card hoverable horizontal col l4 s12 offset-l2">
+                    
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s12">
@@ -43,7 +45,8 @@
             <div class="row">
 
 
-                <div class="card hoverable horizontal col l4 s12 offset-l1 ">
+                <div class="card hoverable horizontal col l4 s12 offset-l1">
+                    
                     <div class="row">
                         <form id="number-form" method="post" asp-page-handler="UpdatePhoneDetails">
                             <div class="row">
@@ -71,10 +74,11 @@
 
 
 
-                <div class="card hoverable horizontal col l4 s12 offset-l2 ">
+                <div class="card hoverable horizontal col l4 s12 offset-l2">
+                    
                     <div class="row">
-                        <form id="email-form" method="post" method="post" asp-page-handler="ChangeEmail">
-                            <div class="col s12">
+                        <form id="email-form" method="post" asp-page-handler="ChangeEmail">
+                            <div class="col s12 input-field">
                                 <label asp-for="Input.NewEmail"></label>
                                 @if (Model.IsEmailConfirmed)
                                 {
@@ -99,7 +103,8 @@
 
             <div class="row">
 
-                <div class="card horizontal hoverable col l4 s12 offset-l1 ">
+                <div class="card horizontal hoverable col l4 s12 offset-l1">
+
                     <div class="row">
 
                         <div class="row">

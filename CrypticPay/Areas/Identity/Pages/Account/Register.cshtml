@@ -6,73 +6,131 @@
 
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
-<center>
+<div class="row">
 
-    <h4>Payments made <span class="change-text">easy</span></h4>
-    <div class="row">
-        <div class="card horizontal hoverable col l6 s10 offset-l3 offset-s1" style="border-radius: 25px 25px 25px 25px">
+    <div class="s12 hide-on-large-only center">
+        <img src="~/Media/kryptikWall.jpg" style="width: 180px;" />
+    </div>
 
-            <div class="row card-content">
-                <h5>Register</h5>
-                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div class="col offset-l2 l4 s10 offset-s1">
 
+        <div id="flowContainer">
 
-                    <div class="row">
-                        <div class="input-field col s5">
-                            <label for="user" type="text" asp-for="Input.UserName"><i class="tiny material-icons">person_outline</i> Cryptic Tag</label>
-                            <input id="user" type="text" asp-for="Input.UserName" class="form-control" />
-                        </div>
-                        <div class="input-field col s7">
-                            <label for="user" type="text" asp-for="Input.FullName"><i class="tiny material-icons">person</i> Name</label>
-                            <input id="user" type="text" asp-for="Input.FullName" class="form-control" />
-                        </div>
-                    </div>
-
-                   
-
-                    <div class="row">
-                        <div class="col s5">
-                            <label for="country" asp-for="Input.PhoneNumberCountryCode"><i class="tiny material-icons">flag</i> Country</label>
-                            <select id="country" class="browser-default" asp-for="Input.PhoneNumberCountryCode" asp-items="Model.AvailableCountries">
-                            </select>
-
-                        </div>
-                        <div class="input-field col s7">
-                            <label for="number" asp-for="Input.PhoneNumber"><i class="tiny material-icons">phonelink_ring</i> Mobile</label>
-                            <input id="number" type="text" asp-for="Input.PhoneNumber" class="form-control" onkeydown="return keyispressed(event)" />
-
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="pword-field col l12 s12">
-                            <label for="pword" asp-for="Input.Password"><i class="tiny material-icons">lock_outline</i> Password</label>
-                            <input id="pword" type="password" asp-for="Input.Password" class="form-control" />
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="pword-field col l12 s12">
-                            <label for="pwordConfirm" asp-for="Input.ConfirmPassword"><i class="tiny material-icons">lock</i> Confirm Password</label>
-                            <input id="pwordConfirm" type="password" asp-for="Input.ConfirmPassword" class="form-control" />
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <!-- toggle between password visibility -->
-                    <div class="row">
-                        <div class="col s6">
-                            <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword()" id="show">
-                            <label for="show">Show</label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </form>
+            <div id="introContainer">
+                <h1 class="heading textGradientBlue" style="margin-bottom: 3px;">A crypto wallet for everyone.</h1>
+                <h1 class="subHeading" style="margin-top: 0px;">Send crypto to anyone, anywhere, at anytime.</h1>
+                <a id="btnRegister" class="btn btn-search">Get Started →</a>
             </div>
+
+            <div id="stepContainer" hidden>
+
+                <div class="row">
+                    <div class="card horizontal hoverable col l12  rounded ">
+                        <div class="row card-content">
+                            <h5>Register</h5>
+
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+
+                                <div id="stepFormContainer">
+
+                                    <div id="nameStep" class="row step" hidden>
+
+                                        <div class="input-field col l12 ">
+                                            <label for="user" type="text" asp-for="Input.UserName"><i class="tiny material-icons">person_outline</i> Cryptic Tag</label>
+                                            <input id="user" type="text" asp-for="Input.UserName" class="form-control" />
+                                        </div>
+                                        <div class="input-field col l12 ">
+                                            <label for="user" type="text" asp-for="Input.FullName"><i class="tiny material-icons">person</i> Name</label>
+                                            <input id="user" type="text" asp-for="Input.FullName" class="form-control" />
+                                        </div>
+
+                                    </div>
+
+
+                                    <div id="numberStep" class="row step" hidden>
+                                        <div class="col s5">
+                                            <label for="country" asp-for="Input.PhoneNumberCountryCode"><i class="tiny material-icons">flag</i> Country</label>
+                                            <select id="country" class="browser-default" asp-for="Input.PhoneNumberCountryCode" asp-items="Model.AvailableCountries">
+                                            </select>
+
+                                        </div>
+                                        <div class="input-field col s7">
+                                            <label for="number" asp-for="Input.PhoneNumber"><i class="tiny material-icons">phonelink_ring</i> Mobile</label>
+                                            <input id="number" type="text" asp-for="Input.PhoneNumber" class="form-control" onkeydown="return keyispressed(event)" />
+                                        </div>
+                                    </div>
+
+
+                                    <div id="pwordStep" class="step" hidden>
+
+                                        <div class="row">
+                                            <div class="pword-field col l12 s12">
+                                                <label for="pword" asp-for="Input.Password"><i class="tiny material-icons">lock_outline</i> Password</label>
+                                                <input id="pword" type="password" asp-for="Input.Password" class="form-control" />
+                                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="pword-field col l12 s12">
+                                                <label for="pwordConfirm" asp-for="Input.ConfirmPassword"><i class="tiny material-icons">lock</i> Confirm Password</label>
+                                                <input id="pwordConfirm" type="password" asp-for="Input.ConfirmPassword" class="form-control" />
+                                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- toggle between password visibility -->
+                                        <div class="row">
+                                            <div class="col s6">
+                                                <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword()" id="show">
+                                                <label for="show">Show</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+
+                                <div id="btnContainer" class="row">
+                                    <a id="btnBack" class="btnStep btn btn-flow rounded col s5">← Back</a>
+                                    <a id="btnNext" data-step="0" class="btnStep btn btn-flow col s5 offset-s2 rounded">Next →</a>
+                                    <a id="btnSubmit" class="btn btn-glow col s6 offset-s1">Register</a>
+                                </div>
+
+
+                                <div id="progressContainer">
+                                    <div class="Progressbar">
+                                        <div class="Progressbar__value"></div>
+                                        <progress value="70" max="100">100%</progress>
+                                    </div>
+                                </div>
+
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
         </div>
-</center>
+
+
+
+    </div>
+
+    <div class="col l6 s12 hide-on-med-and-down">
+        <img src="~/Media/kryptikWall.jpg" style="width: 180px;" />
+        <h6 style="padding-left: 20px;">Payments made <span class="change-text">easy</span></h6>
+    </div>
+
+
+</div>
 
 <script src="~/js/registerManager.js"></script>
 <script src="~/js/changeText.js"></script>

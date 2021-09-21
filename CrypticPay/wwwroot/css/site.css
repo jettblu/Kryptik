@@ -626,15 +626,15 @@ a {
 
 .Progressbar {
     position: relative;
-    margin-top: 22px;
-    height: 22px;
+    margin-top: 20px;
+    height: 20px;
     border-radius: 1000px;
-    background-color: #484848;
+    background-color: #f0f0f0;
     clip-path: inset(0 0 0 0 round 1000px);
 }
 
 .Progressbar__value {
-    height: 22px;
+    height: 20px;
     transition: width 0.4s ease-in-out;
     border-radius: 1000px 0 0 1000px;
     background-color: #12c0ff;
@@ -660,4 +660,19 @@ a {
 
     .btn-flow:hover {
         background-color: #5eff99;
+    }
+
+.btn-glow {
+    color: white;
+    background-color: #46c4fa;
+    box-shadow: 0 0 2px 2px #fff, /* inner white */
+    0 0 4px 4px #46c4fa; /* middle blue */
+}
+
+    .btn-glow:hover {
+        color: white;
+        background-color: #46c4fa;
+        box-shadow: 0 0 2px 2px #fff, /* inner white */
+        0 0 4px 4px #46c4fa, /* middle magenta */
+        0 0 12px 6px #6afc79; /* outer cyan */
     }

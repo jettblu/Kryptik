@@ -64,9 +64,9 @@ function setValue(value) {
     progress.value = value;
 }
 
+
 var showName = function () {
     $("#nameStep").show();
-    console.log("show name hit");
 }
 
 var showNumber = function () {
@@ -79,18 +79,16 @@ var showPass = function () {
 
 // hide all sections
 var hideSteps = function () {
-    console.log("Hiding steps.");
-    $(".step").hide();
+    $(".step").hide("slow");
 };
 
 
 
 var resetFlow = function () {
     hideSteps();
-    console.log("reset flow");
-    $("#introContainer").show();
-    $("#stepContainer").hide();
-    $("#progressContainer").hide();
+    $("#introContainer").show(2200);
+    $("#stepContainer").hide("slow");
+    $("#progressContainer").hide("slow");
     $(".btnStep").hide();
     $("#btnNext").data("step", "0");
 }
@@ -100,9 +98,10 @@ var flow = function () {
     var step = $("#btnNext").data("step");
     var stepContainer = $("#stepContainer");
     var progressContainer = $("#progressContainer");
-    console.log(step);
-    hideSteps();
-    console.log($(this).attr("id"));
+    if (step != "0") {
+        hideSteps();
+    }
+
     if ($(this).attr("id") == "btnBack") {
         if (step == "1") {
             resetFlow();
@@ -116,6 +115,7 @@ var flow = function () {
 
         else if (step == "3") {
             showNumber();
+            $("#btnSubmit").hide();
             $("#btnNext").data("step", "2");
             $("#btnNext").show();
             setValue(50);
@@ -124,8 +124,9 @@ var flow = function () {
     else {
         if (step == "0") {
             // case where register button is clicked
-            $("#introContainer").hide();
-            stepContainer.show();
+            $("#btnSubmit").hide();
+            $("#introContainer").hide("fast");
+            stepContainer.show("fast");
             showName();
             progressContainer.show();
             $(".btnStep").show();
@@ -143,6 +144,7 @@ var flow = function () {
             showPass();
             $("#btnNext").data("step", "3");
             $("#btnNext").hide();
+            $("#btnSubmit").show();
             setValue(75);
         }
 
@@ -158,3 +160,7 @@ var flow = function () {
 $('.btnStep').on('click', flow);
 
 $('#btnRegister').on('click', flow);
+
+$("#btnSubmit").click(function () {
+    $("#registerForm").submit();
+});
