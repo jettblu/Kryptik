@@ -52,3 +52,109 @@ function formatUSNumber(entry = '') {
     const part3 = match.length > 6 ? `-${match.substring(6, 10)}` : ''
     return `${part1}${part2}${part3}`
 }
+
+
+
+const input = document.getElementById('value')
+const progressValue = document.querySelector('.Progressbar__value');
+const progress = document.querySelector('progress');
+
+function setValue(value) {
+    progressValue.style.width = `${value}%`;
+    progress.value = value;
+}
+
+var showName = function () {
+    $("#nameStep").show();
+    console.log("show name hit");
+}
+
+var showNumber = function () {
+    $("#numberStep").show();
+};
+
+var showPass = function () {
+    $("#pwordStep").show();
+};
+
+// hide all sections
+var hideSteps = function () {
+    console.log("Hiding steps.");
+    $(".step").hide();
+};
+
+
+
+var resetFlow = function () {
+    hideSteps();
+    console.log("reset flow");
+    $("#introContainer").show();
+    $("#stepContainer").hide();
+    $("#progressContainer").hide();
+    $(".btnStep").hide();
+    $("#btnNext").data("step", "0");
+}
+
+var flow = function () {
+    console.log("Flow initiated");
+    var step = $("#btnNext").data("step");
+    var stepContainer = $("#stepContainer");
+    var progressContainer = $("#progressContainer");
+    console.log(step);
+    hideSteps();
+    console.log($(this).attr("id"));
+    if ($(this).attr("id") == "btnBack") {
+        if (step == "1") {
+            resetFlow();
+        }
+
+        else if (step == "2") {
+            showName();
+            $("#btnNext").data("step", "1");
+            setValue(25);
+        }
+
+        else if (step == "3") {
+            showNumber();
+            $("#btnNext").data("step", "2");
+            $("#btnNext").show();
+            setValue(50);
+        };
+    }
+    else {
+        if (step == "0") {
+            // case where register button is clicked
+            $("#introContainer").hide();
+            stepContainer.show();
+            showName();
+            progressContainer.show();
+            $(".btnStep").show();
+            $("#btnNext").data("step", "1");
+            setValue(25);
+        }
+
+        else if (step == "1") {
+            showNumber();
+            $("#btnNext").data("step", "2");
+            setValue(50);
+        }
+
+        else if (step == "2") {
+            showPass();
+            $("#btnNext").data("step", "3");
+            $("#btnNext").hide();
+            setValue(75);
+        }
+
+        else {
+            // add logic for form submission
+            hideSteps();
+        };
+    }
+
+
+};
+
+$('.btnStep').on('click', flow);
+
+$('#btnRegister').on('click', flow);
