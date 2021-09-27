@@ -170,8 +170,13 @@ namespace CrypticPay.Services
             {
                 // we do not need to case for testnet here as eth address is cross network compatible
                 var ethWallet = new Nethereum.HdWallet.Wallet(seed);
-                var ethAccount = ethWallet.GetAccount(indexAddy);
+
+                var acc = new Account(seed, Nethereum.Signer.Chain.MainNet);
                 var xpub = ethWallet.GetMasterExtPubKey();
+
+                var ethAccount = ethWallet.GetAccount(indexAddy);
+                
+               
                 return new BlockchainAddress()
                 {
                     Address = ethAccount.Address,
@@ -295,26 +300,28 @@ namespace CrypticPay.Services
 
             // uncomment below for batch account creation
 
-            var accountsToCreate = new List<Tatum.Model.Requests.CreateAccount>();
+            /* var accountsToCreate = new List<Tatum.Model.Requests.CreateAccount>();
 
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
-            accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer });
+             accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer });
+             accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
+             accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
+             accountsToCreate.Add(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer });
 
 
-            var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);
+             var accountsCreated = await _tatumClient.CreateAccounts(accountsToCreate);*/
 
-            /*var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer});
-            
-            var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
-            var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
-            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer});*/
-
-            var btcAccount = accountsCreated[0];
+            /* var btcAccount = accountsCreated[0];
             var bchAccount = accountsCreated[1];
             var ethAccount = accountsCreated[2];
-            var ltcAccount = accountsCreated[3];
+            var ltcAccount = accountsCreated[3];*/
+
+            var btcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BTC", Customer = customer });
+
+            var bchAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "BCH", Customer = customer });
+            var ethAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "ETH", Customer = customer });
+            var ltcAccount = await _tatumClient.CreateAccount(new Tatum.Model.Requests.CreateAccount() { AccountingCurrency = "USD", Compliant = true, Currency = "LTC", Customer = customer });
+
+           
 
 
             user.WalletKryptik = new Data.Wallet();

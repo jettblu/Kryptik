@@ -19,7 +19,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-    <PackageReference Include="NBitcoin.Altcoins" Version="3.0.7" />
+    <PackageReference Include="NBitcoin" Version="5.0.61" />
     <PackageReference Include="Nethereum.HdWallet" Version="4.0.5" />
     <PackageReference Include="Nethereum.Web3" Version="4.0.5" />
     <PackageReference Include="QRCoder" Version="1.4.1" />

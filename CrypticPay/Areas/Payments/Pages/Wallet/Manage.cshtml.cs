@@ -66,6 +66,7 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             var currUser = _walletHandler.GetUserandWallet(userId, _context);
               // wait for wallet to be created
                 var response = await _walletHandler.CreateWallet(currUser, _contextCoins);
+              
                 // Ensure user's wallet changes are saved
                 currUser.WalletKryptikExists = true;
                 await _userManager.UpdateAsync(currUser);
