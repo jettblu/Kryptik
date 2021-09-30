@@ -38,45 +38,6 @@ Two factor authentication
 * Multisig
 * Automated Exchange Integration
 
-## Timeline
-*October 10th*
-
-Enable Transactions (Onchain and Offchain)
-
-Add currency metadata
- 
-*October 17th*
-
-Allow users to mint NFTs 
- 
-*October 24th*
-
-Create a feed for NFTs, enable auctions
- 
-*October 31st*
-
-Test and retest security/ efficacy
- 
-*November 7th*
-
-Integrate with exchanges
- 
-*November 14th*
-
-Improve UX
- 
-*November 21st*
-
-Set up Azure KMS, publish
- 
-*Onwards*
-
-Beta testing, public release
-
-Artist Sponsorships, NFT airdrops
-
-Bonus: Encrypted messaging (DMs) and Multisig
-
 ## Tech. Stack
 Backend: C#
 
