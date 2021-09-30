@@ -1,5 +1,6 @@
 # Kryptik
 
+
 A little bit about what Kryptik is and why it exists.
 
 ## Table of contents
@@ -8,6 +9,8 @@ A little bit about what Kryptik is and why it exists.
 * [Novelty](#novelty)
 * [Technical Details](#technical-details)
 * [Stack](#tech.-stack)
+
+![Wallet Page screenshot](https://jetthays.com/media/external/kryptikPage.PNG)
 
 
 ## What
@@ -49,4 +52,4 @@ Blockchain Infrastructure: Tatum
 
 
 
-![Wallet Page screenshot](https://jetthays.com/media/external/kryptikPage.PNG)
+
