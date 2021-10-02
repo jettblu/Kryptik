@@ -8,7 +8,7 @@ A little bit about what Kryptik is and why it exists.
 * [Value](#value)
 * [Novelty](#novelty)
 * [Technical Details](#technical-details)
-* [Stack](#tech.-stack)
+* [Stack](#tech-stack)
 
 ![Wallet Page screenshot](https://jetthays.com/media/external/kryptikPage.PNG)
 
@@ -41,7 +41,7 @@ Two factor authentication
 * Multisig
 * Automated Exchange Integration
 
-## Tech. Stack
+## Tech Stack
 Backend: C#
 
 Front end: Razor, Javascript, Ajax, CSS
