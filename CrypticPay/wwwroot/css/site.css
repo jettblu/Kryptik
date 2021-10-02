@@ -678,11 +678,13 @@ a {
     }
 
 .btn-file {
-    color: white;
-    background-color: #00ff99;
+    color: black;
+    background-color: white;
+    border-width: thin;
+    border-color: #00ff99;
 }
 
 .btn-file:hover {
-     color: white;
-     background-color: #00e673;
+        color: white;
+        background-color: #00e673;
 }

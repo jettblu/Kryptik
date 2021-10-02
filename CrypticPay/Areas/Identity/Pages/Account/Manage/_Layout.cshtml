@@ -1,8 +1,5 @@
-﻿@inject UserManager<CrypticPayUser> UserManager
-
-
+﻿
 @{
-    var userInfo = UserManager.GetUserAsync(User).Result;
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
     {
         Layout = (string)parentLayout;
@@ -13,17 +10,13 @@
     }
 }
 
-<center>
-    <a class="center">
-        <img src="@userInfo.ProfilePhotoPath" alt="" class="circle profilePhoto">
-    </a>
-    <p class="profileFullName">@userInfo.Name</p>
-    <p class="profileUserName">@userInfo.UserName</p>
-</center>
+<partial name="_profilePhoto"/>
 
 <div>
     @RenderBody()
 </div>
+
+
 
 @section Scripts {
     @RenderSection("Scripts", required: false)

@@ -1,0 +1,24 @@
+﻿@inject UserManager<CrypticPayUser> UserManager
+
+
+@{
+    var userInfo = UserManager.GetUserAsync(User).Result;
+}
+
+
+<center>
+    <a class="center" id="avaUpload" asp-page="ProfilePhoto">
+        <img src="@userInfo.ProfilePhotoPath" alt="profile phtoto" class="circle profilePhoto">
+    </a>
+    <p class="profileFullName">@userInfo.Name</p>
+    <p class="profileUserName">@userInfo.UserName</p>
+
+    @*<form method="post" class="col s12" enctype="multipart/form-data" action="Manage/ProfilePhoto" style="display:none">
+        <input type="file" asp-for="Input.NewPhoto" style="display:none" id="avaUpload" accept="image/png, image/jpeg" onchange="form.submit()">
+    </form>*@
+</center>
+
+
+@*<script>
+    $('#avatar').click(function () { $('#avaUpload').trigger('click'); });
+</script>*@
