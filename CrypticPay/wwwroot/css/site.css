@@ -676,3 +676,13 @@ a {
         0 0 4px 4px #46c4fa, /* middle magenta */
         0 0 12px 6px #6afc79; /* outer cyan */
     }
+
+.btn-file {
+    color: white;
+    background-color: #00ff99;
+}
+
+.btn-file:hover {
+     color: white;
+     background-color: #00e673;
+}

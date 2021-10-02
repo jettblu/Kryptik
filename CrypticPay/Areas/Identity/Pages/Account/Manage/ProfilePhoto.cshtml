@@ -5,18 +5,18 @@
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
 <center>
 
     <div class="row">
-        <div class="card horizontal hoverable col l8 s12 offset-l2 " style="border-radius: 25px 25px 25px 25px">
+        <div class="card horizontal hoverable col l6 s10 offset-s1 offset-l3 " style="border-radius: 25px 25px 25px 25px">
             <div class="row">
+                <h5>Update Avatar</h5>
                 <form method="post" class="col s12" enctype="multipart/form-data">
                     <div class="row">
                         <div class="file-field input-field">
-                            <div class="btn green">
+                            <div class="btn btn-file">
                                 <span>File</span>
                                 <input type="file" asp-for="Input.NewPhoto">
                             </div>

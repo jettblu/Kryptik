@@ -1,5 +1,6 @@
 ﻿@inject UserManager<CrypticPayUser> UserManager
 
+
 @{
     var userInfo = UserManager.GetUserAsync(User).Result;
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
@@ -13,7 +14,7 @@
 }
 
 <center>
-    <a class="center modal-trigger" href="#modalAvatar">
+    <a class="center">
         <img src="@userInfo.ProfilePhotoPath" alt="" class="circle profilePhoto">
     </a>
     <p class="profileFullName">@userInfo.Name</p>
@@ -46,7 +47,7 @@
 
 
 <!--Avatar Modal Structure -->
-<div id="modalAvatar" class="modal hoverable">
+<!--<div id="modalAvatar" class="modal hoverable">
 
 
     <form method="post" class="col s12" enctype="multipart/form-data" action="Manage/ProfilePhoto">
@@ -56,7 +57,7 @@
             <div class="file-field input-field col s10 offset-s1 l8 offset-l2">
                 <div class="btn green">
                     <span>File</span>
-                    <input type="file" @*asp-for="Input.NewPhoto"*@>
+                    <input type="file" asp-for="model.">
                 </div>
                 <div class="file-path-wrapper">
                     <input type="text" class="file-path" placeholder="Choose an image" accept="image/png, image/jpeg">
@@ -68,5 +69,5 @@
         </div>
     </form>
 
-</div>
+</div>-->
 
