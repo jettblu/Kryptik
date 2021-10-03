@@ -28,6 +28,10 @@
                     <div class="card horizontal hoverable col l12  rounded ">
                         <div class="row card-content">
                             <h5>Register</h5>
+                            <form id="sendForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="handleSend" asp-page-handler="SendPhone">
+                                <input id="phoneNumberSend" asp-for="SendMod.PhoneNumber" type="hidden" />
+                                <input id="phoneCountrySend" asp-for="SendMod.PhoneNumberCountryCode" type="hidden" />
+                            </form>
 
                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 
@@ -57,7 +61,17 @@
                                         <div class="input-field col s7">
                                             <label for="number" asp-for="Input.PhoneNumber"><i class="tiny material-icons">phonelink_ring</i> Mobile</label>
                                             <input id="number" type="text" asp-for="Input.PhoneNumber" class="form-control" onkeydown="return keyispressed(event)" />
+                                            <a style="text-align: right; display: block; padding-right: 2px;" id="confirmPhone">Confirm</a>
                                         </div>
+                                        <div id="phoneCode">
+                                            <div class="input-field offset-s5 col s7">
+                                                <label for="codeInput" asp-for="Input.VerificationCode"><i class="tiny material-icons">phonelink_ring</i>Code</label>
+                                                <input type="text" data-confirmed="false" asp-for="Input.VerificationCode" id="codeInput" placeholder="012345" onkeyup="codeChanged(event)" class="form-control" />
+                                            </div>
+                                            <a style="text-align: right; display:block; padding-right: 4px;" id="resetPhone">Reset</a>
+
+                                        </div>
+
                                     </div>
 
 

@@ -1,5 +1,4 @@
-﻿
-function showPassword() {
+﻿function showPassword() {
     var pwordDisplay = document.getElementById("pword");
     var pwordConfirmDisplay = document.getElementById("pwordConfirm");
     if (pwordDisplay.type === "password") {
@@ -14,6 +13,11 @@ function showPassword() {
 
 
 function keyispressed(e) {
+
+    if (e.shiftKey) {
+        return false;
+    };
+
     var charval = String.fromCharCode(e.keyCode);
     // allow backspace and decimal
     if (e.keyCode == 8 || e.keyCode == 110) {
@@ -27,32 +31,12 @@ function keyispressed(e) {
     return true;
 }
 
-
-
-$("#number").keyup(function () {
-
-    var number = $("#number").val();
-    var countryCode = $("#country").val();
-    console.log(number);
-    if (number.length < 13 & number.length != 0 & countryCode == "US") {
-        var formatted = formatUSNumber(number);
-        $("#number").val(formatted);
-        console.log(formatted);
+function codeChanged(e) {
+    var codeLength = $("#codeInput");
+    if (codeLength >= 6) {
+        $("#btnNext").prop("disabled", false);
     }
-
-});
-
-
-function formatUSNumber(entry = '') {
-    const match = entry
-        .replace(/\D+/g, '').replace(/^1/, '')
-        .match(/([^\d]*\d[^\d]*){1,10}$/)[0]
-    const part1 = match.length > 2 ? `(${match.substring(0, 3)})` : match
-    const part2 = match.length > 3 ? ` ${match.substring(3, 6)}` : ''
-    const part3 = match.length > 6 ? `-${match.substring(6, 10)}` : ''
-    return `${part1}${part2}${part3}`
 }
-
 
 
 const input = document.getElementById('value')
@@ -64,13 +48,14 @@ function setValue(value) {
     progress.value = value;
 }
 
-
 var showName = function () {
     $("#nameStep").show();
 }
 
 var showNumber = function () {
     $("#numberStep").show();
+    $("#confirmPhone").show();
+    $("#phoneCode").hide();
 };
 
 var showPass = function () {
@@ -82,7 +67,20 @@ var hideSteps = function () {
     $(".step").hide("slow");
 };
 
+var sendTrigger = function () {
+    $("#phoneNumberSend").val($("#phoneNumber").val());
+    $("#phoneCountrySend").val($("#country").val());
+    $("#sendForm").submit();
+}
 
+var confirmFlow = function () {
+    $("#confirmPhone").hide();
+    $("#phoneCode").val("");
+    $("#phoneCode").show("fast");
+    $("#btnNext").prop("disabled", true);
+    $("#btnNext").delay(500).show("slow");
+    $("#sendForm").submit();
+};
 
 var resetFlow = function () {
     hideSteps();
@@ -92,6 +90,18 @@ var resetFlow = function () {
     $(".btnStep").hide();
     $("#btnNext").data("step", "0");
 }
+
+var hideCode = function () {
+    if ($("#phoneCode").is(":visible")) {
+        $("#confirmPhone").show("fast");
+        $("#phoneCode").hide("fast");
+        $("#btnNext").hide("fast");
+        $("#number").val("");
+        $("#phoneCode").val("");
+    }
+}
+
+$("#number").on('change', hideCode);
 
 var flow = function () {
     console.log("Flow initiated");
@@ -108,8 +118,9 @@ var flow = function () {
         }
 
         else if (step == "2") {
-            showName();
+            showName();      
             $("#btnNext").data("step", "1");
+            $("#btnNext").show();
             setValue(25);
         }
 
@@ -117,7 +128,7 @@ var flow = function () {
             showNumber();
             $("#btnSubmit").hide();
             $("#btnNext").data("step", "2");
-            $("#btnNext").show();
+            $("#btnNext").prop("disabled", true);
             setValue(50);
         };
     }
@@ -137,6 +148,8 @@ var flow = function () {
         else if (step == "1") {
             showNumber();
             $("#btnNext").data("step", "2");
+            $("#btnNext").prop("disabled", true);
+            $("#btnNext").hide();
             setValue(50);
         }
 
@@ -161,6 +174,18 @@ $('.btnStep').on('click', flow);
 
 $('#btnRegister').on('click', flow);
 
+$('#resetPhone').on('click', hideCode)
+
 $("#btnSubmit").click(function () {
     $("#registerForm").submit();
 });
+
+$("#confirmPhone").on('click', confirmFlow)
+
+
+var handleSend = function(res) {
+    console.log("Async update initiated.")
+    console.log(res);
+    var result = res.responseJSON;
+    console.log(result);
+};

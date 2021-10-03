@@ -32,6 +32,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly CrypticPayContext _context;
+        private readonly ISmsSender _smsSender;
 
         public RegisterModel(
             UserManager<CrypticPayUser> userManager,
@@ -40,7 +41,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             IEmailSender emailSender,
             IOptions<TwilioVerifySettings> settings,
             CountryService countryService,
-            CrypticPayContext context)
+            CrypticPayContext context,
+            ISmsSender smsSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,6 +50,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _settings = settings.Value;
             _context = context;
+            _smsSender = smsSender;
             // Load the countries from the service
             AvailableCountries = countryService.GetCountries();
         }
@@ -60,12 +63,44 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public SendModel SendMod { get; set; }
+
+
+        public VerifyModel VerifyMod { get; set; }
+
         public string ReturnUrl { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+        public class SendModel
+        {
+            [Required]
+            [Phone]
+            [Display(Name = "Phone number")]
+            public string PhoneNumber { get; set; }
+
+            // The country selected by the user.
+            [Display(Name = "Phone number country")]
+            public string PhoneNumberCountryCode { get; set; }
+        }
+
+
+        public class VerifyModel
+        {
+            [Phone]
+            [Display(Name = "Phone number")]
+            public string PhoneNumber { get; set; }
+
+            // The country selected by the user.
+            [Display(Name = "Phone number country")]
+            public string PhoneNumberCountryCode { get; set; }
+
+            [Display(Name = "Code")]
+            public string VerificationCode { get; set; }
+        }
 
         public class InputModel
         {
@@ -81,6 +116,10 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Required]
+            [Display(Name = "Code")]
+            public string VerificationCode { get; set; }
 
 
             // The country selected by the user.
@@ -103,6 +142,9 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             Input = new InputModel();
+            SendMod = new SendModel();
+            VerifyMod = new VerifyModel();
+
             
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -218,16 +260,141 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                                         {
                                             await _signInManager.SignInAsync(user, isPersistent: false);
                                             return LocalRedirect(returnUrl);
-                                        }*/
+                    }*/
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        // ensure verfification code is correct
+        // returns true if verified 
+        public async Task<IActionResult> OnPostVerifyPhoneAsync()
+        {
+            try
+            {
+                /*var verification = await VerificationCheckResource.CreateAsync(
+                    to: PhoneNumber,
+                    code: VerificationCode,
+                    pathServiceSid: _settings.VerificationServiceSID
+                );*/
+                var formatresult = await FormatNumber(VerifyMod.PhoneNumber, VerifyMod.PhoneNumberCountryCode);
+                if (formatresult != Globals.Status.Done)
+                {
+                    return new JsonResult(false);
+                }
+                var verification = await _smsSender.SendVerificationAsync(PhoneNumberToSave, VerifyMod.VerificationCode);
+
+                if (verification.Status == "approved")
+                {
+                    return new JsonResult(true);
+                    /*IdentityUser.PhoneNumberConfirmed = true;
+                    var updateResult = await _userManager.UpdateAsync(IdentityUser);*/
+
+
+                    /* if (updateResult.Succeeded)
+                     {
+                         await _signInManager.SignInAsync(IdentityUser, isPersistent: true);
+                         return new JsonResult(true);
+                     }
+                     else
+                     {
+                         ModelState.AddModelError("", "There was an error confirming the verification code, please try again");
+                     }
+                 }*/
+                    /*else
+                    {
+                        ModelState.AddModelError("", $"There was an error confirming the verification code: {verification.Status}");
+                    }*/
+                }
+            }
+
+            catch (Exception)
+            {
+                ModelState.AddModelError("",
+                    "There was an error confirming the code, please check the verification code is correct and try again");
+            }
+            return new JsonResult(false);
+        }
+
+
+        // send verification code to phone
+        // returns true if succeded
+        public async Task<IActionResult> OnPostSendPhoneAsync()
+        {
+            var formatresult = await FormatNumber(SendMod.PhoneNumber, SendMod.PhoneNumberCountryCode);
+            if (formatresult != Globals.Status.Done)
+            {
+                return new JsonResult(false);
+            }
+            var sendCodeResult = await SendCode();
+            if (sendCodeResult == Globals.Status.Done) return new JsonResult(true);
+            return new JsonResult(false);
+            
+        }
+
+
+        public async Task<Globals.Status> FormatNumber(string num, string code)
+        {
+            // get phone number in correct format
+            try
+            {
+                var numberDetails = await PhoneNumberResource.FetchAsync(
+                    pathPhoneNumber: new Twilio.Types.PhoneNumber(num),
+                    countryCode: code,
+                    type: new List<string> { "carrier" });
+
+                PhoneNumberToSave = numberDetails.PhoneNumber.ToString();
+                // prevent duplicate numbers from being registered
+                if (Utils.MobileAlreadyExists(PhoneNumberToSave, _context))
+                {
+                    StatusMessage = "Error: There is already an account associated with mobile number.";
+                    ModelState.AddModelError("", "This number already exists. Please change your phone number and try again.");
+                    return Globals.Status.Failure;
+                }
+                return Globals.Status.Done;
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Please double check your phone number and try again.");
+                StatusMessage = "Error: Please double check your phone number and try again..";
+                return Globals.Status.Failure;
+            }
+        }
+
+        public async Task<Globals.Status> SendCode()
+        {
+            // send phone verification code
+
+            try
+            {
+                var verification = await VerificationResource.CreateAsync(
+                    to: PhoneNumberToSave,
+                    channel: "sms",
+                    pathServiceSid: _settings.VerificationServiceSID
+                );
+
+                if (verification.Status == "pending")
+                {
+                    // redirect to confirmation page for code entry
+                    return Globals.Status.Done;
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"There was an error sending the verification code: {verification.Status}");
+                    return Globals.Status.Failure;
+                }        
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("",
+                    "There was an error sending the verification code, please check the phone number is correct and try again");
+                return Globals.Status.Failure;
+            }
         }
 
 
