@@ -68,18 +68,27 @@ var hideSteps = function () {
 };
 
 var sendTrigger = function () {
-    $("#phoneNumberSend").val($("#phoneNumber").val());
+    $("#phoneNumberSend").val($("#number").val());
     $("#phoneCountrySend").val($("#country").val());
     $("#sendForm").submit();
+}
+
+var verifyTrigger = function () {
+    $("#phoneNumberVerify").val($("#number").val());
+    $("#phoneCountryVerify").val($("#country").val());
+    $("#phoneCodeVerify").val($("#codeInput").val());
+    $("#verifyForm").submit();
+    $("#statusVerify").text("Verifying...");
+    $("#statusVerify").show("fast");
 }
 
 var confirmFlow = function () {
     $("#confirmPhone").hide();
     $("#phoneCode").val("");
     $("#phoneCode").show("fast");
-    $("#btnNext").prop("disabled", true);
+    $("#btnNext").text("Verify");
     $("#btnNext").delay(500).show("slow");
-    $("#sendForm").submit();
+    sendTrigger();
 };
 
 var resetFlow = function () {
@@ -108,7 +117,7 @@ var flow = function () {
     var step = $("#btnNext").data("step");
     var stepContainer = $("#stepContainer");
     var progressContainer = $("#progressContainer");
-    if (step != "0") {
+    if (step != "0" && step!="2") {
         hideSteps();
     }
 
@@ -128,7 +137,7 @@ var flow = function () {
             showNumber();
             $("#btnSubmit").hide();
             $("#btnNext").data("step", "2");
-            $("#btnNext").prop("disabled", true);
+            $("#btnNext").text("Next →");
             setValue(50);
         };
     }
@@ -148,17 +157,13 @@ var flow = function () {
         else if (step == "1") {
             showNumber();
             $("#btnNext").data("step", "2");
-            $("#btnNext").prop("disabled", true);
             $("#btnNext").hide();
             setValue(50);
         }
 
         else if (step == "2") {
-            showPass();
-            $("#btnNext").data("step", "3");
-            $("#btnNext").hide();
-            $("#btnSubmit").show();
-            setValue(75);
+            verifyTrigger();
+            // flow handled in ajax callback function
         }
 
         else {
@@ -184,8 +189,29 @@ $("#confirmPhone").on('click', confirmFlow)
 
 
 var handleSend = function(res) {
-    console.log("Async update initiated.")
-    console.log(res);
     var result = res.responseJSON;
-    console.log(result);
+    if (result == false) {
+        hideCode();
+    }
 };
+
+
+var handleVerify = function (res) {
+    var result = res.responseJSON;
+    if (result == true) {
+        console.log("verified");
+        hideSteps();
+        showPass();
+        $("#statusVerify").hide("slow");
+        $("#btnNext").data("step", "3");
+        $("#btnNext").hide();
+        $("#btnNext").text("Next →");
+        $("#btnSubmit").show();
+        setValue(75);
+    }
+    else {
+        $("#statusVerify").hide("fast");
+        // pass for now
+    }
+
+}

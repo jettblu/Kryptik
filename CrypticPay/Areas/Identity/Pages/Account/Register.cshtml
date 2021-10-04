@@ -29,8 +29,14 @@
                         <div class="row card-content">
                             <h5>Register</h5>
                             <form id="sendForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="handleSend" asp-page-handler="SendPhone">
-                                <input id="phoneNumberSend" asp-for="SendMod.PhoneNumber" type="hidden" />
-                                <input id="phoneCountrySend" asp-for="SendMod.PhoneNumberCountryCode" type="hidden" />
+                                <input id="phoneNumberSend" asp-for="Input.SendMod.PhoneNumber" type="hidden" />
+                                <input id="phoneCountrySend" asp-for="Input.SendMod.PhoneNumberCountryCode" type="hidden" />
+                            </form>
+
+                            <form id="verifyForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="handleVerify" asp-page-handler="VerifyPhone">
+                                <input id="phoneNumberVerify" asp-for="Input.VerifyMod.PhoneNumber" type="hidden" />
+                                <input id="phoneCountryVerify" asp-for="Input.VerifyMod.PhoneNumberCountryCode" type="hidden" />
+                                <input id="phoneCodeVerify" asp-for="Input.VerifyMod.VerificationCode" type="hidden" />
                             </form>
 
                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -71,6 +77,7 @@
                                             <a style="text-align: right; display:block; padding-right: 4px;" id="resetPhone">Reset</a>
 
                                         </div>
+                                        <p id="statusVerify" style="text-align: right; display:block; padding-right: 4px;" id="resetPhone" hidden></p>
 
                                     </div>
 
@@ -148,6 +155,10 @@
 
 <script src="~/js/registerManager.js"></script>
 <script src="~/js/changeText.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

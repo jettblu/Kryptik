@@ -77,7 +77,6 @@ namespace CrypticPay.Areas.Identity.Pages.Account
 
         public class SendModel
         {
-            [Required]
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -116,6 +115,11 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            // for in place phone verification
+
+            public SendModel SendMod { get; set; }
+
+            public VerifyModel VerifyMod { get; set; }
 
             [Required]
             [Display(Name = "Code")]
@@ -142,9 +146,6 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             Input = new InputModel();
-            SendMod = new SendModel();
-            VerifyMod = new VerifyModel();
-
             
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -282,15 +283,17 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                     code: VerificationCode,
                     pathServiceSid: _settings.VerificationServiceSID
                 );*/
-                var formatresult = await FormatNumber(VerifyMod.PhoneNumber, VerifyMod.PhoneNumberCountryCode);
+                var formatresult = await FormatNumber(Input.VerifyMod.PhoneNumber, Input.VerifyMod.PhoneNumberCountryCode);
                 if (formatresult != Globals.Status.Done)
                 {
+                    StatusMessage = "Error: Code not verified.";
                     return new JsonResult(false);
                 }
-                var verification = await _smsSender.SendVerificationAsync(PhoneNumberToSave, VerifyMod.VerificationCode);
+                var verification = await _smsSender.SendVerificationAsync(PhoneNumberToSave, Input.VerifyMod.VerificationCode);
 
                 if (verification.Status == "approved")
                 {
+                    StatusMessage = "Phone verified!";
                     return new JsonResult(true);
                     /*IdentityUser.PhoneNumberConfirmed = true;
                     var updateResult = await _userManager.UpdateAsync(IdentityUser);*/
@@ -326,15 +329,18 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         // returns true if succeded
         public async Task<IActionResult> OnPostSendPhoneAsync()
         {
-            var formatresult = await FormatNumber(SendMod.PhoneNumber, SendMod.PhoneNumberCountryCode);
+            var formatresult = await FormatNumber(Input.SendMod.PhoneNumber, Input.SendMod.PhoneNumberCountryCode);
             if (formatresult != Globals.Status.Done)
             {
                 return new JsonResult(false);
             }
             var sendCodeResult = await SendCode();
-            if (sendCodeResult == Globals.Status.Done) return new JsonResult(true);
-            return new JsonResult(false);
-            
+            if (sendCodeResult == Globals.Status.Done)
+            {
+                StatusMessage = "Code Sent";
+                return new JsonResult(true);
+            }
+            return new JsonResult(false);         
         }
 
 
