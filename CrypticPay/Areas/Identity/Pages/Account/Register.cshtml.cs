@@ -276,6 +276,17 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         // returns true if verified 
         public async Task<IActionResult> OnPostVerifyPhoneAsync()
         {
+            var verified = await IsVerified(Input.VerifyMod.PhoneNumber,
+                Input.VerifyMod.PhoneNumberCountryCode,
+                Input.VerifyMod.VerificationCode);
+            
+
+            return new JsonResult(verified);
+        }   
+
+
+        public async Task<bool> IsVerified(string num, string country, string code)
+        {
             try
             {
                 /*var verification = await VerificationCheckResource.CreateAsync(
@@ -283,18 +294,18 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                     code: VerificationCode,
                     pathServiceSid: _settings.VerificationServiceSID
                 );*/
-                var formatresult = await FormatNumber(Input.VerifyMod.PhoneNumber, Input.VerifyMod.PhoneNumberCountryCode);
+                var formatresult = await FormatNumber(num, country);
                 if (formatresult != Globals.Status.Done)
                 {
                     StatusMessage = "Error: Code not verified.";
-                    return new JsonResult(false);
+                    return false;
                 }
-                var verification = await _smsSender.SendVerificationAsync(PhoneNumberToSave, Input.VerifyMod.VerificationCode);
+                var verification = await _smsSender.SendVerificationAsync(PhoneNumberToSave, code);
 
                 if (verification.Status == "approved")
                 {
                     StatusMessage = "Phone verified!";
-                    return new JsonResult(true);
+                    return true;
                     /*IdentityUser.PhoneNumberConfirmed = true;
                     var updateResult = await _userManager.UpdateAsync(IdentityUser);*/
 
@@ -321,7 +332,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                 ModelState.AddModelError("",
                     "There was an error confirming the code, please check the verification code is correct and try again");
             }
-            return new JsonResult(false);
+            return false;
         }
 
 
