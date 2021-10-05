@@ -50,11 +50,12 @@
             <button asp-area="Payments" asp-page="/Send" class="btn btn-action bottomNavContent">New</button>
         </div>
     </ul>
-    <main>
+    <main id="allContent">
 
+        <div id="pageContent">
+            @RenderBody()
+        </div>
 
-
-        @RenderBody()
 
 
 
