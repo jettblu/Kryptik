@@ -688,3 +688,13 @@ a {
         color: white;
         background-color: #00e673;
 }
+
+
+.btnDisabled {
+    background-color: #cfcfcf;
+}
+
+.btnDisabled:hover {
+     background-color: #cfcfcf;
+     color: black;
+}

@@ -31,12 +31,16 @@ function keyispressed(e) {
     return true;
 }
 
-function codeChanged(e) {
-    var codeLength = $("#codeInput");
+var codeChanged = function(){
+    var codeLength = $("#codeInput").val().length;
+    console.log(codeLength);
     if (codeLength >= 6) {
-        $("#btnNext").prop("disabled", false);
+        $("#btnNext").removeClass("btnDisabled");
     }
+    return true;
 }
+
+$("#codeInput").keyup(codeChanged);
 
 
 const input = document.getElementById('value')
@@ -68,7 +72,9 @@ var hideSteps = function () {
 };
 
 var sendTrigger = function () {
-    $("#phoneNumberSend").val($("#number").val());
+    var num = $("#phoneNumberSend").val($("#number").val());
+    // don't submit if empty
+    if (num == "") return;
     $("#phoneCountrySend").val($("#country").val());
     $("#sendForm").submit();
 }
@@ -87,6 +93,7 @@ var confirmFlow = function () {
     $("#phoneCode").val("");
     $("#phoneCode").show("fast");
     $("#btnNext").text("Verify");
+    $("#btnNext").addClass("btnDisabled");
     $("#btnNext").delay(500).show("slow");
     sendTrigger();
 };
@@ -211,6 +218,7 @@ var handleVerify = function (res) {
     }
     else {
         $("#statusVerify").hide("fast");
+        $("#codeInput").val("");
         // pass for now
     }
 
