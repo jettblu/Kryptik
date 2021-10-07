@@ -157,25 +157,20 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                // check if number is still valid
+                var verified = await IsVerified(Input.PhoneNumber, Input.PhoneNumberCountryCode, Input.VerificationCode);
                 // get phone number in correct format
-                try
+                if (verified)
                 {
-                    var numberDetails = await PhoneNumberResource.FetchAsync(
-                        pathPhoneNumber: new Twilio.Types.PhoneNumber(Input.PhoneNumber),
-                        countryCode: Input.PhoneNumberCountryCode,
-                        type: new List<string> { "carrier" });
-
-                    PhoneNumberToSave = numberDetails.PhoneNumber.ToString();
                     // prevent duplicate numbers from being registered
-                    if(Utils.MobileAlreadyExists(PhoneNumberToSave, _context))
+                    if (Utils.MobileAlreadyExists(PhoneNumberToSave, _context))
                     {
                         StatusMessage = "Error: There is already an account associated with mobile number.";
                         ModelState.AddModelError("", "This number already exists. Please change your phone number and try again.");
                         return Page();
                     }
-
-                }
-                catch
+                }                                 
+                else
                 {
                     ModelState.AddModelError("", "Please double check your phone number and try again.");
                     StatusMessage = "Error: Please double check your phone number and try again..";
@@ -190,85 +185,27 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                     UserName = Input.UserName,
                     Name = Input.FullName,
                     PhoneNumber = PhoneNumberToSave,
+                    PhoneNumberConfirmed = true,
                     ProfilePhotoPath = profilePhoto
                 };
 
                 
-
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-
+                // log user into application
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
-                    IdentityUser = await _userManager.FindByNameAsync(Input.UserName);
-
-                    if (_userManager.Options.SignIn.RequireConfirmedPhoneNumber)
-                    {   
-                        // send phone verification code
-
-                        try
-                        {
-                            var verification = await VerificationResource.CreateAsync(
-                                to: PhoneNumberToSave,
-                                channel: "sms",
-                                pathServiceSid: _settings.VerificationServiceSID
-                            );
-
-                            if (verification.Status == "pending")
-                            {
-                                // redirect to confirmation page for code entry
-                                return RedirectToPage("RegisterConfirmation", new {userName = Input.UserName, returnUrl = returnUrl });
-                            }
-
-                            ModelState.AddModelError("", $"There was an error sending the verification code: {verification.Status}");
-                        }
-                        catch (Exception)
-                        {
-                            ModelState.AddModelError("",
-                                "There was an error sending the verification code, please check the phone number is correct and try again");
-                        }
-
-                       
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                     
-
-
-                    // uncomment below for email registration process
-
-                    /*                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                                        var callbackUrl = Url.Page(
-                                            "/Account/ConfirmEmail",
-                                            pageHandler: null,
-                                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                                            protocol: Request.Scheme);
-
-                                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                                        {
-                                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                                        }
-                                        else
-                                        {
-                                            await _signInManager.SignInAsync(user, isPersistent: false);
-                                            return LocalRedirect(returnUrl);
-                    }*/
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            // If we got this far, something failed, redisplay form
+            // If we got this far, something failed. Redisplay form.
             return Page();
         }
 
@@ -306,24 +243,6 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                 {
                     StatusMessage = "Phone verified!";
                     return true;
-                    /*IdentityUser.PhoneNumberConfirmed = true;
-                    var updateResult = await _userManager.UpdateAsync(IdentityUser);*/
-
-
-                    /* if (updateResult.Succeeded)
-                     {
-                         await _signInManager.SignInAsync(IdentityUser, isPersistent: true);
-                         return new JsonResult(true);
-                     }
-                     else
-                     {
-                         ModelState.AddModelError("", "There was an error confirming the verification code, please try again");
-                     }
-                 }*/
-                    /*else
-                    {
-                        ModelState.AddModelError("", $"There was an error confirming the verification code: {verification.Status}");
-                    }*/
                 }
             }
 
@@ -416,4 +335,27 @@ namespace CrypticPay.Areas.Identity.Pages.Account
 
 
     }
+
+    // uncomment below for email registration process
+
+    /*                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+    }*/
 }
