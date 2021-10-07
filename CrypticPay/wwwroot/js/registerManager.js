@@ -182,6 +182,17 @@ var flow = function () {
 
 };
 
+var registerTrigger = function () {
+    console.log("HIT!");
+    var stepContainer = $("#stepContainer");
+    stepContainer.hide("slow");
+    $(".imgReg").hide("slow");
+    $("#subStatus").delay(500).show("slow");
+    $("#registerForm").submit();
+};
+
+$('#btnSubmit').on('click', registerTrigger);
+
 $('.btnStep').on('click', flow);
 
 $('#btnRegister').on('click', flow);
@@ -221,5 +232,4 @@ var handleVerify = function (res) {
         $("#codeInput").val("");
         // pass for now
     }
-
 }

@@ -10,7 +10,10 @@ namespace CrypticPay.ProfilePhoto
 {
     public static class Avatar
     {
-        private static List<string> _BaseAvatars = new List<string> { "https://crypticblob.blob.core.windows.net/media/avatarCryptic.png" };
+        private static List<string> _BaseAvatars = new List<string> { "https://crypticblob.blob.core.windows.net/media/avaGreen.jpg", 
+                                                                      "https://crypticblob.blob.core.windows.net/media/avaPas.jpg", 
+                                                                      "https://crypticblob.blob.core.windows.net/media/avaPink.jpg", 
+                                                                      "https://crypticblob.blob.core.windows.net/media/avaPurp.jpg" };
 
         public static string RetrieveRandomURI()
         {
