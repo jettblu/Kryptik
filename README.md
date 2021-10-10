@@ -33,6 +33,7 @@ Kryptik does the hard stuff, so users won’t have to.
 * Profile Management
 * Asset and User Search
 * Price charts
+* Two factor authentication
 
 *Pending Features*
 * NFT marketplace
