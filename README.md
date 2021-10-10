@@ -28,7 +28,6 @@ In addition to payments, digital collectibles are incorporated within a feed of 
 Kryptik does the hard stuff, so users won’t have to.
 
 *Current Features*
-*Two factor authentication
 * Social Network
 * HD Wallet
 * Profile Management
