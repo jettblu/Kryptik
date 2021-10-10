@@ -26,6 +26,7 @@ In addition to payments, digital collectibles are incorporated within a feed of 
 
 ## Technical Details
 Kryptik does the hard stuff, so users won’t have to.
+
 *Current Features*
 Two factor authentication
 * Social Network
