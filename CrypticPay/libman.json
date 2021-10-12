@@ -9,6 +9,10 @@
     {
       "library": "hdkey@2.0.1",
       "destination": "wwwroot/lib/hdkey/"
+    },
+    {
+      "library": "secrets.js-grempe@2.0.0",
+      "destination": "wwwroot/lib/secrets.js-grempe/"
     }
   ]
 }
