@@ -14,7 +14,7 @@ A little bit about what Kryptik is and why it exists.
 
 
 ## What
-Kryptik is a noncustodial online platform for sending cryptocurrency and collecting NFTs.
+Kryptik is an online platform for sending cryptocurrency and collecting NFTs.
 	
 ## Value
 Kryptik adds value by subtracting high transaction fees and complex user flows. This will open the gates of cryptocurrency and digital assets to those with limited resources/ experience.
@@ -23,6 +23,8 @@ Kryptik adds value by subtracting high transaction fees and complex user flows. 
 With Kryptik, users can send crypto (either onchain or offchain) to a blockchain address or phone number. Coinbase allows users to send crypto to phone numbers, but their implementation ties you to the exchange. In contrast, Kryptik does not care where you get your crypto: as a payments service, the primary concern is making transactions cheap and easy. Transactions can also be made public, which makes the opaque world of blockchain a bit more fun and social. Venmo and Cash app do a good job of making payments social, but their solutions do not integrate cryptocurrency payments.
  
 In addition to payments, digital collectibles are incorporated within a feed of transactions. This allows users to engage— like, comment, share, etc.— with what has traditionally been a passive activity centered around investment. Mintable and Cryptopunks do a great job of making NFTs accessible, but Kryptik aims to create a social marketplace for NFTs. This means that in addition to viewing other collections of NFTs in a feed, users can also mint their own NFTs and auction them off (think of being able to purchase an instagram post). Users will be able to select their chain of choice, unlike on OpenSea, which only supports Ethereum.
+
+Kryptik has also enabled onchain *and offchain* transactions, without needing to see your private keys. Ever. *Your* wallet seed is kept on *your* device. This is accomplished through a simple combination of multisig and shamir secret sharing. 
 
 ## Technical Details
 Kryptik does the hard stuff, so users won’t have to.
