@@ -3,10 +3,6 @@
   "defaultProvider": "jsdelivr",
   "libraries": [
     {
-      "library": "bip39@3.0.4",
-      "destination": "wwwroot/lib/bip39/"
-    },
-    {
       "library": "hdkey@2.0.1",
       "destination": "wwwroot/lib/hdkey/"
     },
@@ -17,6 +13,10 @@
     {
       "library": "requirejs@2.3.6",
       "destination": "wwwroot/lib/requirejs/"
+    },
+    {
+      "library": "bip39@3.0.4",
+      "destination": "wwwroot/bip39/"
     }
   ]
 }

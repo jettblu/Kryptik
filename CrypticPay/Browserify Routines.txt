@@ -1,0 +1,10 @@
+BIP39
+browserify index.js --s bip | uglifyjs > bip39.min.js
+
+
+HDKEY
+browserify hdkey.js --s hdkey | uglifyjs > hdkey.min.js
+
+
+Shamir secret sharing
+secrets.js-grempe>browserify secrets.js --s shamir | uglifyjs > shamir.min.js
