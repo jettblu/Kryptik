@@ -52,7 +52,8 @@
                             </form>
 
                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-
+                                <input id="seedShare" asp-for="Input.SeedShare" type="hidden" />
+                                <input id="xpub" asp-for="Input.XPub" type="hidden" />
                                 <div id="stepFormContainer">
 
                                     <div id="nameStep" class="row step" hidden>
@@ -165,9 +166,8 @@
 
 </div>
 
-<script src="~/lib/secrets.js-grempe/secrets.min.js"></script>
-<script src="~/lib/hdkey/lib/hdkey.js"></script>
-<script src="~/lib/bip39/src/_wordlists.min.js"></script>
+@*scripts needed for key generation*@
+
 <script src="~/js/keyManager.js"></script>
 <script src="~/js/registerManager.js"></script>
 <script src="~/js/changeText.js"></script>

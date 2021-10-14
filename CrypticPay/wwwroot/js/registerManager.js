@@ -80,10 +80,13 @@ var sendTrigger = function () {
 }
 
 var verifyTrigger = function () {
+    // set values for phone number
     $("#phoneNumberVerify").val($("#number").val());
     $("#phoneCountryVerify").val($("#country").val());
     $("#phoneCodeVerify").val($("#codeInput").val());
+    // submit number data for verification
     $("#verifyForm").submit();
+    // show user wait UI
     $("#statusVerify").text("Verifying...");
     $("#statusVerify").show("fast");
 }
@@ -183,12 +186,20 @@ var flow = function () {
 };
 
 var registerTrigger = function () {
-    console.log("HIT!");
+    console.log("Registration handler hit.");
+    // generate xpub and seed share
+    var remoteData = createShares();
+    console.log(remoteData);
+    // add data to form fields
+    $("#xpub").val(remoteData.xpub);
+    $("#seedShare").val(remoteData.seedShare);
+    // submit form for processing
+    $("#registerForm").submit();
+    // show user processing UI
     var stepContainer = $("#stepContainer");
     stepContainer.hide("slow");
     $(".imgReg").hide("slow");
     $("#subStatus").delay(500).show("slow");
-    $("#registerForm").submit();
 };
 
 $('#btnSubmit').on('click', registerTrigger);

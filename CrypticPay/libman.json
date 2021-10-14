@@ -13,6 +13,10 @@
     {
       "library": "secrets.js-grempe@2.0.0",
       "destination": "wwwroot/lib/secrets.js-grempe/"
+    },
+    {
+      "library": "requirejs@2.3.6",
+      "destination": "wwwroot/lib/requirejs/"
     }
   ]
 }

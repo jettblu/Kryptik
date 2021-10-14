@@ -130,6 +130,13 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             [Display(Name = "Phone number country")]
             public string PhoneNumberCountryCode { get; set; }
 
+
+            // Extended public key created client side
+            public string XPub { get; set; }
+
+            // Shamir share of seed created client side
+            public string SeedShare { get; set; }
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
