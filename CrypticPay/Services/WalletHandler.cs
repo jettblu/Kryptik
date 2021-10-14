@@ -140,61 +140,31 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
-        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, bool isTestnet=false, string mnemonic="")
+        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false)
         {
             // increment index, so we can generate new address from extended key
 
             int indexAddy = 0;
+            var masterPubKey = new ExtPubKey(extPub);
             string words;
-            Mnemonic mnemo;
-
-
-            if (currWallet != null && currWallet.AddressOnChain != null)
-            {
-                indexAddy = currWallet.AddressOnChain.Index + 1;
-                words = DecryptMnemonic(currWallet.WalletKryptik.Owner);
-            }
-            else
-            {
-                words = mnemonic;
-            }
-
-
-            mnemo = new Mnemonic(words, Wordlist.English);
-
-            var seed = mnemo.DeriveSeed();
-
 
 
             if(coin.Ticker == "ETH")
             {
                 // we do not need to case for testnet here as eth address is cross network compatible
-                var ethWallet = new Nethereum.HdWallet.Wallet(seed);
-
-                var acc = new Account(seed, Nethereum.Signer.Chain.MainNet);
-                var xpub = ethWallet.GetMasterExtPubKey();
-
-                var ethAccount = ethWallet.GetAccount(indexAddy);
+                var ethWallet = new PublicWallet(masterPubKey);
                 
-               
                 return new BlockchainAddress()
                 {
-                    Address = ethAccount.Address,
-                    Index = indexAddy,
-                    XpubMaster = xpub.ToString()
+                    Address = ethWallet.GetAddress(indexAddy),
+                    Index = indexAddy
                 };
             }
 
-
-
-            // extended private key as derived from mnemonic
-            var masterKey = mnemo.DeriveExtKey();
-            // xpub as derived from master key
-            var masterPubKey = masterKey.Neuter();
+            
             // Generate public key k from xpub
             ExtPubKey pubKeyK = masterPubKey.Derive((uint)indexAddy);
-            //Get corresponding private key for pub key k
-            ExtKey privKeyK = masterKey.Derive((uint)indexAddy);
+
 
             Network network;
             bool isSegwit = true;
@@ -261,8 +231,7 @@ namespace CrypticPay.Services
             {   
 
                 Address = addy.ToString(),
-                Index = indexAddy,
-                XpubMaster = masterPubKey.PubKey.ToString()
+                Index = indexAddy
             };
 
         }
@@ -276,9 +245,8 @@ namespace CrypticPay.Services
 
         public async Task<Globals.Status> CreateWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins, bool isTestNet = false)
         {
-            var mnemonic = GenerateMnemonic();
 
-
+            string xpub = user.WalletKryptik.Xpub;
             // create blockchain data for each wallet
             var btc = Utils.FindCryptoByTicker("BTC", contextCoins);
             var bch = Utils.FindCryptoByTicker("BCH", contextCoins);
@@ -286,11 +254,11 @@ namespace CrypticPay.Services
             var ltc = Utils.FindCryptoByTicker("LTC", contextCoins);
 
             // currency wallet is null, as kryptik wallet has yet to be created
-            var chainDataBtc = CreateAddress(null, btc, isTestNet, mnemonic);
-            var chainDataBch = CreateAddress(null, bch, isTestNet, mnemonic);
-            var chainDataEth = CreateAddress(null, eth, isTestNet, mnemonic);
-            var chainDataLtc = CreateAddress(null, ltc, isTestNet, mnemonic);
-
+            var chainDataBtc = CreateAddress(null, btc, xpub, isTestNet);
+            var chainDataBch = CreateAddress(null, bch, xpub, isTestNet);
+            var chainDataEth = CreateAddress(null, eth, xpub, isTestNet);
+            var chainDataLtc = CreateAddress(null, ltc, xpub, isTestNet);
+                                                        
             // create customer which will be connection between seperate tatum accounts
             var customer = new Tatum.Model.Requests.CreateCustomer()
             {
@@ -404,7 +372,7 @@ namespace CrypticPay.Services
 
            
             // wallet starts with kryptik managed key
-            user.WalletKryptik.IsCustodial = true;
+            user.WalletKryptik.IsOnChain = false;
             user.WalletKryptik.CurrencyWallets = new List<CurrencyWallet>();
 
             // set currency wallets for container wallet
@@ -415,7 +383,6 @@ namespace CrypticPay.Services
             user.WalletKryptik.CrypticPayUserKey = user.Id;
             
 
-            user.WalletKryptik.Phrase = EncryptMnemonic(mnemonic, user, null);
             user.WalletKryptik.CreationTime = DateTime.Now;
             user.WalletKryptik.Owner = user;
 
@@ -430,47 +397,6 @@ namespace CrypticPay.Services
             string mnemonic = string.Join(" ", phraseObj.Words);
             return mnemonic;
         }
-
-        private byte [] EncryptMnemonic(string mnemonic, CrypticPayUser user, string key)
-        {
-            byte [] result;
-
-            Aes aes = Aes.Create();
-            aes.GenerateIV();
-            aes.GenerateKey();
-
-
-            // use user provided key to encrypt
-            if (!user.WalletKryptik.IsCustodial)
-            {
-                aes.Key = ASCIIEncoding.ASCII.GetBytes(key.ToCharArray());
-            }
-
-
-            EncryptKey(aes, user);
-
-            // Encrypt the string to an array of bytes.
-            result = EncryptStringToBytes_Aes(mnemonic, aes);
-
-
-            return result;
-        }
-
-        public void EncryptKey(Aes aes, CrypticPayUser user)
-        {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.FromXmlString(_encryptKeyPriv);
-            if (user.WalletKryptik.IsCustodial)
-            {
-                var encryptedKey = rsa.Encrypt(aes.Key, fOAEP: false);
-                user.WalletKryptik.Decrypter = encryptedKey;
-            }
-            
-            var encryptedIv = rsa.Encrypt(aes.IV, fOAEP: false);
-            user.WalletKryptik.Iv = encryptedIv;
-
-        }
-
 
         public async Task<Tatum.Model.Responses.AccountBalance> GetCurrencyWalletHistory(CurrencyWallet currencyWallet)
         {
@@ -541,78 +467,6 @@ namespace CrypticPay.Services
             // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
-
-
-        public void ChangeCustodialType(CrypticPayUser user, string key, CrypticPayContext contextUser)
-        {   
-            var mnemonic = DecryptMnemonic(user, key);
-
-            var aes = DecryptKeys(user, key);
-
-            if (user.WalletKryptik.IsCustodial)
-            {
-                aes.Key = ASCIIEncoding.ASCII.GetBytes(key.ToCharArray());
-            }
-            else
-            {
-                aes.GenerateKey();
-            }
-
-            byte[] mnemonicEncrypted;
-            using (aes)
-            {
-                // Encrypt the string to an array of bytes.
-                mnemonicEncrypted = EncryptStringToBytes_Aes(mnemonic, aes);
-
-                // Decrypt the bytes to a string.
-                // string roundtrip = DecryptStringFromBytes_Aes(encrypted, aes.Key, aes.IV);
-            }
-
-
-            user.WalletKryptik.Phrase = mnemonicEncrypted;
-            // flip custodial type
-            user.WalletKryptik.IsCustodial = !user.WalletKryptik.IsCustodial;
-
-            EncryptKey(aes, user);
-
-            contextUser.Users.Update(user);
-            contextUser.SaveChanges();
-
-        }
-
-        public string DecryptMnemonic(CrypticPayUser user, string key=null)
-        {
-            var aes = DecryptKeys(user, key);
-
-            return DecryptStringFromBytes_Aes(user.WalletKryptik.Phrase, aes.Key, aes.IV);
-
-        }
-
-
-        private Aes DecryptKeys(CrypticPayUser user, string key)
-        {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            // set rsa with private key
-            rsa.FromXmlString(_encryptKeyPriv);
-
-            Aes aes = Aes.Create();
-
-            if (user.WalletKryptik.IsCustodial)
-            {
-                var poop = rsa.Decrypt(user.WalletKryptik.Decrypter, false);
-                aes.Key = poop;
-            }
-            else
-            {
-                aes.Key = ASCIIEncoding.ASCII.GetBytes(key.ToCharArray());
-            }
-
-            aes.IV = rsa.Decrypt(user.WalletKryptik.Iv, false);
-
-
-            return aes;
-        }
-
 
         private string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {

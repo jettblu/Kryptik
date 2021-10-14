@@ -78,7 +78,7 @@ namespace CrypticPay.Areas.Community
             var user = _walletHandler.GetUserandWallet(userId, _context);
             var coin = Utils.FindCryptoByTicker("BTC", _contextCoins);
             var currWallet = _walletHandler.GetCurrencyWallet(coin, user);
-            _walletHandler.CreateAddress(currWallet, coin);
+            _walletHandler.CreateAddress(currWallet, coin, user.WalletKryptik.Xpub);
 
             
             /*var mnemonic = _walletHandler.DecryptMnemonic(user);*/

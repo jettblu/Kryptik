@@ -12,7 +12,6 @@ namespace CrypticPay.Data
         public string Id { get; set; }
         public int Index { get; set; }
         public string Address { get; set; }
-        public string XpubMaster { get; set; }
         public DateTime DateCreated;
         
         public CurrencyWallet CurrencyWallet { get; set; }
