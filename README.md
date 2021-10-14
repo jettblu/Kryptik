@@ -24,6 +24,8 @@ With Kryptik, users can send crypto (either onchain or offchain) to a blockchain
  
 In addition to payments, digital collectibles are incorporated within a feed of transactions. This allows users to engage— like, comment, share, etc.— with what has traditionally been a passive activity centered around investment. Mintable and Cryptopunks do a great job of making NFTs accessible, but Kryptik aims to create a social marketplace for NFTs. This means that in addition to viewing other collections of NFTs in a feed, users can also mint their own NFTs and auction them off (think of being able to purchase an instagram post). Users will be able to select their chain of choice, unlike on OpenSea, which only supports Ethereum.
 
+Kryptik has also enabled onchain *and offchain* transactions without needing to see your private keys. Ever. *Your* wallet seed is kept on *your* device. This is accomplished through a simple combination of multisig and shamir secret sharing. 
+
 ## Technical Details
 Kryptik does the hard stuff, so users won’t have to.
 
