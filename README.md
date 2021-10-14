@@ -14,7 +14,7 @@ A little bit about what Kryptik is and why it exists.
 
 
 ## What
-Kryptik is an online platform for sending cryptocurrency and collecting NFTs.
+Kryptik is a noncustodial online platform for sending cryptocurrency and collecting NFTs.
 	
 ## Value
 Kryptik adds value by subtracting high transaction fees and complex user flows. This will open the gates of cryptocurrency and digital assets to those with limited resources/ experience.
