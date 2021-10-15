@@ -18,10 +18,11 @@
 
     </div>
     <div id="sendContainer">
+        <div asp-validation-summary="All" class="text-danger"></div>
         <form id="transactionForm" data-ajax="true" data-ajax-method="post" data-ajax-complete="CreateTrasaction" asp-page-handler="CreateTransaction">
             <div class="row">
                 <div class="amount-field col s12 l12 m12">
-                    <input class="input-number inputAmount center" asp-validation-for="Input.Amount" asp-for="Input.Amount" id="amount" type="text" value="1" min="1" max="100000">
+                    <input class="input-number inputAmount center" asp-for="Input.Amount" id="amount" type="text">
                 </div>
             </div>
 

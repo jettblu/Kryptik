@@ -54,6 +54,8 @@
                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                                 <input id="seedShare" asp-for="Input.SeedShare" type="hidden" />
                                 <input id="xpub" asp-for="Input.XPub" type="hidden" />
+                                @*div for model error display*@
+                                <div asp-validation-summary="All" class="text-danger"></div>
                                 <div id="stepFormContainer">
 
                                     <div id="nameStep" class="row step" hidden>
@@ -116,7 +118,7 @@
                                         <!-- toggle between password visibility -->
                                         <div class="row">
                                             <div class="col s6">
-                                                <input type="checkbox" class="filled-in checkbox-blue" onclick="" id="show">
+                                                <input type="checkbox" class="filled-in checkbox-blue" onclick="showPassword" id="show">
                                                 <label for="show">Show</label>
                                             </div>
                                         </div>

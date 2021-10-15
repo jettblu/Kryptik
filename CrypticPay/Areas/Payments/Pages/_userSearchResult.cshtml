@@ -5,6 +5,9 @@
 
 @{
 
+    // handle null model
+    if (Model == null || Model.Query == null) return;
+
     if (Model.Users.Count != 0)
     {
         foreach (var currUser in Model.Users)

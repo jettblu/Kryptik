@@ -71,7 +71,8 @@ function FormatAmount() {
     }
 
     amountString = addCommas(amountString.substring(1));
-
+    // don't allow nan to be shown to user
+    if (amountString.toLowerCase() == "nan") amountString = "0";
     console.log(amountString);
 
     amountString = "$" + amountString;

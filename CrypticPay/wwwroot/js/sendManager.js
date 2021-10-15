@@ -12,10 +12,13 @@ $("#clearIcon").on('click', function () {
 
 $("#searchFriendContainer").on('click', ".userToSelect", function () {
     var userName = $(this).data('user');
+    $("#mainTo").val(userName);
     $("#to").val(userName);
+    console.log(userName);
+    $("#searchFriendContainer").hide("slow");
     $("#searchFriendContainer").empty();
     // indicate user has been chosen
-    $("#to").data('selected') = true;
+    $("#to").data('selected', true);
 });
 
 
@@ -30,7 +33,7 @@ ShowSearchFriendsResult = function (res) {
 // update main form to include changed values
 
 $("#autocomplete-input").on('change', function () {
-    $("#mainCoin").val($("#autocomplet-input").val());
+    $("#mainCoin").val($("#autocomplete-input").val());
 });
 
 $("#to").on('change', function () {
@@ -44,15 +47,15 @@ $("#for").on('change', function () {
 $("#create-transaction-button").on('click', function () {
     $("#transactionForm").submit();
     // empty search container if still full
-    $("##searchFriendContainer").empty();
+    $("#searchFriendContainer").empty();
     // empty send and status container
-    $("#sendContainer").empty();
+    $("#sendContainer").hide("slow");
     $("#statusContainer").empty();
     var basePath = window.location.origin;
     $("#statusContainer").append(`<center><p>Creating transaction. This may take a moment.</p> <img src="${basePath}/Media/rocket.gif" class="animation-small"/></center>`);
 });
 
-
+// clear friend options if user clicks on another screen segment
 $(document).click(function () {
     if ($("#to").data('selected') == false) {
         $("#to").val("");
@@ -68,3 +71,4 @@ $(".menuWraper").click(function (event) {
     alert('clicked inside');
     event.stopPropagation();
 });
+
