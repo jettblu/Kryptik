@@ -1,7 +1,7 @@
 # Kryptik
 
 
-A little bit about what Kryptik is and why it exists.
+This document explains what Kryptik is and why it exists.
 
 ## Table of contents
 * [What](#what)
