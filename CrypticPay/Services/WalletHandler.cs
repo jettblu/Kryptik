@@ -28,14 +28,14 @@ namespace CrypticPay.Services
         private readonly IBitcoinClient _bitcoinClient;
         private readonly string _encryptKeyPub;
         private readonly string _encryptKeyPriv;
+        private readonly string _mnem;
 
-
-        public WalletHandler(string baseUrl, string apiKey, string encryptKeyPub, string encryptKeyPriv)
+        public WalletHandler(string baseUrl, string apiKey, string encryptKeyPub, string encryptKeyPriv, string mnemonic)
         {
             _tatumClient = TatumClient.Create(baseUrl, apiKey);
             _encryptKeyPriv = encryptKeyPriv;
             _encryptKeyPub = encryptKeyPub;
-            
+            _mnem = mnemonic;
         }
 
 
@@ -140,10 +140,9 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
-        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false)
+        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false, bool isOnChain=false)
         {
             // increment index, so we can generate new address from extended key
-
             int indexAddy = 0;
             var masterPubKey = new ExtPubKey(extPub);
             string words;
@@ -223,14 +222,28 @@ namespace CrypticPay.Services
             {
                 keyType = ScriptPubKeyType.Legacy;
             }
-            
 
-            var addy = pubKeyK.PubKey.GetAddress(keyType, network);
+            string addy;
+
+            // generate P2PKH addy for onchain sending
+            if (isOnChain)
+            {
+                addy = pubKeyK.PubKey.GetAddress(keyType, network).ToString();
+            }
+            // generate P2SH for offchain sending
+            else
+            {
+                var kryptikMnem = new Mnemonic(_mnem);
+                var kryptikKeyRing = kryptikMnem.DeriveExtKey().Neuter();
+                Script redeemScript = PayToMultiSigTemplate.Instance.GenerateScriptPubKey(2, new[] { pubKeyK.PubKey, kryptikKeyRing.PubKey});
+                addy = redeemScript.Hash.GetAddress(network).ToString();
+            }
+            
 
             return new BlockchainAddress()
             {   
 
-                Address = addy.ToString(),
+                Address = addy,
                 Index = indexAddy
             };
 

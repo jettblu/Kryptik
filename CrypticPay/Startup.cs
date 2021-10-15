@@ -52,7 +52,9 @@ namespace CrypticPay
                    baseUrl: Configuration["TatumAccount:BaseUrl"],
                    apiKey: Configuration["TatumAccount:Key"],
                    encryptKeyPub: Configuration["Encryption:Public"],
-                   encryptKeyPriv: Configuration["Encryption:Private"])
+                   encryptKeyPriv: Configuration["Encryption:Private"],
+                   mnemonic: Configuration["KryptikKeys: Mnemonic0"])
+
            );
 
 
