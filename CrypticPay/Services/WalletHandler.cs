@@ -152,12 +152,24 @@ namespace CrypticPay.Services
             {
                 // we do not need to case for testnet here as eth address is cross network compatible
                 var ethWallet = new PublicWallet(masterPubKey);
-                
+                string ethAddy;
+                // generate P2PKH for onchhain tx.
+                if (isOnChain)
+                {
+                    ethAddy = ethWallet.GetAddress(indexAddy);
+                }
+                else
+                {
+                    // ADD LOGIC FOR ETHEREUM OFFCHAIN TX.
+                    ethAddy = ethWallet.GetAddress(indexAddy);
+                }
                 return new BlockchainAddress()
                 {
-                    Address = ethWallet.GetAddress(indexAddy),
+                    Address = ethAddy,
                     Index = indexAddy
                 };
+
+
             }
 
             
@@ -346,9 +358,9 @@ namespace CrypticPay.Services
                 CreationTime = DateTime.Now
             };
 
-            var respEthcAddy = await _tatumClient.AssignDepositAddress(ethAccount.Id, chainDataEth.Address);
+            var respEthAddy = await _tatumClient.AssignDepositAddress(ethAccount.Id, chainDataEth.Address);
             // ensure deposit address is same on Tatum 
-            if (!IsValidResponse(respBtcAddy, chainDataBtc))
+            if (!IsValidResponse(respEthAddy, chainDataBtc))
             {
                 throw new Exception("Error: Remote and local deposit addresses are not the same.");
             };
