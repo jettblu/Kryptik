@@ -1,7 +1,7 @@
 # Kryptik
 
 
-This document explains what Kryptik is and why it exists. You can join the waitlist for early access[here](https://kryptik.app/).
+This document explains what Kryptik is and why it exists. You can join the waitlist for early access [here](https://kryptik.app/). Beta release in November.
 
 ## Table of contents
 * [What](#what)
