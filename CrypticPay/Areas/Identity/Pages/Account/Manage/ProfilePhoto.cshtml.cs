@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
+
 namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 {
     public class ProfilePhotoModel : PageModel
@@ -92,7 +93,9 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
             BlobUtility blobUtility = new BlobUtility(_settings, user);
 
-            await blobUtility.UploadImage(Input.NewPhoto);
+            Stream outStream = Avatar.CropImage(Input.NewPhoto);
+            
+            await blobUtility.UploadImage(outStream, Input.NewPhoto.FileName);
 
             var blobURI = blobUtility.GetBlobURI();
 

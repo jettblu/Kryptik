@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using CrypticPay.Areas.Identity.Data;
+using CrypticPay.ProfilePhoto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -167,7 +169,9 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
             BlobUtility blobUtility = new BlobUtility(_storageSettings, user);
 
-            await blobUtility.UploadImage(Input.NewPhoto);
+            Stream outStream = Avatar.CropImage(Input.NewPhoto);
+
+            await blobUtility.UploadImage(outStream, Input.NewPhoto.FileName);
 
             var blobURI = blobUtility.GetBlobURI();
 

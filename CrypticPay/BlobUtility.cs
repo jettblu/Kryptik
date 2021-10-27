@@ -32,16 +32,16 @@ namespace CrypticPay
         }
 
         // update to handle scaling
-        public async Task UploadImage(IFormFile photoFile)
+        public async Task UploadImage(Stream fileStream, string fileName)
         {
             var containerName = _settings.FullImagesContainerNameOption;
             // Create a BlobServiceClient object which will be used to create a container client
             BlobServiceClient blobServiceClient = new BlobServiceClient(ConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
             // Get a reference to a blob
-            string blobName = GenerateFileName(photoFile.FileName);
+            string blobName = GenerateFileName(fileName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            await blobClient.UploadAsync(photoFile.OpenReadStream(), true);
+            await blobClient.UploadAsync(fileStream, true);
             BlobURI = URIBase + containerName + "/" + blobName;
         }
 
