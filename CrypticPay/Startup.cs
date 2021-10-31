@@ -10,14 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Twilio;
-using Microsoft.WindowsAzure.Storage;
 using CrypticPay.Areas.Identity.Data;
-using Tatum;
+using CrypticPay.Hubs;
+
 
 
 namespace CrypticPay
@@ -100,7 +96,7 @@ namespace CrypticPay
                 sendNumber:sendNumber
                 )
             );
-
+            services.AddSignalR();
 
             services.Configure<TwilioVerifySettings>(Configuration.GetSection("TwilioAccountDetails"));
                
@@ -135,6 +131,7 @@ namespace CrypticPay
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
 
         }

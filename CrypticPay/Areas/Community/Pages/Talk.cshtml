@@ -1,0 +1,69 @@
+﻿@page
+@model CrypticPay.Areas.Community.Pages.TalkModel
+@{
+}
+
+@*a space for real time encrypted chat*@
+
+<div class="row">
+    <div class="col offset-l1 l10">
+        <div class="row">
+            <div class="col l1 s1">
+                <img src="~/Media/devSamples/avaGreen.jpg" class="circle" style="width: 34px; margin-top: 18px;" />
+            </div>
+            <div class="col l10 s10">
+                <p class="msgText rounded msgBox">Hi! How are you doing?</p>
+            </div>
+            <div class="col offset-l1 offset-s1 l10 s10">
+                <p class="msgText rounded msgBox">Hi! How are you doing? My name is Gil and I like to run fast!</p>
+            </div>
+
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="offset-l9 offset-s6 col l3 s6 pull-l1">
+                <p class="msgText rounded msgBox" style="border: solid 1px;">Hi! How are you doing? My name is gustavo and I like to cook pasta!</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset-l9 offset-s6 col l3 s6 pull-l1">
+                <p class="msgText rounded msgBox" style="border: solid 1px;">Hi! How are you doing? My name is gustavo and I like to cook pasta!</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset-l9 offset-s6 col l3 s6 pull-l1">
+                <p class="msgText rounded msgBox" style="border: solid 1px;">Hi! How are you doing? My name is gustavo and I like to cook pasta!</p>
+            </div>
+        </div>
+
+
+        <div class="btmBuffer">
+
+        </div>
+
+
+        <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
+            <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
+                <div class="row">
+                    <form id="formChat">
+                        <div class="valign-wrapper">
+                            <div class="input-field col l10 s10">
+                                <textarea id="msg" placeholder="Your secure message." class="materialize-textarea"></textarea>
+                            </div>
+                            <div id="containerBtn">
+                                <a id="btnSubmit" class="col l2 s2">Send</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
