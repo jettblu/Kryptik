@@ -11,9 +11,14 @@ namespace CrypticPay.Data
 {
     public class CrypticPayContext : IdentityDbContext<CrypticPayUser>
     {
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupUser> GroupUsers { get; set; }
+        public DbSet<ChatData> Chats { get; set; }
+
         public CrypticPayContext(DbContextOptions<CrypticPayContext> options)
             : base(options)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -38,6 +43,8 @@ namespace CrypticPay.Data
                 .WithOne(b => b.AddressOnChain)
                 .HasForeignKey<CurrencyWallet>(b => b.AddressKey)
                 .OnDelete(DeleteBehavior.Cascade);
+
+         
 
 
         }
