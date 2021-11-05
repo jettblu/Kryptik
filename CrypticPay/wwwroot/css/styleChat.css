@@ -98,4 +98,6 @@
     height: 3%
 }
 
-
+.msgFriendResult:hover{
+    cursor:pointer;
+}

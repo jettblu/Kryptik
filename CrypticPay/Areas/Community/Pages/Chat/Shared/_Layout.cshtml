@@ -56,13 +56,16 @@
         <hr>
 
         <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%">
+            <center>
+                Hi!
+            </center>
             <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
         </div>
     </ul>
 
 
 
-    <main id="allContent">
+    <main class="container" id="allContent">
         @*bars that goes across message top of message area*@
 
         <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
@@ -82,22 +85,24 @@
             </div>
         </nav>
 
-        <div id="pageContent">
-            @RenderBody()
+        <div class="row">
+            <div class="col s12 l8 offset-l3" id="msgMainArea">
+                @RenderBody()
+            </div>
         </div>
 
 
 
 
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @* load after main content so events attach*@ 
-        <script type="text/javascript" src="~/js/chatHubManager.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @* load after main content so events attach*@
+            <script type="text/javascript" src="~/js/chatHubManager.js"></script>
 
-        @RenderSection("Scripts", required: false)
+            @RenderSection("Scripts", required: false)
 
 
 
-    </main>
+</main>
 </body>
 
 </html>

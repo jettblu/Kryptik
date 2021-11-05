@@ -1,7 +1,7 @@
-﻿$("#searchForm").keyup(function () {
+﻿$("#searchForm").on('input', (function () {
     console.log("search sent!");
     $("#searchForm").submit();
-});
+}));
 
 
 complete = function (res) {

@@ -1,0 +1,91 @@
+﻿@page
+@model CrypticPay.Areas.Community.Pages.IndexModel
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+<!-- a space for real time encrypted chat -->
+
+<div style="margin-top: 1%;" class="row" id="msgSearchArea" hidden>
+    <div class="col s12 l10">
+
+        <form id="msgSearchFriendsForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="Search">
+            <div class="input-field">
+                <i id="searchIcon" class="material-icons black-text medium prefix" style="padding-top: 7px;">search</i>
+                <input id="search" type="search" placeholder="Name, number, or @@CrypticTag" asp-for="Input.SearchString" required>
+                <i id="clearIcon" class="material-icons">close</i>
+            </div>
+        </form>
+
+        <!-- search results go here -->
+
+        <div class="row" id="placeHolder">
+            <center>
+                <span class="info-header">Find friends. Chat securely.</span>
+                <!--<img src="~/Media/search.gif" class="animation-small" /> -->
+                </center>
+            </div>
+
+
+
+            <div class="col s10 offset-s1 l11 offset-l1" id="searchResults">
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="msgBlankArea">
+            <div class="section"></div>
+            <div class="section"></div>
+            <div class="section hide-on-small-only"></div>
+            <div class="section hide-on-small-only"></div>
+            <div class="section hide-on-small-only"></div>
+            <h5 class="textGlow" style="margin-top: 5%">Encrypted Chat will Appear Here</h5>
+            <h6><a class="msgNew hide-on-large-only">Start new →</a></h6>
+    </div>
+
+
+    <div id="msgHistoryArea" hidden>
+
+        <!-- message texts go here -->
+
+
+                <div id="msgCreateArea">
+
+                    <div class="msgBufferBtm">
+
+                    </div>
+
+
+                    <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
+                        <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
+                            <div class="row">
+                                <form id="formChat">
+                                    <div class="valign-wrapper">
+                                        <div class="input-field col l10 s10">
+                                            <textarea id="msg" placeholder="Your secure message." class="materialize-textarea"></textarea>
+                                        </div>
+                                        <div id="containerBtn">
+                                            <a id="btnSubmit" class="col l2 s2">Send</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
+
+
