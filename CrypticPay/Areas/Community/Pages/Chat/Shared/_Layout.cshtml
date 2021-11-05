@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CrypticPay</title>
+    <!-- <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- MATERIALIZE COMPONENTS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/styleChat.css" />
+
+</head>
+
+<body>
+    <script>
+        $(document).ready(function () {
+            $(".button-collapse").sideNav();
+        });
+    </script>
+
+    @*sidebar for LARGE screens*@
+
+    <div class="row">
+        <ul id="nav-mobile" class="side-nav fixed col l2 sideContent white">
+            <div class="row msgHubContainer">
+                <h5 class="textGradientBlack msgHeavyFont">Messages</h5>
+                <div class="msgHubBuffer">
+                </div>
+                <a class="btn btn-flow rounded msgNew"><i style="font-size: 13px" class="black-text material-icons">message</i>  New</a>
+            </div>
+            <hr>
+
+            <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%">
+                <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
+            </div>
+
+        </ul>
+    </div>
+
+    @*sidebar for SMALL screens*@
+
+    <ul class="right side-nav white lighten-5 z-depth-0 sideContent white" id="slideOut" style="width: 100%">
+        <i class="right black-text material-icons msgSideClose">close</i>
+        <div class="row msgHubContainer">
+            <h5 class="textGradientBlack msgHeavyFont">Messages</h5>
+            <div class="msgHubBuffer">
+            </div>
+            <a class="btn btn-flow rounded msgNew"><i style="font-size: 13px" class="black-text material-icons">message</i>  New</a>
+        </div>
+        <hr>
+
+        <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%">
+            <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
+        </div>
+    </ul>
+
+
+
+    <main id="allContent">
+        @*bars that goes across message top of message area*@
+
+        <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
+            <div class="nav-wrapper">
+                <a href="#" data-activates="slideOut" class="button-collapse"><i class="black-text material-icons">arrow_back</i></a>
+                <ul class="left">
+                    <li><a class="msgTitleText"></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <nav class="hide-on-med-and-down msgTitleBarLg msgSeeThru">
+            <div class="nav-wrapper">
+                <ul class="left msgTitle">
+                    <li><a class="msgTitleText"></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="pageContent">
+            @RenderBody()
+        </div>
+
+
+
+
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @* load after main content so events attach*@ 
+        <script type="text/javascript" src="~/js/chatHubManager.js"></script>
+
+        @RenderSection("Scripts", required: false)
+
+
+
+    </main>
+</body>
+
+</html>

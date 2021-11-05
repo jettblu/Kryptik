@@ -44,8 +44,6 @@ namespace CrypticPay.Data
                 .HasForeignKey<CurrencyWallet>(b => b.AddressKey)
                 .OnDelete(DeleteBehavior.Cascade);
 
-         
-
 
         }
     }

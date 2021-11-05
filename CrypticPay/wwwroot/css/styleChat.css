@@ -1,0 +1,99 @@
+﻿.msgBottom {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    left: 20px;
+}
+
+.msgText {
+    font-size: 14px;
+}
+
+.msgBox {
+    background-color: white;
+    padding: 8px;
+    box-shadow: 2px 4px #888888;
+    border: 1px solid;
+    width: fit-content;
+}
+
+
+.msgBoxHover {
+    background-image: linear-gradient(to bottom right, #ffffff, #ebebeb);
+    cursor: pointer;
+}
+
+
+.msgBufferBtm {
+    position: fixed;
+    bottom: 0px;
+    height: 168px;
+    width: 100%;
+    left: 0px;
+    filter: blur(4px);
+    opacity: .9;
+    background-color: white;
+}
+
+
+.msgSeeThru {
+    opacity: .8;
+    background-color: white;
+}
+
+.msgTitleBarLg {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    left: 16%;
+    margin-bottom: 10px;
+    z-index: 0;
+}
+
+.msgTitleBarSml {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.msgTitle {
+    margin-left: 4%;
+}
+
+.msgTitleText {
+    color: black;
+    font-size: 18px;
+}
+
+
+.msgSendBoxPos {
+    position: fixed;
+    bottom: 2%;
+    left: 5px;
+}
+
+
+.msgSideClose {
+    margin-right: 3%;
+    margin-top: 2%
+}
+
+
+    .msgSideClose:hover {
+        cursor: pointer;
+    }
+
+.msgHeavyFont {
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.msgHubContainer {
+    margin-left: 6%;
+    margin-top: 24px;
+}
+
+.msgHubBuffer {
+    height: 3%
+}
