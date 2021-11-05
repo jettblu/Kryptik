@@ -698,34 +698,35 @@ a {
      color: black;
 }
 
-/*style for chat messages*/
 
-.msgBottom {
-    position: fixed;
-    bottom: 10px;
-    width: 100%;
-    left: 20px;
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:focus {
+    border: none;
+    -webkit-text-fill-color: black;
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
-.msgText {
-    font-size: 14px;
+
+.textGlow {
+    font-weight: 420;
+    color: #33beff;
+    background-image: -webkit-linear-gradient(92deg, #36e1ff, #33beff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: hue 10s infinite linear;
 }
 
-.msgBox {
-    background-color: white;
-    padding: 8px;
-    box-shadow: 2px 4px #888888;
-    border: 1px solid;
-    width: fit-content;
-}
+@-webkit-keyframes hue {
+    from {
+        -webkit-filter: hue-rotate(0deg);
+    }
 
-.btmBuffer {
-    position: fixed;
-    bottom: 0px;
-    height: 168px;
-    width: 100%;
-    left: 0px;
-    filter: blur(4px);
-    opacity: .9;
-    background-color: white;
+    to {
+        -webkit-filter: hue-rotate(-360deg);
+    }
 }
