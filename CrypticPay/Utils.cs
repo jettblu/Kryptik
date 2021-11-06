@@ -554,19 +554,40 @@ namespace CrypticPay
 
         public static List<CrypticPayUser> SearchUsers(CrypticPayUser user, CrypticPayContext context, string query, int amount=0)
         {
-            var customers = from m in context.Users
+            var users = from m in context.Users
                             select m;
 
-            // uncomment below to return page if search bypasses client side checks and is empty
+            // match username, username, or number based on query. Exclude current user from result
+            return users.Where(s => (s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)) && s.UserName != user.UserName).ToList();
+        }
 
-            /*if (string.IsNullOrEmpty(query))
+        public static List<CrypticPayFriendship> GetFriendShips(CrypticPayFriendshipContext friendsContext, CrypticPayUser user)
+        {
+            var friends = from f in friendsContext.Friends
+                          where ((f.FriendFrom == user.Id || f.FriendTo == user.Id) && f.IsConfirmed == false)
+                          select f;
+            return friends.ToList();
+        }
+
+        public static List<CrypticPayUser> SearchFriends(CrypticPayUser userIn, CrypticPayContext context, CrypticPayFriendshipContext friendsContext, string query, int amount = 0)
+        {
+            var friendsAll = GetFriendShips(friendsContext, userIn);
+            var result = new List<CrypticPayUser>();
+            foreach (var fship in friendsAll)
             {
-                StatusMessage = "Please enter a valid query.";
-                return Page();
-            }*/
-
-            // match customer name, username, or number based on query. Exclude current user from result
-            return customers.Where(s => (s.UserName.Contains(query) || s.PhoneNumber.StartsWith(query) || s.Name.Contains(query)) && s.UserName != user.UserName).ToList();
+                string friendId = "";
+                if(fship.FriendFrom == userIn.Id)
+                {
+                    friendId = fship.FriendTo;
+                }
+                else
+                {
+                    friendId = fship.FriendFrom;
+                }
+                var friend = context.Users.Find(friendId);
+                result.Add(friend);
+            }
+            return result;
         }
 
         public static void AddToRole(CrypticPayUser user, UserManager<CrypticPayUser> userManager, Globals.Roles role)

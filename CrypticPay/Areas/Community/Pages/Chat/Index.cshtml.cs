@@ -14,14 +14,16 @@ namespace CrypticPay.Areas.Community.Pages
     {
 
         private readonly Data.CrypticPayContext _context;
+        private readonly Data.CrypticPayFriendshipContext _contextFriends;
         private readonly UserManager<CrypticPayUser> _userManager;
         private WalletHandler _walletHandler;
         private Data.CrypticPayCoinContext _contextCoins;
 
-        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayCoinContext contextCoins, UserManager<CrypticPayUser> userManager, WalletHandler walletHandler)
+        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, Data.CrypticPayCoinContext contextCoins, UserManager<CrypticPayUser> userManager, WalletHandler walletHandler)
         {
-            _contextCoins = contextCoins;
             _context = context;
+            _contextFriends = contextFriends;
+            _contextCoins = contextCoins;
             _userManager = userManager;
             _walletHandler = walletHandler;
         }
@@ -60,8 +62,8 @@ namespace CrypticPay.Areas.Community.Pages
 
 
 
-            // match customer name, username, or number based on query
-            Users = Utils.SearchUsers(user, _context, query);
+            // match friend name, username, or number based on query
+            Users = Utils.SearchFriends(user, _context, _contextFriends, query);
             return new JsonResult(Users);
         }
     }

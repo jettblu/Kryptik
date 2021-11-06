@@ -14,24 +14,18 @@ $(".msgNew").on('click', function () {
 
 
 $("#msgSearchFriendsForm").on('input', (function () {
-    console.log("search sent!");
-    console.log($(this).val());
     $("#msgSearchFriendsForm").submit();
 }));
 
 
 complete = function (res) {
-    console.log(res);
     console.log("That was raw response");
     var result = res.responseJSON;
-    console.log(result);
-    console.log(result.length);
     $("#placeHolder").hide();
     $("#searchResults").empty();
     if (result.length == 0) {
         console.log("Zero matching friends.");
         $("#placeHolder").show();
-        console.log("Updated!");
     }
     else {
         console.log("Friends found.");
@@ -39,7 +33,7 @@ complete = function (res) {
             var currUser = result[index];
             console.log(currUser);
             var resultHtml = $(`
-            <div class="row valign-wrapper card hoverable msgFriendResult" data-name="${currUser.name}">
+            <div class="row valign-wrapper card hoverable msgFriendResult" data-name="${currUser.name}" data-userName="${currUser.userName}">
               <div class="col s2">
                 <img src="${currUser.profilePhotoPath}" alt="friend photo" class="circle profilePhotoSearch">
               </div>
@@ -57,12 +51,50 @@ complete = function (res) {
 
 $("#msgSearchArea").on('click', '.msgFriendResult', function () {
     $("#slideOut").sideNav('hide');
-    $("#msgCreateArea").hide();
-    $("#msgHistoryArea").hide();
     $("#msgBlankArea").hide();
     $("#msgSearchArea").hide('slow');
     $("#searchResults").empty();
     console.log($(this).data("name"));
     $(".msgTitleText").text($(this).data("name"));
-    $("#msgHistoryArea").delay(800).show('fast');
+    $(".msgTitleText").text($(this).data("name"));
+    $(".msgTitleText").data("userName", $(this).data("userName"));
+    $("#msgHistoryArea").show('fast');
+    $("#msgCreateArea").show('fast');
+});
+
+
+
+
+/*message handling*/
+
+"use strict";
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+//Disable send button until connection is established
+document.getElementById("sendButton").disabled = true;
+
+connection.on("ReceiveMessage", function (user, message) {
+    var li = document.createElement("li");
+    document.getElementById("messagesList").appendChild(li);
+    // We can assign user-supplied strings to an element's textContent because it
+    // is not interpreted as markup. If you're assigning in any other way, you 
+    // should be aware of possible script injection concerns.
+    li.textContent = `${user} says ${message}`;
+});
+
+connection.start().then(function () {
+    document.getElementById("sendButton").disabled = false;
+}).catch(function (err) {
+    return console.error(err.toString());
+});
+
+document.getElementById("btnSendMsg").addEventListener("click", function (event) {
+    var message = document.getElementById("msgInput").value;
+    if (receiver != "") {
+        connection.invoke("SendMessageToGroup", receiver, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    event.preventDefault();
 });
