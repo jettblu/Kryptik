@@ -4,14 +4,22 @@ using System.Linq;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using CrypticPay.Areas.Identity.Data;
 
 namespace CrypticPay.Hubs
 {
     public class ChatHub:Hub
     {
+        private readonly UserManager<CrypticPayUser> _userManager;
+        public ChatHub(UserManager<CrypticPayUser> userManager)
+        {
+            _userManager = userManager;
+        }
         public override Task OnConnectedAsync()
         {
-            Groups.AddToGroupAsync(Context.ConnectionId, Context.User.Identity.Name);
+            var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            Groups.AddToGroupAsync(Context.ConnectionId, userId);
             return base.OnConnectedAsync();
         }
         public async Task SendMessage(string user, string message)
@@ -20,7 +28,7 @@ namespace CrypticPay.Hubs
         }
         public Task SendMessageToGroup(string receiver, string message)
         {
-            var sender = Context.User.Identity.Name;
+            var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             return Clients.Group(receiver).SendAsync("ReceiveMessage", sender, message);
         }
     }

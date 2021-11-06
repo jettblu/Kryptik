@@ -48,41 +48,42 @@
 
 
     <div id="msgHistoryArea" hidden>
-
         <!-- message texts go here -->
-
-
-                <div id="msgCreateArea">
-
-                    <div class="msgBufferBtm">
-
-                    </div>
-
-
-                    <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
-                        <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
-                            <div class="row">
-                                <form id="formChat">
-                                    <div class="valign-wrapper">
-                                        <div class="input-field col l10 s10">
-                                            <textarea id="msgInput" placeholder="Your secure message." class="materialize-textarea"></textarea>
-                                        </div>
-                                        <div id="containerBtn">
-                                            <a id="btnSendMsg" class="col l2 s2">Send</a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-
     </div>
 
+        
 
+   <div id="msgCreateArea" hidden>
+  
+      <div class="msgBufferBtm">
+  
+      </div>
+  
+  
+      <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
+          <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
+              <div class="row">
+                  <form id="formChat">
+                      <div class="valign-wrapper">
+                          <div class="input-field col l10 s10">
+                              <textarea id="msgInput" placeholder="Your secure message." class="materialize-textarea"></textarea>
+                          </div>
+                          <div id="containerBtn">
+                              <a id="btnSendMsg" class="col l2 s2">Send</a>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+  
+          </div>
+      </div>
+  
+  </div>
+
+
+    
+
+<script src="~/js/ext/signalr/dist/browser/signalr.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
         integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
