@@ -12,14 +12,18 @@ namespace CrypticPay.Hubs
     public class ChatHub:Hub
     {
         private readonly UserManager<CrypticPayUser> _userManager;
-        public ChatHub(UserManager<CrypticPayUser> userManager)
+        private Data.CrypticPayContext _context;
+        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
         public override Task OnConnectedAsync()
         {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            Groups.AddToGroupAsync(Context.ConnectionId, userId);
+            var user = _context.Users.Find(userId);
+            var uName = user.UserName;
+            Groups.AddToGroupAsync(Context.ConnectionId, uName);
             return base.OnConnectedAsync();
         }
         public async Task SendMessage(string user, string message)
@@ -29,7 +33,10 @@ namespace CrypticPay.Hubs
         public Task SendMessageToGroup(string receiver, string message)
         {
             var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return Clients.Group(receiver).SendAsync("ReceiveMessage", sender, message);
+            var user = _context.Users.Find(sender);
+            var uName = user.UserName;
+            return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message);
         }
+        /*Make sure messages are placed into correct view on client side and add sidebar view*/
     }
 }
