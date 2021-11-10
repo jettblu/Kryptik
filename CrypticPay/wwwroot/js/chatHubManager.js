@@ -19,6 +19,11 @@ $("#msgSearchFriendsForm").on('input', (function () {
 }));
 
 
+//set scroll to bottom of page
+var messageBody = document.querySelector('#msgHistoryArea');
+messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+
+
 complete = function (res) {
     console.log("That was raw response");
     var result = res.responseJSON;
