@@ -60,33 +60,29 @@
         </div>
     </ul>
 
+    <div id="msgContainer">
+        @RenderBody()
+    </div>
 
+        <main class="container" id="allContent">
+            @*bars that goes across message top of message area*@
 
-    <main class="container" id="allContent">
-        @*bars that goes across message top of message area*@
+            <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
+                <div class="nav-wrapper">
+                    <a href="#" data-activates="slideOut" class="button-collapse"><i class="black-text material-icons">arrow_back</i></a>
+                    <ul class="left">
+                        <li><a class="msgTitleText"></a></li>
+                    </ul>
+                </div>
+            </nav>
 
-        <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
-            <div class="nav-wrapper">
-                <a href="#" data-activates="slideOut" class="button-collapse"><i class="black-text material-icons">arrow_back</i></a>
-                <ul class="left">
-                    <li><a class="msgTitleText"></a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <nav class="hide-on-med-and-down msgTitleBarLg msgSeeThru">
-            <div class="nav-wrapper">
-                <ul class="left msgTitle">
-                    <li><a class="msgTitleText"></a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="row">
-            <div class="col s12 l8 offset-l3" id="msgMainArea">
-                @RenderBody()
-            </div>
-        </div>
+            <nav class="hide-on-med-and-down msgTitleBarLg msgSeeThru">
+                <div class="nav-wrapper">
+                    <ul class="left msgTitle">
+                        <li><a class="msgTitleText"></a></li>
+                    </ul>
+                </div>
+            </nav>
 
 
 
@@ -99,7 +95,7 @@
 
 
 
-</main>
+        </main>
 </body>
 
 </html>

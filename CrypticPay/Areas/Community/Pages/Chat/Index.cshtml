@@ -6,8 +6,8 @@
 
 <!-- a space for real time encrypted chat -->
 
-<div style="margin-top: 1%;" class="row" id="msgSearchArea" hidden>
-    <div class="col s12 l10">
+<div class="row" id="msgSearchArea" hidden>
+    <div class="col s10 offset-l4 l5" style="position: fixed; top: 6%; left: 5%;">
 
         <form id="msgSearchFriendsForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="Search">
             <div class="input-field">
@@ -23,65 +23,63 @@
             <center>
                 <span class="info-header">Find friends. Chat securely.</span>
                 <!--<img src="~/Media/search.gif" class="animation-small" /> -->
-                </center>
+            </center>
+        </div>
+
+
+
+        <div class="col s10 offset-s1 l11 offset-l1" id="searchResults">
+
+        </div>
+
+
+    </div>
+</div>
+
+<div class="row" id="msgBlankArea">
+    <div class="col l4 offset-l5 s10 offset-s1" style="position: fixed; top: 20%; left: 5%;">
+        <h5 class="textGlow" style="margin-top: 5%">Encrypted Chat will Appear Here</h5>
+        <h6><a class="msgNew hide-on-large-only">Start new →</a></h6>
+    </div>
+
+</div>
+
+
+<div id="msgHistoryArea" hidden>
+    <!-- message texts go here -->
+</div>
+
+
+
+<div class="row" id="msgCreateArea" hidden>
+
+    <div class="msgBufferBtm">
+
+    </div>
+
+
+    <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
+        <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
+            <div class="row">
+                <form id="formChat">
+                    <div class="valign-wrapper">
+                        <div class="input-field col l10 s10">
+                            <textarea id="msgInput" placeholder="Your secure message." class="materialize-textarea"></textarea>
+                        </div>
+                        <div id="containerBtn">
+                            <a id="btnSendMsg" class="col l2 s2">Send</a>
+                        </div>
+                    </div>
+                </form>
             </div>
-
-
-
-            <div class="col s10 offset-s1 l11 offset-l1" id="searchResults">
-
-            </div>
-
 
         </div>
     </div>
 
-    <div id="msgBlankArea">
-            <div class="section"></div>
-            <div class="section"></div>
-            <div class="section hide-on-small-only"></div>
-            <div class="section hide-on-small-only"></div>
-            <div class="section hide-on-small-only"></div>
-            <h5 class="textGlow" style="margin-top: 5%">Encrypted Chat will Appear Here</h5>
-            <h6><a class="msgNew hide-on-large-only">Start new →</a></h6>
-    </div>
+</div>
 
 
-    <div id="msgHistoryArea" hidden>
-        <!-- message texts go here -->
-    </div>
 
-        
-
-   <div id="msgCreateArea" hidden>
-  
-      <div class="msgBufferBtm">
-  
-      </div>
-  
-  
-      <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
-          <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
-              <div class="row">
-                  <form id="formChat">
-                      <div class="valign-wrapper">
-                          <div class="input-field col l10 s10">
-                              <textarea id="msgInput" placeholder="Your secure message." class="materialize-textarea"></textarea>
-                          </div>
-                          <div id="containerBtn">
-                              <a id="btnSendMsg" class="col l2 s2">Send</a>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-  
-          </div>
-      </div>
-  
-  </div>
-
-
-    
 
 <script src="~/js/ext/signalr/dist/browser/signalr.js"></script>
 
