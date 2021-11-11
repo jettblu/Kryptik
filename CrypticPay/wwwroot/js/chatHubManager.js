@@ -15,6 +15,8 @@ $(".msgNew").on('click', function () {
 
 
 $("#msgSearchFriendsForm").on('input', (function () {
+    console.log("Fired w/ content:");
+    console.log($("#msgSearchFriendsForm").text());
     $("#msgSearchFriendsForm").submit();
 }));
 
@@ -121,5 +123,7 @@ document.getElementById("btnSendMsg").addEventListener("click", function (event)
             return console.error(err.toString());
         });
     }
+    // clear text content
+    document.getElementById("btnSendMsg").textContent("");
     event.preventDefault();
 });

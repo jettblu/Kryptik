@@ -2,6 +2,8 @@
 @model CrypticPay.Areas.Community.Pages.IndexModel
 @{
     Layout = "Shared/_Layout.cshtml";
+    ViewData["Title"] = "Secure Chat";
+    ViewData["UserGroups"] = CrypticPay.Areas.Community.Pages.IndexModel.UserGroups;
 }
 
 <!-- a space for real time encrypted chat -->

@@ -56,8 +56,9 @@ namespace CrypticPay
 
             services.AddRazorPages();
 
-            
-            
+            services.AddScoped<ChatHandler>();
+
+
             services.AddTransient<IEmailSender, EmailSender>(i =>
                new EmailSender(
                    Configuration["SendGrid:Key"],

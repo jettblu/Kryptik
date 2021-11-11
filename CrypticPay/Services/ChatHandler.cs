@@ -5,22 +5,25 @@ using System.Threading.Tasks;
 
 namespace CrypticPay.Services
 {
-    public class ChatHandler
+    public class ChatHandler : IChatter<DataTypes.GroupAndMembers>
     {
         private readonly Data.CrypticPayContext _context;
         public ChatHandler(Data.CrypticPayContext context)
         {
             _context = context;
         }
-        public class GroupAndMembers{
-            public Data.Group Group { get; set; }
-            public IEnumerable<string> UserIds { get; set; }
-        }
-        public GroupAndMembers CreateGroup(Areas.Identity.Data.CrypticPayUser creator, List<string> memberIds, bool isPrivate=true)
+
+        public DataTypes.GroupAndMembers CreateGroup(Areas.Identity.Data.CrypticPayUser creator, List<string> memberIds, bool isPrivate = true)
         {
-            Data.Group newGroup = new Data.Group { Creator = creator.Id,  Public = isPrivate, CreationTime = DateTime.Now};
+            // add creator to members
+            memberIds.Add(creator.Id);
+            // if private group w/ these members already exists then return that group
+            var existingGroup = PrivateGroupWithMembers(memberIds);
+            if (existingGroup != null) return existingGroup;
+
+            Data.Group newGroup = new Data.Group { Creator = creator.Id, Public = isPrivate, CreationTime = DateTime.Now };
             _context.Groups.Add(newGroup);
-            Data.GroupUser creatorUserGroup = new Data.GroupUser { CrypticPayUserId = creator.Id, GroupId = newGroup.Id };
+            // create new groupuser for each member
             foreach (var memberId in memberIds)
             {
                 _context.GroupUsers.Add(
@@ -29,38 +32,40 @@ namespace CrypticPay.Services
             }
             // save changes once DB is modified
             _context.SaveChanges();
-            var groupAndMembers = new GroupAndMembers()
+            var groupAndMembers = new DataTypes.GroupAndMembers()
             {
                 Group = newGroup,
                 UserIds = memberIds
             };
             return groupAndMembers;
         }
-        
+
         // gets group with x of x members... empty if none
-        public GroupAndMembers GroupWithMembers(List<string> members)
+        public DataTypes.GroupAndMembers PrivateGroupWithMembers(List<string> members)
         {
-            var groupUsers = _context.Groups.GroupJoin(_context.GroupUsers,
+            // get private groups
+            var privateGroups = _context.Groups.Where(gr => gr.Public == false);
+            var groupUsers = privateGroups.GroupJoin(_context.GroupUsers,
                          gr => gr.Id,
                          gu => gu.GroupId,
                          (gr, guCollection) =>
-                             new GroupAndMembers
+                             new DataTypes.GroupAndMembers
                              {
                                  Group = gr,
                                  UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
                              });
-            var result = groupUsers.First(grp => grp.UserIds == members);
+            var result = groupUsers.FirstOrDefault(grp => grp.UserIds == members);
             return result;
         }
         // all of the groups a user is a member of
-        public IQueryable<GroupAndMembers> GroupsUserHas (Areas.Identity.Data.CrypticPayUser user)
+        public IQueryable<DataTypes.GroupAndMembers> GroupsUserHas(Areas.Identity.Data.CrypticPayUser user)
         {
-            var groupUsers= _context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id);
+            var groupUsers = _context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id);
             var result = _context.Groups.GroupJoin(groupUsers,
                         gr => gr.Id,
                         gu => gu.GroupId,
                         (gr, guCollection) =>
-                             new GroupAndMembers
+                             new DataTypes.GroupAndMembers
                              {
                                  Group = gr,
                                  UserIds = guCollection.Select(gu => gu.CrypticPayUserId)

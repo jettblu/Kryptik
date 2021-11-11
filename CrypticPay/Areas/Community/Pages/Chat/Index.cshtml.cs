@@ -16,16 +16,14 @@ namespace CrypticPay.Areas.Community.Pages
         private readonly Data.CrypticPayContext _context;
         private readonly Data.CrypticPayFriendshipContext _contextFriends;
         private readonly UserManager<CrypticPayUser> _userManager;
-        private WalletHandler _walletHandler;
-        private Data.CrypticPayCoinContext _contextCoins;
+        private ChatHandler _chatter;
 
-        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, Data.CrypticPayCoinContext contextCoins, UserManager<CrypticPayUser> userManager, WalletHandler walletHandler)
+        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, UserManager<CrypticPayUser> userManager, ChatHandler chatHandler)
         {
             _context = context;
             _contextFriends = contextFriends;
-            _contextCoins = contextCoins;
             _userManager = userManager;
-            _walletHandler = walletHandler;
+            _chatter = chatHandler;
         }
 
         // initialize as empty list to avoid errors in view
@@ -37,13 +35,17 @@ namespace CrypticPay.Areas.Community.Pages
 
         [BindProperty]
         public InputModel Input { get; set; }
+        [BindProperty]
+        public static Services.DataTypes.GroupAndMembers UserGroups { get; set; }
 
         public class InputModel
         {
             public string SearchString { get; set; }
         }
-        public void OnGet()
+        public async Task OnGet()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var UserGroups = _chatter.GroupsUserHas(user);
         }
 
         public async Task<JsonResult> OnPostSearchAsync()
