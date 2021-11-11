@@ -69,15 +69,20 @@ $("#msgSearchArea").on('click', '.msgFriendResult', function () {
 });
 
 var addMessageIn = function (txt) {
-    var msgIn = $(`<div class="col offset-l1 offset-s1 l10 s10">
-      <p class="msgText rounded msgBox">${txt}</p>
-      </div>`);
+    console.log("Adding: ");
+    console.log(txt);
+    var msgIn = $(`
+        <div class="row">
+            <div class="col offset-l4 l8 s10 offset-s2">
+              <p class="msgText rounded msgBox">${txt}</p>
+            </div>
+        </div>`);
     $("#msgHistoryArea").append(msgIn);
 }
 
 var addMessageOut = function (txt) {
     var msgOut = $(`<div class="row">
-      <div class="offset-l9 offset-s6 col l3 s6 pull-l1">
+      <div class="col offset-l9 offset-s8 l3 s4">
         <p class="msgText rounded msgBox" style="border: solid 1px;">${txt}</p>
       </div>
     </div>`);
@@ -99,7 +104,6 @@ connection.on("ReceiveMessage", function (user, message) {
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
-    li.textContent = `${user} says ${message}`;
 });
 
 connection.start().then(function () {
