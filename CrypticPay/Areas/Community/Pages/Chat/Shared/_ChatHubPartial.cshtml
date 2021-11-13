@@ -1,0 +1,44 @@
+﻿@{
+    IEnumerable<CrypticPay.Services.DataTypes.GroupAndMembers> groups = (IEnumerable<CrypticPay.Services.DataTypes.GroupAndMembers>)ViewData["UserGroups"];
+}
+
+@using Microsoft.AspNetCore.Identity
+@using CrypticPay.Areas.Identity.Data
+
+@inject UserManager<CrypticPayUser> UserManager
+
+<h5>Groups: @groups.Count()</h5>
+
+@{
+    foreach (var gu in groups)
+    {
+
+        var nameList = new List<string>();
+        var photoList = new List<string>();
+        foreach (var userId in gu.UserIds)
+        {
+            var user = await UserManager.FindByIdAsync(userId);
+            nameList.Add(user.Name);
+            nameList.Add(user.ProfilePhotoPath);
+        }
+        string nameString = string.Join(",", nameList);
+        @*Add default in case photo doesn't exist'*@
+        <div class="row valign-wrapper msgSideBox">
+            <div class="col s2">
+                <img src="@photoList[0]" alt="user photo" style="width: 40px;" class="circle">
+            </div>
+            <div class="col s9 offset-s1">
+                <span style="align: left; font-size: 14px; font-weight: 400px;" class="truncate">nameString</span>
+            </div>
+        </div>
+    }
+}
+
+<div class="row valign-wrapper msgSideBox">
+    <div class="col s2">
+        <img src="fanzy.png" alt="user photo" style="width: 40px;" class="circle">
+    </div>
+    <div class="col s9 offset-s1">
+        <span style="align: left; font-size: 14px; font-weight: 400px;">Joe Bloseph</span>
+    </div>
+</div>

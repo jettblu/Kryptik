@@ -36,7 +36,7 @@ namespace CrypticPay.Areas.Community.Pages
         [BindProperty]
         public InputModel Input { get; set; }
         [BindProperty]
-        public static Services.DataTypes.GroupAndMembers UserGroups { get; set; }
+        public static List<Services.DataTypes.GroupAndMembers> UserGroups { get; set; }
 
         public class InputModel
         {
@@ -44,8 +44,9 @@ namespace CrypticPay.Areas.Community.Pages
         }
         public async Task OnGet()
         {
+            // load groups user is a member of
             var user = await _userManager.GetUserAsync(User);
-            var UserGroups = _chatter.GroupsUserHas(user);
+            UserGroups = _chatter.GroupsUserHas(user);
         }
 
         public async Task<JsonResult> OnPostSearchAsync()

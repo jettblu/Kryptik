@@ -36,7 +36,12 @@
             </div>
             <hr>
 
-            <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%">
+            <partial name="Shared/_ChatHubPartial" view-data="ViewData">
+
+            <div class="msgBufferBtm">
+
+            </div>
+            <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%; margin-left: 40px;">
                 <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
             </div>
 
@@ -55,9 +60,15 @@
         </div>
         <hr>
 
-        <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%">
-            <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
-        </div>
+        @*adapt so only loaded once*@
+        <partial name="Shared/_ChatHubPartial" view-data="ViewData">
+
+            <div class="msgBufferBtm">
+
+            </div>
+            <div class="msgSeeThru" style="position: sticky; bottom: 12%; left: 5%; margin-left: 40px;">
+                <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
+            </div>
     </ul>
 
     <div id="msgContainer">

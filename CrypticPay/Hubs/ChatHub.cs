@@ -30,13 +30,24 @@ namespace CrypticPay.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+        // MAKE ASYNC?
         public Task SendMessageToGroup(string receiver, string message)
         {
             var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _context.Users.Find(sender);
             var uName = user.UserName;
+            // RECIEVER SHOULD BE GROUP ID
+            var msg = new Data.ChatData()
+            {
+                GroupId = receiver,
+                Message = message,
+                SenderId = user.Id,
+                IsRead = false
+            };
+            _context.Chats.Add(msg);
+            _context.SaveChanges();
             return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message);
         }
-        /*Make sure messages are placed into correct view on client side and add sidebar view*/
+        // MAKE SURE MESSAGES ARE IN CORRECT VIEW AND SIDEBAR IS UPDATED ON CLIENT
     }
 }

@@ -15,7 +15,7 @@ namespace CrypticPay.Services
 
         public DataTypes.GroupAndMembers CreateGroup(Areas.Identity.Data.CrypticPayUser creator, List<string> memberIds, bool isPrivate = true)
         {
-            // add creator to members
+            // add chat creator to members
             memberIds.Add(creator.Id);
             // if private group w/ these members already exists then return that group
             var existingGroup = PrivateGroupWithMembers(memberIds);
@@ -44,7 +44,7 @@ namespace CrypticPay.Services
         public DataTypes.GroupAndMembers PrivateGroupWithMembers(List<string> members)
         {
             // get private groups
-            var privateGroups = _context.Groups.Where(gr => gr.Public == false);
+            /*var privateGroups = _context.Groups.Where(gr => gr.Public == false);
             var groupUsers = privateGroups.GroupJoin(_context.GroupUsers,
                          gr => gr.Id,
                          gu => gu.GroupId,
@@ -54,23 +54,39 @@ namespace CrypticPay.Services
                                  Group = gr,
                                  UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
                              });
-            var result = groupUsers.FirstOrDefault(grp => grp.UserIds == members);
-            return result;
+            var result = groupUsers.FirstOrDefault(grp => grp.UserIds == members);*/
+            var queryResult =
+           (from gr in _context.Groups
+            from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id && gr.Public==false).DefaultIfEmpty()
+            select new DataTypes.GroupAndMembers
+            {
+                Group = gr,
+                UserIds = _context.GroupUsers.Select(g1 => g1.Id)
+            }).FirstOrDefault();
+            return queryResult;
         }
         // all of the groups a user is a member of
-        public IQueryable<DataTypes.GroupAndMembers> GroupsUserHas(Areas.Identity.Data.CrypticPayUser user)
+        public List<DataTypes.GroupAndMembers> GroupsUserHas(Areas.Identity.Data.CrypticPayUser user)
         {
-            var groupUsers = _context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id);
-            var result = _context.Groups.GroupJoin(groupUsers,
+/*            var result = _context.Groups.GroupJoin(_context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id),
                         gr => gr.Id,
+                        gu=>gu.CrypticPayUserId == user.Id,
                         gu => gu.GroupId,
                         (gr, guCollection) =>
                              new DataTypes.GroupAndMembers
                              {
                                  Group = gr,
                                  UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
-                             });
-            return result;
+                             });*/
+            var queryResult =
+            (from gr in _context.Groups
+             from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id && gu.CrypticPayUserId == user.Id).DefaultIfEmpty()
+             select new DataTypes.GroupAndMembers
+             {
+                 Group = gr,
+                 UserIds = _context.GroupUsers.Select(g1=>g1.Id)
+             }).ToList();
+            return queryResult;
         }
     }
 }

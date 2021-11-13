@@ -25,7 +25,7 @@
 
 
 .msgBufferBtm {
-    position: fixed;
+    position: sticky;
     bottom: 0px;
     height: 168px;
     width: 100%;
