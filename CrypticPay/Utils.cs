@@ -585,7 +585,10 @@ namespace CrypticPay
                     friendId = fship.FriendFrom;
                 }
                 var friend = context.Users.Find(friendId);
-                result.Add(friend);
+                // match query
+                if(friend.UserName.Contains(query) || friend.PhoneNumber.StartsWith(query) || friend.Name.Contains(query)){
+                    result.Add(friend);
+                }  
             }
             return result;
         }
