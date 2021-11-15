@@ -2,6 +2,14 @@
     $("#slideOut").sideNav('hide');
 });
 
+$("#msgSideBar").on('mouseenter', ".msgSideBox", function () {
+    $(this).toggleClass('msgBoxHover');
+});
+
+$("#slideOut").on('mouseenter', ".msgSideBox", function () {
+    $(this).toggleClass('msgBoxHover');
+});
+
 /*show contact search box on request*/
 $(".msgNew").on('click', function () {
     $("#slideOut").sideNav('hide');
@@ -25,16 +33,22 @@ $("#msgSearchFriendsForm").on('input', (function () {
 var messageBody = document.querySelector('#msgHistoryArea');
 messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
 
+var setScroll = function () {
+    var messageBody = document.querySelector('#msgHistoryArea');
+    messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+}
 
-complete = function (res) {
+completeSearch = function (res) {
     console.log("That was raw response");
     var result = res.responseJSON;
     $("#placeHolder").hide();
     $("#searchResults").empty();
+
     if (result.length == 0) {
         console.log("Zero matching friends.");
         $("#placeHolder").show();
     }
+
     else {
         console.log("Friends found.");
         $(result).each(function (index) {
@@ -53,21 +67,19 @@ complete = function (res) {
             $("#searchResults").append(resultHtml);
         });
     }
-
 };
 
 
 $("#msgSearchArea").on('click', '.msgFriendResult', function () {
-    $("#slideOut").sideNav('hide');
-    $("#msgBlankArea").hide();
-    $("#msgSearchArea").hide('slow');
-    $("#searchResults").empty();
     console.log($(this).data("name"));
+    // eventually switch name additions to on complete??
     $(".msgTitleText").text($(this).data("name"));
     console.log($(this).data("username"));
     $(".msgTitleText").data("username", $(this).data("username"));
-    $("#msgHistoryArea").show('fast');
-    $("#msgCreateArea").show('fast');
+    // ADD handling for group. More than 1 member.
+    $("#membersGroup").val($(this).data("username"));
+    // submit hidden form so server can get group
+    $("#msgNewGroupForm").submit();
 });
 
 var addMessageIn = function (txt) {
@@ -91,6 +103,26 @@ var addMessageOut = function (txt) {
     $("#msgHistoryArea").append(msgOut);
 }
 
+// async. completion for new group
+completeNewGroup = function (res) {
+    
+    // append messages formatted by server
+    var result = res.responseText;
+    $("#msgHistoryArea").empty();
+    $("#msgHistoryArea").append(result);
+    // ADD decryption on client side
+
+    // hide non-msg history elements
+    $("#slideOut").sideNav('hide');
+    $("#msgBlankArea").hide();
+    $("#msgSearchArea").hide('slow');
+    $("#searchResults").empty();
+    
+    // show msg. history for group
+    $("#msgHistoryArea").show('fast');
+    $("#msgCreateArea").show('fast');
+}
+
 
 /*message handling*/
 
@@ -101,8 +133,14 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 //Disable send button until connection is established
 document.getElementById("btnSendMsg").disabled = true;
 
-connection.on("ReceiveMessage", function (user, message) {
-    addMessageIn(message);
+connection.on("ReceiveMessage", function (user, message, groupId) {
+    // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
+    var metaTag = $("#msgMeta");
+    var thisGroupId = metaTag.data("group");
+    if (groupId == thisGroupId) {
+        addMessageIn(message);
+    }
+    setScroll();
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
@@ -115,15 +153,20 @@ connection.start().then(function () {
 });
 
 document.getElementById("btnSendMsg").addEventListener("click", function (event) {
+    // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var message = document.getElementById("msgInput").value;
     addMessageOut(message);
+    setScroll();
     var receiver = $(".msgTitleText").data("username");
+    // get group id from meta div
+    var metaTag = $("#msgMeta");
+    var groupId = metaTag.data("group");
     if (receiver != "") {
-        connection.invoke("SendMessageToGroup", receiver, message).catch(function (err) {
+        connection.invoke("SendMessageToGroup", receiver, message, groupId).catch(function (err) {
             return console.error(err.toString());
         });
     }
-    // clear text content
-    document.getElementById("btnSendMsg").textContent("");
+    // clear text content of message creation box
+    $("#msgInput").val("");
     event.preventDefault();
 });

@@ -18,7 +18,6 @@ complete = function (res) {
             <span class="info-header">Find friends. Send crypto.</span>
             <img src="${basePath}/Media/search.gif" class="animation-small"/>
             </center>`);
-
         $("#placeHolder").append(placeholderHtml);
         console.log("Updated!");
     }

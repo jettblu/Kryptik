@@ -595,6 +595,17 @@ namespace CrypticPay
             userManager.AddToRoleAsync(user, role.ToString()).Wait();
         }
 
+        public static async Task<List<string>> UserNamesToIds(List<string> unames, UserManager<CrypticPayUser> userManager)
+        {
+            List<string> result = new List<string>();
+            foreach (var uname in unames)
+            {
+                var user = await userManager.FindByNameAsync(uname);
+                result.Add(user.Id);
+            }
+            return result;
+        }
+
 
 
 

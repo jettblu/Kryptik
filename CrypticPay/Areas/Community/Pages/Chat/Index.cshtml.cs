@@ -6,7 +6,9 @@ using CrypticPay.Areas.Identity.Data;
 using CrypticPay.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CrypticPay.Areas.Community.Pages
 {
@@ -41,6 +43,7 @@ namespace CrypticPay.Areas.Community.Pages
         public class InputModel
         {
             public string SearchString { get; set; }
+            public string MemberString { get; set; }
         }
         public async Task OnGet()
         {
@@ -68,6 +71,33 @@ namespace CrypticPay.Areas.Community.Pages
             // match friend name, username, or number based on query
             Users = Utils.SearchFriends(user, _context, _contextFriends, query);
             return new JsonResult(Users);
+        }
+        // returns existing group w/ members or new group
+        public async Task<IActionResult> OnPostCreateGroupAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (string.IsNullOrEmpty(Input.MemberString))
+            {
+                StatusMessage = "Please enter valid group.";
+            };
+       
+            List<string> members = Input.MemberString.Split(',').ToList();
+
+            // convert list of unames to list of uids
+            members = await Utils.UserNamesToIds(members, _userManager);
+
+            // get group and populate w/ messages, if any
+            Services.DataTypes.GroupAndMembers group = _chatter.CreateGroup(user, members, isPublic:false);
+            group.Messages = _chatter.GroupMessages(group.Group.Id);
+
+            return new PartialViewResult()
+            {
+                ViewName = "shared/_GroupMessagesPartial",
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = group
+                }
+            };
         }
     }
 }

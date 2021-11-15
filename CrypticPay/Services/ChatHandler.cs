@@ -13,15 +13,17 @@ namespace CrypticPay.Services
             _context = context;
         }
 
-        public DataTypes.GroupAndMembers CreateGroup(Areas.Identity.Data.CrypticPayUser creator, List<string> memberIds, bool isPrivate = true)
+        public DataTypes.GroupAndMembers CreateGroup(Areas.Identity.Data.CrypticPayUser creator, List<string> memberIds, bool isPublic = false)
         {
             // add chat creator to members
             memberIds.Add(creator.Id);
-            // if private group w/ these members already exists then return that group
+
+
             var existingGroup = PrivateGroupWithMembers(memberIds);
+            // if private group w/ these members already exists then return that group
             if (existingGroup != null) return existingGroup;
 
-            Data.Group newGroup = new Data.Group { Creator = creator.Id, Public = isPrivate, CreationTime = DateTime.Now };
+            Data.Group newGroup = new Data.Group { Creator = creator.Id, Public = isPublic, CreationTime = DateTime.Now };
             _context.Groups.Add(newGroup);
             // create new groupuser for each member
             foreach (var memberId in memberIds)
@@ -40,6 +42,12 @@ namespace CrypticPay.Services
             return groupAndMembers;
         }
 
+        public IEnumerable<Data.ChatData> GroupMessages(string groupId)
+        {
+            List<Data.ChatData> messages = _context.Chats.Where(ch => ch.GroupId == groupId).OrderBy(ch => ch.CreationTime).ToList();
+            return messages;
+        }
+
         // gets group with x of x members... empty if none
         public DataTypes.GroupAndMembers PrivateGroupWithMembers(List<string> members)
         {
@@ -56,14 +64,23 @@ namespace CrypticPay.Services
                              });
             var result = groupUsers.FirstOrDefault(grp => grp.UserIds == members);*/
             var queryResult =
-           (from gr in _context.Groups
-            from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id && gr.Public==false).DefaultIfEmpty()
+           (from gr in _context.Groups.Where(gr=>gr.Public==false)
+            from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id).DefaultIfEmpty()
             select new DataTypes.GroupAndMembers
             {
                 Group = gr,
-                UserIds = _context.GroupUsers.Select(g1 => g1.Id)
-            }).FirstOrDefault();
-            return queryResult;
+                UserIds = _context.GroupUsers.Select(g1 => g1.CrypticPayUserId)
+            }).ToList();
+
+            var memberSet = new HashSet<string>(members);
+            // find group with whose members exactly match input members
+            foreach (var gCombo in queryResult)
+            {
+                var gComboSet = new HashSet<string>(gCombo.UserIds);
+                if (gComboSet.SetEquals(memberSet)) return gCombo;
+            }
+            // if no suchgcombo exists return NUll 
+            return null;
         }
         // all of the groups a user is a member of
         public List<DataTypes.GroupAndMembers> GroupsUserHas(Areas.Identity.Data.CrypticPayUser user)
@@ -84,7 +101,7 @@ namespace CrypticPay.Services
              select new DataTypes.GroupAndMembers
              {
                  Group = gr,
-                 UserIds = _context.GroupUsers.Select(g1=>g1.Id)
+                 UserIds = _context.GroupUsers.Select(g1=>g1.CrypticPayUserId)
              }).ToList();
             return queryResult;
         }

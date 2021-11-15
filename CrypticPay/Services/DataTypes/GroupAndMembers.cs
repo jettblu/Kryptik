@@ -9,5 +9,6 @@ namespace CrypticPay.Services.DataTypes
     {
         public Data.Group Group { get; set; }
         public IEnumerable<string> UserIds { get; set; }
+        public IEnumerable<Data.ChatData> Messages { get; set; }
     }
 }

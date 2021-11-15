@@ -13,11 +13,13 @@ namespace CrypticPay.Hubs
     {
         private readonly UserManager<CrypticPayUser> _userManager;
         private Data.CrypticPayContext _context;
+        
         public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context)
         {
             _userManager = userManager;
             _context = context;
         }
+        // UPDATE TO SUPPORT >2 GROUPS
         public override Task OnConnectedAsync()
         {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -30,23 +32,25 @@ namespace CrypticPay.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-        // MAKE ASYNC?
-        public Task SendMessageToGroup(string receiver, string message)
+        // UPDATE THIS TO SUPPORT >2 GROUPS. MAYBE SEARCH GROUP AND BROADCAST TO ALL MEMBERS.
+        public Task SendMessageToGroup(string receiver, string message, string groupId)
         {
             var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _context.Users.Find(sender);
             var uName = user.UserName;
-            // RECIEVER SHOULD BE GROUP ID
+            // save message
             var msg = new Data.ChatData()
             {
-                GroupId = receiver,
+                GroupId = groupId,
                 Message = message,
                 SenderId = user.Id,
-                IsRead = false
+                IsRead = false,
+                CreationTime = DateTime.Now
             };
             _context.Chats.Add(msg);
             _context.SaveChanges();
-            return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message);
+            // FIX GROUP NAME 
+            return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message, groupId);
         }
         // MAKE SURE MESSAGES ARE IN CORRECT VIEW AND SIDEBAR IS UPDATED ON CLIENT
     }

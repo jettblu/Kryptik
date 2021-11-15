@@ -6,17 +6,21 @@
     ViewData["UserGroups"] = CrypticPay.Areas.Community.Pages.IndexModel.UserGroups;
 }
 
+<!-- FIX: SMALLER BLUR AT TOP -->
 <!-- a space for real time encrypted chat -->
 
 <div class="row" id="msgSearchArea" hidden>
     <div class="col s10 offset-l4 l5" style="position: fixed; top: 6%; left: 5%;">
 
-        <form id="msgSearchFriendsForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="complete" asp-page-handler="Search">
+        <form id="msgSearchFriendsForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="completeSearch" asp-page-handler="Search">
             <div class="input-field">
                 <i id="searchIcon" class="material-icons black-text medium prefix" style="padding-top: 7px;">search</i>
                 <input id="search" type="search" placeholder="Name, number, or @@CrypticTag" asp-for="Input.SearchString" required>
                 <i id="clearIcon" class="material-icons">close</i>
             </div>
+        </form>
+        <form id="msgNewGroupForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="completeNewGroup" asp-page-handler="CreateGroup" hidden>
+            <input id="membersGroup" type="text" asp-for="Input.MemberString" hidden>
         </form>
 
         <!-- search results go here -->
@@ -27,8 +31,6 @@
                 <!--<img src="~/Media/search.gif" class="animation-small" /> -->
             </center>
         </div>
-
-
 
         <div class="col s10 offset-s1 l11 offset-l1" id="searchResults">
 

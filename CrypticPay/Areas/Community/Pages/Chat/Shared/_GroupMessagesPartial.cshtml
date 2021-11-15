@@ -1,0 +1,41 @@
+﻿@using CrypticPay.Services.DataTypes
+@inject UserManager<CrypticPayUser> UserManager
+
+@model GroupAndMembers
+
+
+@{
+    var userInfo = UserManager.GetUserAsync(User).Result;
+    // if there are no saved messages
+    if (Model.Messages.Count() == 0)
+    {
+        @*<div id="msgHistoryPlaceHolder" class="col l4 offset-l5 s10 offset-s1" style="position: fixed; top: 20%; left: 5%;">
+            <h5 class="textGlow" style="margin-top: 5%">Encrypted History will Appear Here</h5>
+        </div>*@
+    }
+    // loop through all of group messages
+    foreach (var msg in Model.Messages)
+    {
+        // message out
+        if (msg.SenderId == userInfo.Id)
+        {
+            <div class="row">
+                <div class="col offset-l9 offset-s8 l3 s4">
+                    <p class="msgText rounded msgBox" style="border: solid 1px;">@msg.Message</p>
+                </div>
+            </div>
+        }
+        // message in
+        else
+        {
+            <div class="row">
+                <div class="col offset-l4 l8 s10 offset-s2">
+                    <p class="msgText rounded msgBox">@msg.Message</p>
+                </div>
+            </div>
+        }
+    }
+    <div hidden id="msgMeta" data-members="@string.Join(",", Model.UserIds)" data-group="@Model.Group.Id">
+        <p>POOP!</p>
+    </div>
+}
