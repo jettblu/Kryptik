@@ -2,13 +2,24 @@
     $("#slideOut").sideNav('hide');
 });
 
-$("#msgSideBar").on('mouseenter', ".msgSideBox", function () {
-    $(this).toggleClass('msgBoxHover');
+var clearMainArea = function () {
+    $("#msgCreateArea").hide('slow');
+    $("#msgBlankArea").hide('slow');
+    $("#msgHistoryArea").hide('slow');
+    $("#msgHistoryArea").empty();
+    $("#msgSearchArea").hide('fast');
+    $("#slideOut").sideNav('hide');
+}
+
+
+$(".msgHubContainer").on('click', ".msgSideBox", function () {
+    // ADD handling for group. More than 1 member.
+    $("#membersGroup").val($(this).data("members"));
+    // submit hidden form so server can get group
+    $("#msgNewGroupForm").submit();
+    clearMainArea();
 });
 
-$("#slideOut").on('mouseenter', ".msgSideBox", function () {
-    $(this).toggleClass('msgBoxHover');
-});
 
 /*show contact search box on request*/
 $(".msgNew").on('click', function () {
@@ -121,6 +132,7 @@ completeNewGroup = function (res) {
     // show msg. history for group
     $("#msgHistoryArea").show('fast');
     $("#msgCreateArea").show('fast');
+    setScroll();
 }
 
 

@@ -33,31 +33,31 @@
                 <div class="msgHubBuffer">
                 </div>
                 <a class="btn btn-flow rounded msgNew"><i style="font-size: 13px" class="black-text material-icons">message</i>  New</a>
+
+                <hr>
+
+                <partial name="Shared/_ChatHubPartial" view-data="ViewData">
+
+                    <div class="msgBufferBtm">
+
+                    </div>
+                    <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%; margin-left: 40px;">
+                        <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
+                    </div>
             </div>
-            <hr>
-
-            <partial name="Shared/_ChatHubPartial" view-data="ViewData">
-
-            <div class="msgBufferBtm">
-
-            </div>
-            <div class="msgSeeThru" style="position: fixed; bottom: 12%; left: 5%; margin-left: 40px;">
-                <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
-            </div>
-
         </ul>
     </div>
 
     @*sidebar for SMALL screens*@
 
-    <ul class="right side-nav white lighten-5 z-depth-0 sideContent white" id="slideOut" style="width: 100%">
-        <i class="right black-text material-icons msgSideClose">close</i>
-        <div class="row msgHubContainer">
-            <h5 class="textGradientBlack msgHeavyFont">Messages</h5>
-            <div class="msgHubBuffer">
-            </div>
-            <a class="btn btn-flow rounded msgNew"><i style="font-size: 13px" class="black-text material-icons">message</i>  New</a>
+<ul class="right side-nav white lighten-5 z-depth-0 sideContent white" id="slideOut" style="width: 100%">
+    <i class="right black-text material-icons msgSideClose">close</i>
+    <div class="row msgHubContainer">
+        <h5 class="textGradientBlack msgHeavyFont">Messages</h5>
+        <div class="msgHubBuffer">
         </div>
+        <a class="btn btn-flow rounded msgNew"><i style="font-size: 13px" class="black-text material-icons">message</i>  New</a>
+
         <hr>
 
         @*adapt so only loaded once*@
@@ -69,7 +69,8 @@
             <div class="msgSeeThru" style="position: sticky; bottom: 12%; left: 5%; margin-left: 40px;">
                 <a class="btn btn-action" asp-area="Payments" asp-page="/Send">Exit</a>
             </div>
-    </ul>
+    </div>
+</ul>
 
     <div id="msgContainer">
         @RenderBody()

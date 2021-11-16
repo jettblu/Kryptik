@@ -22,6 +22,7 @@
 
             var nameList = new List<string>();
             var photoList = new List<string>();
+            var uList = new List<string>();
             foreach (var userId in gu.UserIds)
             {
                 var user = await UserManager.FindByIdAsync(userId);
@@ -29,11 +30,13 @@
                 {
                     nameList.Add(user.Name);
                     photoList.Add(user.ProfilePhotoPath);
+                    uList.Add(user.UserName);
                 }
             }
             string nameString = string.Join(",", nameList);
+            string uNameString = string.Join(",", uList);
             @*Add default in case photo doesn't exist'*@
-            <div class="row valign-wrapper msgSideBox">
+            <div class="row valign-wrapper msgSideBox" data-group="@gu.Group.Id" data-members="@uNameString">
                 <div class="col s2">
                     <img src="@photoList[0]" alt="user photo" style="width: 40px;" class="circle">
                 </div>

@@ -23,6 +23,10 @@
     cursor: pointer;
 }
 
+.msgSideBox:hover {
+    background-image: linear-gradient(to bottom right, #ffffff, #ebebeb);
+    cursor: pointer;
+}
 
 .msgBufferBtm {
     position: sticky;
@@ -153,4 +157,7 @@ msgOut{
     margin-left: auto;
     padding-left: 300px;
 }
+
+
+
 
