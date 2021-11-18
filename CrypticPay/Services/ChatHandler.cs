@@ -105,5 +105,11 @@ namespace CrypticPay.Services
              }).ToList();
             return queryResult;
         }
+
+        // returns all user ids that belong to group marked by id
+        public IEnumerable<string> GroupMembers(string groupId)
+        {
+            return _context.GroupUsers.Where(gu => gu.GroupId == groupId).Select(g1 => g1.CrypticPayUserId).ToList();
+        }
     }
 }

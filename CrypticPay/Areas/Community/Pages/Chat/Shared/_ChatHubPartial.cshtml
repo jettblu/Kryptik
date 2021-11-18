@@ -36,7 +36,7 @@
             string nameString = string.Join(",", nameList);
             string uNameString = string.Join(",", uList);
             @*Add default in case photo doesn't exist'*@
-            <div class="row valign-wrapper msgSideBox" data-group="@gu.Group.Id" data-members="@uNameString">
+            <div class="row valign-wrapper msgSideBox" data-group="@gu.Group.Id" data-members="@uNameString" data-nameTitle="@nameString">
                 <div class="col s2">
                     <img src="@photoList[0]" alt="user photo" style="width: 40px;" class="circle">
                 </div>

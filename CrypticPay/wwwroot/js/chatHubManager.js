@@ -13,6 +13,11 @@ var clearMainArea = function () {
 
 
 $(".msgHubContainer").on('click', ".msgSideBox", function () {
+    console.log("Side box hit");
+    console.log($(this).data("members"));
+    console.log($(this).data("nametitle"));
+    $(".msgTitleText").text($(this).data("nametitle"));
+    $(".msgTitleText").data("username", $(this).data("members"));
     // ADD handling for group. More than 1 member.
     $("#membersGroup").val($(this).data("members"));
     // submit hidden form so server can get group
@@ -136,6 +141,49 @@ completeNewGroup = function (res) {
 }
 
 
+var updateBoxesSmall = function (groupId, sideBox) {
+    var exists = false;
+    $("#msgHubBoxesBig").children('.msgSideBox').each(function () {
+        if ($(this).data('group') == groupId) {
+            console.log("Side Box exists.");
+            $(this).prependTo($("#msgHubBoxesSmall"));
+            exists = true;
+            // break the each statement
+            return false;
+        }
+    });
+    // if sideBox doesn't exist add in new
+    if (!exists) {
+        document.getElementsById(".msgHubBoxesSmall").insertAdjacentHtml('beforebegin', sideBox);
+        console.log("Add side box success!");
+    }
+}
+
+var updateBoxesBig = function (groupId, sideBox) {
+    var exists = false;
+    $("#msgHubBoxesSmall").children('.msgSideBox').each(function () {
+        if ($(this).data('group') == groupId) {
+            console.log("Side Box exists.");
+            $(this).prependTo($("#msgHubBoxesBig"));
+            exists = true;
+            // break the each statement
+            return false;
+        }
+    });
+    // if sideBox doesn't exist add in new
+    if (!exists) {
+        document.getElementsById("#msgHubBoxesBig").insertAdjacentHtml('beforebegin', sideBox);
+        console.log("Add side box success!");
+    }
+}
+
+
+var updateHub = function (groupId, sideBox) {
+    console.log("Updating hub");
+    updateBoxesBig(groupId, sideBox);
+    updateBoxesSmall(groupId, sideBox);
+}
+
 /*message handling*/
 
 "use strict";
@@ -145,13 +193,14 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 //Disable send button until connection is established
 document.getElementById("btnSendMsg").disabled = true;
 
-connection.on("ReceiveMessage", function (user, message, groupId) {
+connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var metaTag = $("#msgMeta");
     var thisGroupId = metaTag.data("group");
     if (groupId == thisGroupId) {
         addMessageIn(message);
     }
+    updateHub(groupId, sideBox);
     setScroll();
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 

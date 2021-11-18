@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using CrypticPay.Areas.Identity.Data;
+using CrypticPay.Services;
 
 namespace CrypticPay.Hubs
 {
@@ -13,11 +14,14 @@ namespace CrypticPay.Hubs
     {
         private readonly UserManager<CrypticPayUser> _userManager;
         private Data.CrypticPayContext _context;
-        
-        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context)
+        private ChatHandler _chatter;
+
+
+        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context, ChatHandler chatHandler)
         {
             _userManager = userManager;
             _context = context;
+            _chatter = chatHandler;
         }
         // UPDATE TO SUPPORT >2 GROUPS
         public override Task OnConnectedAsync()
@@ -47,11 +51,51 @@ namespace CrypticPay.Hubs
                 IsRead = false,
                 CreationTime = DateTime.Now
             };
+            // generate chat hub partial
+            var grouper = new Services.DataTypes.GroupAndMembers()
+            {
+                Group = _context.Groups.Find(groupId),
+                // eventually add all members
+                UserIds = _chatter.GroupMembers(groupId)
+            };
             _context.Chats.Add(msg);
             _context.SaveChanges();
+            string sideBox = createSideBox(grouper, user);
             // FIX GROUP NAME 
-            return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message, groupId);
+            return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message, groupId, sideBox);
         }
         // MAKE SURE MESSAGES ARE IN CORRECT VIEW AND SIDEBAR IS UPDATED ON CLIENT
+
+        // create sideBox string to display on client
+        public string createSideBox(Services.DataTypes.GroupAndMembers gu, CrypticPayUser currUser )
+        {
+            var nameList = new List<string>();
+            var photoList = new List<string>();
+            var uList = new List<string>();
+            foreach (var userId in gu.UserIds)
+            {
+                var user = _context.Users.Find(userId);
+                if (userId != currUser.Id)
+                {
+                    nameList.Add(user.Name);
+                    photoList.Add(user.ProfilePhotoPath);
+                    uList.Add(user.UserName);
+                }
+            }
+            string nameString = string.Join(",", nameList);
+            string uNameString = string.Join(",", uList);
+
+            var sideBoxHtml = $@"
+                <div class=""row valign-wrapper msgSideBox"" data-group=""{gu.Group.Id}"" data-members=""{uNameString}"" data-nameTitle=""{nameString}"">
+                < div class=""col s2"">
+                    <img src = ""{photoList[0]}"" alt=""user photo"" style=""width: 40px;"" class=""circle"">
+                </div>
+                <div class=""col s9 offset-s1"">
+                    <span style = ""align: left; font-size: 14px; font-weight: 400px;"" class=""truncate"">{nameString}</span>
+                </div>
+            </div>
+            ";
+            return sideBoxHtml;
+        }
     }
 }
