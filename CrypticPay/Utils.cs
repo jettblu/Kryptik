@@ -564,7 +564,7 @@ namespace CrypticPay
         public static List<CrypticPayFriendship> GetFriendShips(CrypticPayFriendshipContext friendsContext, CrypticPayUser user)
         {
             var friends = from f in friendsContext.Friends
-                          where ((f.FriendFrom == user.Id || f.FriendTo == user.Id) && f.IsConfirmed == false)
+                          where ((f.FriendFrom == user.Id || f.FriendTo == user.Id) && f.IsConfirmed == true)
                           select f;
             return friends.ToList();
         }
