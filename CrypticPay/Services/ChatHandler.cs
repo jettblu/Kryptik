@@ -19,7 +19,7 @@ namespace CrypticPay.Services
             memberIds.Add(creator.Id);
 
 
-            var existingGroup = PrivateGroupWithMembers(memberIds);
+            var existingGroup = PrivateGroupWithMembers(memberIds, creator);
             // if private group w/ these members already exists then return that group
             if (existingGroup != null) return existingGroup;
 
@@ -49,7 +49,7 @@ namespace CrypticPay.Services
         }
 
         // gets group with x of x members... empty if none
-        public DataTypes.GroupAndMembers PrivateGroupWithMembers(List<string> members)
+        public DataTypes.GroupAndMembers PrivateGroupWithMembers(List<string> members, Areas.Identity.Data.CrypticPayUser user)
         {
             // get private groups
             /*var privateGroups = _context.Groups.Where(gr => gr.Public == false);
@@ -63,18 +63,22 @@ namespace CrypticPay.Services
                                  UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
                              });
             var result = groupUsers.FirstOrDefault(grp => grp.UserIds == members);*/
-            var queryResult =
+
+           // linq query that failed with multiple group users
+           /* var queryResult =
            (from gr in _context.Groups.Where(gr=>gr.Public==false)
             from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id).DefaultIfEmpty()
             select new DataTypes.GroupAndMembers
             {
                 Group = gr,
                 UserIds = _context.GroupUsers.Select(g1 => g1.CrypticPayUserId)
-            }).ToList();
+            }).ToList();*/
+
+            var groupsPartOf = GroupsUserHas(user);
 
             var memberSet = new HashSet<string>(members);
             // find group with whose members exactly match input members
-            foreach (var gCombo in queryResult)
+            foreach (var gCombo in groupsPartOf)
             {
                 var gComboSet = new HashSet<string>(gCombo.UserIds);
                 if (gComboSet.SetEquals(memberSet)) return gCombo;
@@ -85,25 +89,49 @@ namespace CrypticPay.Services
         // all of the groups a user is a member of
         public List<DataTypes.GroupAndMembers> GroupsUserHas(Areas.Identity.Data.CrypticPayUser user)
         {
-/*            var result = _context.Groups.GroupJoin(_context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id),
-                        gr => gr.Id,
-                        gu=>gu.CrypticPayUserId == user.Id,
-                        gu => gu.GroupId,
-                        (gr, guCollection) =>
-                             new DataTypes.GroupAndMembers
-                             {
-                                 Group = gr,
-                                 UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
-                             });*/
-            var queryResult =
+            // initial implentation no longer valid with new ef core version
+            /*            var result = _context.Groups.GroupJoin(_context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id),
+                                    gr => gr.Id,
+                                    gu=>gu.CrypticPayUserId == user.Id,
+                                    gu => gu.GroupId,
+                                    (gr, guCollection) =>
+                                         new DataTypes.GroupAndMembers
+                                         {
+                                             Group = gr,
+                                             UserIds = guCollection.Select(gu => gu.CrypticPayUserId)
+                                         });*/
+
+            // linq implementation that fails w/ multiple groups
+            /*var queryResult =
             (from gr in _context.Groups
-             from gus in _context.GroupUsers.Where(gu => gu.GroupId == gr.Id && gu.CrypticPayUserId == user.Id).DefaultIfEmpty()
+             from gus in groupUsers
              select new DataTypes.GroupAndMembers
              {
                  Group = gr,
-                 UserIds = _context.GroupUsers.Select(g1=>g1.CrypticPayUserId)
-             }).ToList();
-            return queryResult;
+                 UserIds = groupUsers.Select(g1 => g1.CrypticPayUserId)
+             }).ToList();*/
+
+
+            // manual implementation... REPLACE with more efficient method
+            var groupUsers = _context.GroupUsers.Where(gu => gu.CrypticPayUserId == user.Id);
+            List<DataTypes.GroupAndMembers> result = new List<DataTypes.GroupAndMembers>();
+
+            // populate result
+            foreach (var gu in groupUsers)
+            {
+                string groupId = gu.GroupId;
+                var group = _context.Groups.Find(groupId);
+                var members = GroupMembers(groupId);
+                // handle invalid group and member set
+                if (!(group != null && members.Any())) return result;
+                result.Add(new DataTypes.GroupAndMembers
+                {
+                    Group = group,
+                    UserIds = members
+                });
+            };
+
+            return result;
         }
 
         // returns all user ids that belong to group marked by id

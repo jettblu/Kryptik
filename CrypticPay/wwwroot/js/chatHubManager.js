@@ -4,7 +4,7 @@
 
 var clearMainArea = function () {
     $("#msgCreateArea").hide('slow');
-    $("#msgBlankArea").hide('slow');
+    $("#msgBlankArea").hide('slow'); 
     $("#msgHistoryArea").hide('slow');
     $("#msgHistoryArea").empty();
     $("#msgSearchArea").hide('fast');
@@ -143,7 +143,9 @@ completeNewGroup = function (res) {
 
 var updateBoxesSmall = function (groupId, sideBox) {
     var exists = false;
+    console.log("Updating big");
     $("#msgHubBoxesBig").children('.msgSideBox').each(function () {
+        console.log($(this));
         if ($(this).data('group') == groupId) {
             console.log("Side Box exists.");
             $(this).prependTo($("#msgHubBoxesSmall"));
@@ -154,14 +156,18 @@ var updateBoxesSmall = function (groupId, sideBox) {
     });
     // if sideBox doesn't exist add in new
     if (!exists) {
-        document.getElementsById(".msgHubBoxesSmall").insertAdjacentHtml('beforebegin', sideBox);
+        console.log("Side box doesn't exist.");
+        $(".msgHubPlaceHolder").hide();
+        $("#msgHubBoxesSmall").prepend(sideBox);
         console.log("Add side box success!");
     }
 }
 
 var updateBoxesBig = function (groupId, sideBox) {
     var exists = false;
+    console.log("Updating small");
     $("#msgHubBoxesSmall").children('.msgSideBox').each(function () {
+        console.log($(this));
         if ($(this).data('group') == groupId) {
             console.log("Side Box exists.");
             $(this).prependTo($("#msgHubBoxesBig"));
@@ -172,7 +178,9 @@ var updateBoxesBig = function (groupId, sideBox) {
     });
     // if sideBox doesn't exist add in new
     if (!exists) {
-        document.getElementsById("#msgHubBoxesBig").insertAdjacentHtml('beforebegin', sideBox);
+        console.log("Side Box doesn't exist.");
+        $(".msgHubPlaceHolder").hide();
+        $("#msgHubBoxesBig").prepend(sideBox);
         console.log("Add side box success!");
     }
 }

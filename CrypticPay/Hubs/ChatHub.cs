@@ -87,7 +87,7 @@ namespace CrypticPay.Hubs
 
             var sideBoxHtml = $@"
                 <div class=""row valign-wrapper msgSideBox"" data-group=""{gu.Group.Id}"" data-members=""{uNameString}"" data-nameTitle=""{nameString}"">
-                < div class=""col s2"">
+                <div class=""col s2"">
                     <img src = ""{photoList[0]}"" alt=""user photo"" style=""width: 40px;"" class=""circle"">
                 </div>
                 <div class=""col s9 offset-s1"">

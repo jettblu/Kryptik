@@ -8,7 +8,7 @@ namespace CrypticPay.Services
     {
         T CreateGroup(CrypticPayUser creator, List<string> memberIds, bool isPrivate = true);
         List<T> GroupsUserHas(CrypticPayUser user);
-        T PrivateGroupWithMembers(List<string> members);
+        T PrivateGroupWithMembers(List<string> members, CrypticPayUser user);
         IEnumerable<Data.ChatData> GroupMessages(string groupId);
     }
 }
