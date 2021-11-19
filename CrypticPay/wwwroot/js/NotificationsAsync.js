@@ -20,5 +20,5 @@
     );
 
     notif = document.getElementById("toasts");
-    setTimeout(() => notif.remove(), 3100);
+    setTimeout(() => notif.remove(), 2100);
 }
