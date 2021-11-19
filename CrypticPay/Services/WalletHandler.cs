@@ -140,11 +140,15 @@ namespace CrypticPay.Services
             return transactionString;
         }
 
-        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false, bool isOnChain=false)
+        public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false, bool isOnChain=true)
         {
             // increment index, so we can generate new address from extended key
             int indexAddy = 0;
-            var masterPubKey = new ExtPubKey(extPub);
+            var masterPubKey = ExtPubKey.Parse(extPub, Network.Main);
+            
+            
+            var key = new NBitcoin.Key();
+            
             string words;
 
 

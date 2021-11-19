@@ -10,6 +10,8 @@ var createShares = function () {
     var hdk = hdkey.fromMasterSeed(seed);
     // get extended key for remote storage
     var extPubKey = hdk.publicExtendedKey;
+    console.log("Extended public key.");
+    console.log(extPubKey);
     // convert mnemonic to hex
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
