@@ -33,7 +33,7 @@
                 <div class="row">
                     <p><span class="info-header">Date Created</span>: @(Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString())</p>
                     <p><span class="info-header">Coins Supported</span>: 7</p>
-                    <p><span class="info-header">Wallet Type</span><a href="#typeModal" class="modal-trigger"><i class="material-icons" style="font-size: 14px; color: grey">info</i></a>: Custodial <a href="">change</a></p>
+                    <p><span class="info-header">Wallet Type</span><a href="#typeModal" class="modal-trigger"><i class="material-icons" style="font-size: 14px; color: grey">info</i></a>: Noncustodial</p>
                 </div>
 
 
@@ -90,9 +90,9 @@
             <div class="modal-content">
                 <h4 style="color: #00c72e;">Wallet Type</h4>
                 <p>
-                    Crypto wallets can be either custodial or non custodial. Custodial wallets allow a third party to manage your private key and execute transactions on your behalf. Non-custodial wallets require the user to safely manage their private key.
+                    Crypto wallets can be either custodial or non custodial. Custodial wallets allow a third party to manage your private key and execute transactions on your behalf. Noncustodial wallets give you full control over your crypto experience.
                 </p>
-                <p>By default, Kryptik wallets are custodial. This setting can be changed anytime and your seed phrase is always availabe to download.</p>
+                <p>Kryptik wallets are noncustodial by default.</p>
             </div>
             <div class="modal-footer">
                 <a href="#!" class="white modal-close waves-effect waves-blue btn-flat" style="margin-right: 20px; margin-bottom: 5px;">Close</a>
@@ -112,6 +112,8 @@
                 <h1 class="heading textGradientBlue" style="margin-bottom: 3px;">A crypto wallet for everyone.</h1>
                 <h1 class="subHeading" style="margin-top: 0px;">Send crypto to anyone, anywhere, at anytime.</h1>
                 <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-complete="walletComplete" asp-page-handler="CreateWallet">
+                    <input type="text" asp-for="Input.ExtendedPublicKey" id="extPubKey" hidden />
+                    <input type="text" asp-for="Input.RemoteShare" id="remoteShare" hidden />
                     <button id="btnCreateWallet" class="btn btn-search">Create Wallet</button>
                 </form>
             </div>
@@ -128,7 +130,10 @@
 
 
 
-
+<script src="~/js/ext/bip39.min.js"></script>
+<script src="~/js/ext/hdkey.min.js"></script>
+<script src="~/js/ext/shamir.min.js"></script>
+<script src="~/js/keyManager.js"></script>
 <script src="~/js/registerManager.js"></script>
 <script src="~/js/CreateWalletManager.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"

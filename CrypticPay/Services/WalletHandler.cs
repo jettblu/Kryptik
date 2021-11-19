@@ -268,10 +268,10 @@ namespace CrypticPay.Services
 
 
 
-        public async Task<Globals.Status> CreateWallet(CrypticPayUser user, CrypticPayCoinContext contextCoins, bool isTestNet = false)
+        public async Task<Globals.Status> CreateWallet(CrypticPayUser user, string xpub, string remoteShare, CrypticPayCoinContext contextCoins, bool isTestNet = false)
         {
 
-            string xpub = user.WalletKryptik.Xpub;
+            
             // create blockchain data for each wallet
             var btc = Utils.FindCryptoByTicker("BTC", contextCoins);
             var bch = Utils.FindCryptoByTicker("BCH", contextCoins);
@@ -318,6 +318,9 @@ namespace CrypticPay.Services
 
 
             user.WalletKryptik = new Data.Wallet();
+            // set client generated values
+            user.WalletKryptik.Xpub = xpub;
+            user.WalletKryptik.SeedShare = remoteShare;
 
             // comment below is format for generating local addy with tatum
             // var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);

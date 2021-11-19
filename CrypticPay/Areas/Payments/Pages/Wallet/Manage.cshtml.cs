@@ -40,6 +40,8 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
 
         public class InputModel
         {
+            public string ExtendedPublicKey { get; set; }
+            public string RemoteShare { get; set; }
 
             [DataType(DataType.Password)]
             public string Password { get; set; }
@@ -64,14 +66,22 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             Globals.Status walletCreationStatus;
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currUser = _walletHandler.GetUserandWallet(userId, _context);
-              // wait for wallet to be created
-                var response = await _walletHandler.CreateWallet(currUser, _contextCoins);
-              
+            
+            // check if values successfully created and transferred on client
+            if(String.IsNullOrEmpty(Input.ExtendedPublicKey) || String.IsNullOrEmpty(Input.RemoteShare))
+            {
+                walletCreationStatus = Globals.Status.Failure;
+                StatusMessage = "Error generating wallet.";
+            }
+            else
+            {
+                // wait for wallet to be created
+                var response = await _walletHandler.CreateWallet(currUser, Input.ExtendedPublicKey, Input.RemoteShare, _contextCoins);
                 // Ensure user's wallet changes are saved
                 currUser.WalletKryptikExists = true;
                 await _userManager.UpdateAsync(currUser);
                 walletCreationStatus = Globals.Status.Success;
-            
+            }
 
             return new PartialViewResult()
             {
