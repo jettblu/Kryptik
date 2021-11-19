@@ -80,38 +80,65 @@
         @RenderBody()
     </div>
 
-        <main class="container" id="allContent">
-            @*bars that goes across message top of message area*@
+    <main class="container" id="allContent">
+        @*bars that goes across message top of message area*@
 
-            <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
-                <div class="nav-wrapper">
-                    <a href="#" data-activates="slideOut" class="button-collapse"><i class="black-text material-icons">arrow_back</i></a>
-                    <ul class="left">
-                        <li><a class="msgTitleText"></a></li>
-                    </ul>
+        <nav class="z-depth-0 hide-on-large-only msgSeeThru msgTitleBarSml">
+            <div class="nav-wrapper">
+                <a href="#" data-activates="slideOut" class="button-collapse"><i class="black-text material-icons">arrow_back</i></a>
+                <ul class="left">
+                    <li><a class="msgTitleText"></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <nav class="hide-on-med-and-down msgTitleBarLg msgSeeThru">
+            <div class="nav-wrapper">
+                <ul class="left msgTitle">
+                    <li><a class="msgTitleText"></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="row" id="msgCreateArea" hidden>
+
+            <div id="bpttpm" class="msgBufferBtm">
+
+            </div>
+
+
+            <div class="card rounded col l4 offset-l5 s10 offset-s1 hoverable" style="position: fixed; bottom: 2%; left: 5px;">
+                <div class="card-content" style="margin-bottom: 0px; margin-top: 0px; padding-top: 0px; padding-bottom: 0px;">
+                    <div class="row">
+                        <form id="formChat">
+                            <div class="valign-wrapper">
+                                <div class="input-field col l10 s10">
+                                    <textarea id="msgInput" placeholder="Your secure message." class="materialize-textarea"></textarea>
+                                </div>
+                                <div id="containerBtn">
+                                    <a id="btnSendMsg" class="col l2 s2">Send</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
-            </nav>
+            </div>
 
-            <nav class="hide-on-med-and-down msgTitleBarLg msgSeeThru">
-                <div class="nav-wrapper">
-                    <ul class="left msgTitle">
-                        <li><a class="msgTitleText"></a></li>
-                    </ul>
-                </div>
-            </nav>
+        </div>
 
 
 
 
-            <script src="~/js/site.js" asp-append-version="true"></script>
-            @* load after main content so events attach*@
-            <script type="text/javascript" src="~/js/chatHubManager.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @* load after main content so events attach*@
+        <script type="text/javascript" src="~/js/chatHubManager.js"></script>
 
-            @RenderSection("Scripts", required: false)
+        @RenderSection("Scripts", required: false)
 
 
 
-        </main>
+    </main>
 </body>
 
 </html>
