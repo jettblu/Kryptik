@@ -26,6 +26,41 @@
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "eccrypto@1.1.6",
+      "destination": "wwwroot/lib/eccrypto/"
     }
-  ]
+  ,
+{
+  "library": "buffer@6.0.3",
+  "destination": "wwwroot/lib/buffer/"
+}
+,
+{
+  "library": "Buffer@0.0.0",
+  "destination": "wwwroot/lib/Buffer/"
+}
+,
+{
+  "library": "Buffer@0.0.0",
+  "destination": "wwwroot/lib/Buffer/"
+}
+,
+{
+  "library": "Buffer@0.0.0",
+  "destination": "wwwroot/lib/Buff/"
+}
+,
+{
+  "library": "base64-js@1.5.1",
+  "destination": "wwwroot/lib/base64-js/"
+}
+,
+{
+  "library": "safe-buffer@5.2.1",
+  "destination": "wwwroot/lib/safe-buffer/"
+}
+]
 }

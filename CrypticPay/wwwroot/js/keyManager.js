@@ -11,6 +11,7 @@ var createShares = function () {
     // get extended key for remote storage
     var extPubKey = hdk.publicExtendedKey;
     console.log("Extended public key.");
+    
     console.log(extPubKey);
     // convert mnemonic to hex
     var mnemonicHex = shamir.str2hex(mnemonic);
@@ -41,4 +42,24 @@ var combineShares = function (share1, share2) {
     return res;
 }
 
+var generateEncryptorTest = function (seed, message) {
+    hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    // child key used to encrypt and decrypt messages
+    var childKey = hdk.derive("m/0/1/2/3/4");
+    console.log(childKey.publicKey);
+    // encrypt with public key
+   /* crypt.encrypt(childKey.publicKey, buffer.Buffer.from(message)).then(function (encrypted) {
+            // decrypt message
+            crypt.decrypt(childKey.privateKey, encrypted).then(function (plaintext) {
+            console.log("Message to part A:", plaintext.toString());
+            });*/
+    console.log(childKey.privateKey)
+    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(message)).then(function (encrypted) {
+   // A decrypting the message.
+   crypt.decrypt(childKey.privateKey, encrypted).then(function (plaintext) {
+       console.log("Message to part A:", plaintext.toString());
+   });
+    });
+  }
 
+        

@@ -3,8 +3,9 @@
 
 var runSim = function () {
     console.log("Sim started!");
-    var mnem = bip.generateMnemonic();
-    console.log(mnem);
+    var remoteData = createShares();
+    generateEncryptorTest(remoteData.seedShareHex, "Boom shakalaka");
 }
 
-$("#testBtn").on('click', createShares);
+$("#testBtn").on('click', runSim);
+
