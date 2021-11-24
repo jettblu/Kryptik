@@ -42,10 +42,28 @@ var combineShares = function (share1, share2) {
     return res;
 }
 
-var generateEncryptorTest = function (seed, message) {
+// decrypt message w/ client seed
+var decryptMessage = function (seed, cipherText) {
+    // create hd key from client seed
+    hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    crypt.decrypt(childKey.privateKey, cipherText).then(function (plaintext) {
+        console.log("Message to part A:", plaintext.toString());
+        return plaintext;
+    });
+}
+
+// encrypt smessage with client seed
+var encryptMessage = funcion(seed, plainText){
+    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(message)).then(function (encrypted) {
+        // return ciphertext
+        return encrypted;
+    });
+}
+
+var generateEncryptorTest = function (seed, message, path) {
     hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
     // child key used to encrypt and decrypt messages
-    var childKey = hdk.derive("m/0/1/2/3/4");
+    var childKey = hdk.derive(path);
     console.log(childKey.publicKey);
     // encrypt with public key
    /* crypt.encrypt(childKey.publicKey, buffer.Buffer.from(message)).then(function (encrypted) {

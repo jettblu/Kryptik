@@ -48,5 +48,18 @@ namespace CrypticPay.Services
             var recoveredSecret = combine.Reconstruction(shares);
             return recoveredSecret.ToString();
         }
+
+        public static DataTypes.ClientCryptoPack GetClientCrypto(CrypticPay.Areas.Identity.Data.CrypticPayUser user)
+        {
+            return new DataTypes.ClientCryptoPack()
+            {
+                KeyPath = "m/0/1/2/3/4",
+                KeyShare = user.WalletKryptik.SeedShare,
+                Xpub = user.WalletKryptik.Xpub
+            };
+        }
+        
+
+        
     }
 }

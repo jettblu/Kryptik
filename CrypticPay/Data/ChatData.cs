@@ -13,6 +13,12 @@ namespace CrypticPay.Data
         public string Id { get; set; }
         // message content should be encrypted client side
         public string Message { get; set; }
+        //message encrypted with recipient's public key
+        public string MessageTo { get; set; }
+        // message encrypted with sender's public key
+        public string MessageFrom { get; set; }
+        // ptah for hd key generation
+        public string KeyPath { get; set; }
         // has message been read
         public bool IsRead { get; set; }
         // user who sent this message
