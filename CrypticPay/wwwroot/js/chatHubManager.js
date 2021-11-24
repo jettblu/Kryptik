@@ -215,7 +215,13 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     // should be aware of possible script injection concerns.
 });
 
-connection.start().then(function () {
+connection.on("SetCrypto", function (keyPath, keyShare) {
+    // save remote data in session storage
+    sessionStorage.setItem("keyPath", keyPath);
+    sessionStorage.setItem("remoteShare", keyShare);
+});
+
+connection.start().then(function (share) {
     document.getElementById("btnSendMsg").disabled = false;
 }).catch(function (err) {
     return console.error(err.toString());

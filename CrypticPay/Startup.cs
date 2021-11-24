@@ -50,13 +50,14 @@ namespace CrypticPay
                    encryptKeyPub: Configuration["Encryption:Public"],
                    encryptKeyPriv: Configuration["Encryption:Private"],
                    mnemonic: Configuration["KryptikKeys: Mnemonic0"])
-
            );
 
 
             services.AddRazorPages();
 
             services.AddScoped<ChatHandler>();
+
+            services.AddScoped<Crypto>();
 
 
             services.AddTransient<IEmailSender, EmailSender>(i =>

@@ -8,3 +8,6 @@ browserify hdkey.js --s hdkey | uglifyjs > hdkey.min.js
 
 Shamir secret sharing
 secrets.js-grempe>browserify secrets.js --s shamir | uglifyjs > shamir.min.js
+
+Eccrytpo
+browserify index.js --s crypt | uglifyjs> crypt.min.js

@@ -19,13 +19,17 @@ namespace CrypticPay.Areas.Community.Pages
         private readonly Data.CrypticPayFriendshipContext _contextFriends;
         private readonly UserManager<CrypticPayUser> _userManager;
         private ChatHandler _chatter;
+        private WalletHandler _walletHandler;
+        private ICrypto _crypto;
 
-        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, UserManager<CrypticPayUser> userManager, ChatHandler chatHandler)
+        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, UserManager<CrypticPayUser> userManager, ChatHandler chatHandler, WalletHandler walletHandler, ICrypto crypto)
         {
             _context = context;
             _contextFriends = contextFriends;
             _userManager = userManager;
             _chatter = chatHandler;
+            _walletHandler = walletHandler;
+            _crypto = crypto;
         }
 
         // initialize as empty list to avoid errors in view
@@ -39,6 +43,8 @@ namespace CrypticPay.Areas.Community.Pages
         public InputModel Input { get; set; }
         [BindProperty]
         public static List<Services.DataTypes.GroupAndMembers> UserGroups { get; set; }
+        [BindProperty]
+        public static Services.DataTypes.ClientCryptoPack UserAndCrypto { get; set; }
 
         public class InputModel
         {
@@ -47,8 +53,10 @@ namespace CrypticPay.Areas.Community.Pages
         }
         public async Task OnGet()
         {
+            var currUserId = _userManager.GetUserId(User);
             // load groups user is a member of
-            var user = await _userManager.GetUserAsync(User);
+            var user = _walletHandler.GetUserandWallet(currUserId, _context);
+            
             UserGroups = _chatter.GroupsUserHas(user);
         }
 

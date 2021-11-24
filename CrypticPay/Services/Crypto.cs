@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace CrypticPay.Services
 {
     // service for securing secrets
-    public class Crypto
+    public class Crypto : ICrypto
     {
         // splits a secret into shares based on shamir secret sharing algo.
-        public static void SplitSecret(string secret, int min = 2, int max = 4)
+        public void SplitSecret(string secret, int min = 2, int max = 4)
         {
             var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
 
@@ -41,7 +41,7 @@ namespace CrypticPay.Services
         }
 
         // used to reconstruct secret (mnemonic usually) given two shamir shares
-        public static string ReconstructSecret(FinitePoint<BigInteger>[] shares)
+        public string ReconstructSecret(FinitePoint<BigInteger>[] shares)
         {
             var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
             var combine = new ShamirsSecretSharing<BigInteger>(gcd);
@@ -49,7 +49,7 @@ namespace CrypticPay.Services
             return recoveredSecret.ToString();
         }
 
-        public static DataTypes.ClientCryptoPack GetClientCrypto(CrypticPay.Areas.Identity.Data.CrypticPayUser user)
+        public DataTypes.ClientCryptoPack GetClientCrypto(Areas.Identity.Data.CrypticPayUser user)
         {
             return new DataTypes.ClientCryptoPack()
             {
@@ -58,8 +58,8 @@ namespace CrypticPay.Services
                 Xpub = user.WalletKryptik.Xpub
             };
         }
-        
 
-        
+
+
     }
 }

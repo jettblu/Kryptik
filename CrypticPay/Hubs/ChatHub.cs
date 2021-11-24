@@ -15,21 +15,27 @@ namespace CrypticPay.Hubs
         private readonly UserManager<CrypticPayUser> _userManager;
         private Data.CrypticPayContext _context;
         private ChatHandler _chatter;
+        private ICrypto _crypto;
+        private WalletHandler _walletHandler;
 
 
-        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context, ChatHandler chatHandler)
+        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context, ChatHandler chatHandler, ICrypto crypto, WalletHandler walletHandler)
         {
             _userManager = userManager;
             _context = context;
             _chatter = chatHandler;
+            _crypto = crypto;
+            _walletHandler = walletHandler;
         }
         // UPDATE TO SUPPORT >2 GROUPS
         public override Task OnConnectedAsync()
         {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = _context.Users.Find(userId);
+            var user = _walletHandler.GetUserandWallet(userId, _context);
+            var userAndCrypto = _crypto.GetClientCrypto(user);
             var uName = user.UserName;
             Groups.AddToGroupAsync(Context.ConnectionId, uName);
+            Clients.Group(uName).SendAsync("SetCrypto", userAndCrypto.KeyPath, userAndCrypto.KeyShare);
             return base.OnConnectedAsync();
         }
         public async Task SendMessage(string user, string message)
