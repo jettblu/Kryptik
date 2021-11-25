@@ -215,6 +215,7 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     // should be aware of possible script injection concerns.
 });
 
+
 connection.on("SetCrypto", function (keyPath, keyShare) {
     // save remote data in session storage
     sessionStorage.setItem("keyPath", keyPath);
@@ -245,3 +246,11 @@ document.getElementById("btnSendMsg").addEventListener("click", function (event)
     $("#msgInput").val("");
     event.preventDefault();
 });
+
+
+var encryptMessage = function () {
+    var metaTag = $("#msgMeta");
+    // recipient's public key
+    var receiverPubKey = metaTag.data("recieverkey");
+    
+}

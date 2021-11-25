@@ -1,4 +1,5 @@
-﻿using SecretSharingDotNet.Cryptography;
+﻿using NBitcoin;
+using SecretSharingDotNet.Cryptography;
 using SecretSharingDotNet.Math;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace CrypticPay.Services
 
         public DataTypes.ClientCryptoPack GetClientCrypto(Areas.Identity.Data.CrypticPayUser user)
         {
+            
             return new DataTypes.ClientCryptoPack()
             {
                 KeyPath = "m/0/1/2/3/4",
@@ -59,7 +61,13 @@ namespace CrypticPay.Services
             };
         }
 
-
+        // get public key for messaging
+        public byte[] GetUserMsgKey(Areas.Identity.Data.CrypticPayUser user)
+        {
+            var masterPubKey = ExtPubKey.Parse(user.WalletKryptik.Xpub, Network.Main);
+            var toKey = masterPubKey.Derive(new KeyPath("m/0/1/2/3/4"));
+            return toKey.ToBytes();
+        }
 
     }
 }

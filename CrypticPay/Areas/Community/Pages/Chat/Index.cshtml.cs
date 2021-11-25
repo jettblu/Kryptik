@@ -54,9 +54,9 @@ namespace CrypticPay.Areas.Community.Pages
         public async Task OnGet()
         {
             var currUserId = _userManager.GetUserId(User);
-            // load groups user is a member of
-            var user = _walletHandler.GetUserandWallet(currUserId, _context);
             
+            var user = _walletHandler.GetUserandWallet(currUserId, _context);
+            // load groups user is a member of
             UserGroups = _chatter.GroupsUserHas(user);
         }
 
@@ -83,7 +83,10 @@ namespace CrypticPay.Areas.Community.Pages
         // returns existing group w/ members or new group
         public async Task<IActionResult> OnPostCreateGroupAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var currUserId = _userManager.GetUserId(User);
+
+            var user = _walletHandler.GetUserandWallet(currUserId, _context);
+            
             if (string.IsNullOrEmpty(Input.MemberString))
             {
                 StatusMessage = "Please enter valid group.";
@@ -97,6 +100,11 @@ namespace CrypticPay.Areas.Community.Pages
             // get group and populate w/ messages, if any
             Services.DataTypes.GroupAndMembers group = _chatter.CreateGroup(user, members, isPublic:false);
             group.Messages = _chatter.GroupMessages(group.Group.Id);
+
+            // UPDATE TO SUPPORT MULTIPLE MEMBERS
+            var reciever = _walletHandler.GetUserandWallet(members[0], _context);
+            // set recipient key for group
+            group.RecipientKey = _crypto.GetUserMsgKey(reciever);
 
             return new PartialViewResult()
             {

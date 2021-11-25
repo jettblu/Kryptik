@@ -53,8 +53,11 @@ var decryptMessage = function (seed, cipherText) {
 }
 
 // encrypt smessage with client seed
-var encryptMessage = funcion(seed, plainText){
-    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(message)).then(function (encrypted) {
+var encryptMessage = function (seed, plainText){
+    hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    // child key used to encrypt and decrypt messages
+    var childKey = hdk.derive(path);
+    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText)).then(function (encrypted) {
         // return ciphertext
         return encrypted;
     });
