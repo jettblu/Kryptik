@@ -21,9 +21,15 @@
         {
             <div class="row">
                 <div class="col offset-l9 offset-s8 l3 s4">
-                    <p class="msgText rounded msgBox" style="border: solid 1px;">@msg.Message</p>
-                    @*add message encrypted with user seed*@
-                    @*<p class="msgText rounded msgBox msgOut" style="border: solid 1px;">@msg.MessageFrom</p>*@
+                    @if (Model.Group.IsEncrypted)
+                    {
+                        @*add message encrypted with user seed*@
+                        <p class="msgText rounded msgBox msgOut" style="border: solid 1px;">@msg.MessageFrom</p>
+                    }
+                    else
+                    {
+                        <p class="msgText rounded msgBox" style="border: solid 1px;">@msg.Message</p>
+                    }
                 </div>
             </div>
         }
@@ -32,14 +38,20 @@
         {
             <div class="row">
                 <div class="col offset-l4 l8 s10 offset-s2">
-                    <p class="msgText rounded msgBox">@msg.Message</p>
-                    @*add message encrypted with user seed*@
-                    @*<p class="msgText rounded msgBox msgIn" style="border: solid 1px;">@msg.MessageTo/p>*@
+                    @if (Model.Group.IsEncrypted)
+                    {
+                        @*add message encrypted with user seed*@
+                        <p class="msgText rounded msgBox msgIn" style="border: solid 1px;">@msg.MessageTo</p>
+                    }
+                    else
+                    {
+                        <p class="msgText rounded msgBox">@msg.Message</p>
+                    }
                 </div>
             </div>
         }
     }
-    <div hidden id="msgMeta" data-members="@string.Join(",", Model.UserIds)" data-group="@Model.Group.Id" data-recipientkey="@Model.RecipientKey">
+    <div hidden id="msgMeta" data-members="@string.Join(",", Model.UserIds)" data-group="@Model.Group.Id" data-recipientkey="@Model.RecipientKey" data-encrypted="@Model.Group.IsEncrypted">
         <p>POOP!</p>
     </div>
 }

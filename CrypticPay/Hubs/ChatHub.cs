@@ -109,5 +109,7 @@ namespace CrypticPay.Hubs
             return sideBoxHtml;
         }
 
+        
+
     }
 }

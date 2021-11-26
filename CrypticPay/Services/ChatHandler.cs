@@ -32,6 +32,11 @@ namespace CrypticPay.Services
                      new Data.GroupUser { CrypticPayUserId = memberId, GroupId = newGroup.Id }
                  );
             }
+            var reciever = _context.Users.Find(memberIds[0]);
+            // indicate whether messaging is encrypted for new group
+            // UPDATE to support >2 members
+            if (reciever.WalletKryptikExists && creator.WalletKryptikExists) newGroup.IsEncrypted = true;
+            else newGroup.IsEncrypted = false;
             // save changes once DB is modified
             _context.SaveChanges();
             var groupAndMembers = new DataTypes.GroupAndMembers()

@@ -15,6 +15,8 @@ namespace CrypticPay.Data
         public bool Public { get; set; }
         // user id of group creator
         public string Creator { get; set; }
+        // whether messaging shoould be encrypted
+        public bool IsEncrypted { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreationTime {get; set;}
     }

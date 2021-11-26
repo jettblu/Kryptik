@@ -100,7 +100,6 @@ namespace CrypticPay.Areas.Community.Pages
             // get group and populate w/ messages, if any
             Services.DataTypes.GroupAndMembers group = _chatter.CreateGroup(user, members, isPublic:false);
             group.Messages = _chatter.GroupMessages(group.Group.Id);
-
             // UPDATE TO SUPPORT MULTIPLE MEMBERS
             var reciever = _walletHandler.GetUserandWallet(members[0], _context);
             // set recipient key for group

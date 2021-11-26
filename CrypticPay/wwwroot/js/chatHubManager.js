@@ -121,10 +121,14 @@ var addMessageOut = function (txt) {
 
 // async. completion for new group
 completeNewGroup = function (res) {
+    var metaTag = $("#msgMeta");
+    var isEncrypted = metaTag.data("encrypted");
+   
     console.log("Completing msg history");
     // append messages formatted by server
+    
     var result = res.responseText;
-    var msgHistory = decryptGroupInit(result);
+    if (isEncrypted) var result = decryptGroupInit(result);
     // decrypt each message
     $("#msgHistoryArea").empty();
     $("#msgHistoryArea").append(result);
@@ -208,8 +212,9 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     var metaTag = $("#msgMeta");
     var thisGroupId = metaTag.data("group");
     if (groupId == thisGroupId) {
+        var isEncrypted = metaTag.data("encrypted");
         // convert cipherText to plaintext
-        message = decryptMessageIn(message);
+        if(isEncrypted) message = decryptMessageIn(message);
         addMessageIn(message);
     }
     updateHub(groupId, sideBox);
@@ -236,10 +241,16 @@ connection.start().then(function (share) {
 document.getElementById("btnSendMsg").addEventListener("click", function (event) {
     // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var message = document.getElementById("msgInput").value;
-    // convert plaintext message to ciphertext for receiver
-    messageReciever = encryptMessageOut(message);
-    // convert plaintext message to cipherText for sender
-    messageSender = encryptMessageOutSender(message);
+    var metaTag = $("#msgMeta");
+    var isEncrypted = metaTag.data("encrypted");
+    var messageReciever = "";
+    var messageSender = "";
+    if (isEncrypted) {
+        // convert plaintext message to ciphertext for receiver
+        messageReciever = encryptMessageOut(message);
+        // convert plaintext message to cipherText for sender
+        messageSender = encryptMessageOutSender(message);
+    }
     addMessageOut(message);
     setScroll();
     var receiver = $(".msgTitleText").data("username");
