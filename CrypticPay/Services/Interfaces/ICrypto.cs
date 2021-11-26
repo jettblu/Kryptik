@@ -10,6 +10,6 @@ namespace CrypticPay.Services
         ClientCryptoPack GetClientCrypto(CrypticPayUser user);
         string ReconstructSecret(FinitePoint<BigInteger>[] shares);
         void SplitSecret(string secret, int min = 2, int max = 4);
-        byte[] GetUserMsgKey(CrypticPayUser user);
+        string GetUserMsgKey(CrypticPayUser user);
     }
 }

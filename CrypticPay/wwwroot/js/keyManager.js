@@ -37,13 +37,12 @@ var createShares = function () {
 var combineShares = function (share1, share2) {
     // combine 2 shares
     comb = shamir.combine([share1, share2])
-    //convert Hex back to regular string
-    res = shamir.hex2str(comb)
+    // return hex version of combined shares
     return res;
 }
 
 // decrypt message w/ client seed
-var decryptMessage = function (seed, cipherText) {
+var decryptCipher= function (seed, cipherText) {
     // create hd key from client seed
     hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
     crypt.decrypt(childKey.privateKey, cipherText).then(function (plaintext) {
@@ -53,10 +52,20 @@ var decryptMessage = function (seed, cipherText) {
 }
 
 // encrypt smessage with client seed
-var encryptMessage = function (seed, plainText){
+var encryptMessageWithSeed = function (seed, plainText){
     hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
     // child key used to encrypt and decrypt messages
     var childKey = hdk.derive(path);
+    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText)).then(function (encrypted) {
+        // return ciphertext
+        return encrypted;
+    });
+}
+
+// encrypt smessage with recipient public key
+var encryptMessageWithPub = function (pubKeyString, plainText) {
+    // child key used to encrypt and decrypt messages
+    var keyBuffer = buffer.Buffer.from(pubKeyString);
     crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText)).then(function (encrypted) {
         // return ciphertext
         return encrypted;

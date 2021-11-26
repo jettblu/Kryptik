@@ -62,11 +62,11 @@ namespace CrypticPay.Services
         }
 
         // get public key for messaging
-        public byte[] GetUserMsgKey(Areas.Identity.Data.CrypticPayUser user)
+        public string GetUserMsgKey(Areas.Identity.Data.CrypticPayUser user)
         {
             var masterPubKey = ExtPubKey.Parse(user.WalletKryptik.Xpub, Network.Main);
             var toKey = masterPubKey.Derive(new KeyPath("m/0/1/2/3/4"));
-            return toKey.ToBytes();
+            return toKey.ToString();
         }
 
     }

@@ -20,9 +20,9 @@ namespace CrypticPay.Areas.Community.Pages
         private readonly UserManager<CrypticPayUser> _userManager;
         private ChatHandler _chatter;
         private WalletHandler _walletHandler;
-        private ICrypto _crypto;
+        private Crypto _crypto;
 
-        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, UserManager<CrypticPayUser> userManager, ChatHandler chatHandler, WalletHandler walletHandler, ICrypto crypto)
+        public IndexModel(Data.CrypticPayContext context, Data.CrypticPayFriendshipContext contextFriends, UserManager<CrypticPayUser> userManager, ChatHandler chatHandler, WalletHandler walletHandler, Crypto crypto)
         {
             _context = context;
             _contextFriends = contextFriends;
@@ -104,7 +104,8 @@ namespace CrypticPay.Areas.Community.Pages
             // UPDATE TO SUPPORT MULTIPLE MEMBERS
             var reciever = _walletHandler.GetUserandWallet(members[0], _context);
             // set recipient key for group
-            group.RecipientKey = _crypto.GetUserMsgKey(reciever);
+            /*group.RecipientKey = _crypto.GetUserMsgKey(reciever);*/
+            group.RecipientKey = "HEY!";
 
             return new PartialViewResult()
             {

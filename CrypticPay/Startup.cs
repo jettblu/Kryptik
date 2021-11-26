@@ -98,7 +98,11 @@ namespace CrypticPay
                 sendNumber:sendNumber
                 )
             );
-            services.AddSignalR();
+
+            services.AddSignalR(o =>
+            {
+                o.EnableDetailedErrors = true;
+            });
 
             services.Configure<TwilioVerifySettings>(Configuration.GetSection("TwilioAccountDetails"));
                

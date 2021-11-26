@@ -104,7 +104,7 @@ var addMessageIn = function (txt) {
     var msgIn = $(`
         <div class="row">
             <div class="col offset-l4 l8 s10 offset-s2">
-              <p class="msgText rounded msgBox">${txt}</p>
+              <p class="msgText rounded msgBox msgIn">${txt}</p>
             </div>
         </div>`);
     $("#msgHistoryArea").append(msgIn);
@@ -113,7 +113,7 @@ var addMessageIn = function (txt) {
 var addMessageOut = function (txt) {
     var msgOut = $(`<div class="row">
       <div class="col offset-l9 offset-s8 l3 s4">
-        <p class="msgText rounded msgBox" style="border: solid 1px;">${txt}</p>
+        <p class="msgText rounded msgBox msgOut" style="border: solid 1px;">${txt}</p>
       </div>
     </div>`);
     $("#msgHistoryArea").append(msgOut);
@@ -121,9 +121,11 @@ var addMessageOut = function (txt) {
 
 // async. completion for new group
 completeNewGroup = function (res) {
-    
+    console.log("Completing msg history");
     // append messages formatted by server
     var result = res.responseText;
+    var msgHistory = decryptGroupInit(result);
+    // decrypt each message
     $("#msgHistoryArea").empty();
     $("#msgHistoryArea").append(result);
     // ADD decryption on client side
@@ -206,6 +208,8 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     var metaTag = $("#msgMeta");
     var thisGroupId = metaTag.data("group");
     if (groupId == thisGroupId) {
+        // convert cipherText to plaintext
+        message = decryptMessageIn(message);
         addMessageIn(message);
     }
     updateHub(groupId, sideBox);
@@ -215,12 +219,13 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     // should be aware of possible script injection concerns.
 });
 
-
 connection.on("SetCrypto", function (keyPath, keyShare) {
+    console.log("Setting crypto");
     // save remote data in session storage
-    sessionStorage.setItem("keyPath", keyPath);
-    sessionStorage.setItem("remoteShare", keyShare);
+    sessionStorage.setItem("keypath", keyPath);
+    sessionStorage.setItem("remoteshare", keyShare);
 });
+
 
 connection.start().then(function (share) {
     document.getElementById("btnSendMsg").disabled = false;
@@ -231,6 +236,10 @@ connection.start().then(function (share) {
 document.getElementById("btnSendMsg").addEventListener("click", function (event) {
     // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var message = document.getElementById("msgInput").value;
+    // convert plaintext message to ciphertext for receiver
+    messageReciever = encryptMessageOut(message);
+    // convert plaintext message to cipherText for sender
+    messageSender = encryptMessageOutSender(message);
     addMessageOut(message);
     setScroll();
     var receiver = $(".msgTitleText").data("username");
@@ -238,7 +247,7 @@ document.getElementById("btnSendMsg").addEventListener("click", function (event)
     var metaTag = $("#msgMeta");
     var groupId = metaTag.data("group");
     if (receiver != "") {
-        connection.invoke("SendMessageToGroup", receiver, message, groupId).catch(function (err) {
+        connection.invoke("SendMessageToGroup", receiver, message, messageSender, messageReciever, groupId).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -248,9 +257,47 @@ document.getElementById("btnSendMsg").addEventListener("click", function (event)
 });
 
 
-var encryptMessage = function () {
+
+// encrypt message for receiver
+var encryptMessageOut = function (msg) {
     var metaTag = $("#msgMeta");
     // recipient's public key
     var receiverPubKey = metaTag.data("recieverkey");
-    
+    var cipherText = encryptMessageWithPub(receiverPubKey, msg);
+    return cipherText;
+}
+
+// encrypt message for sender
+var encryptMessageOutSender = function (msg) {
+    // get remote share
+    var shareRemote = sessionStorage.getItem("keypath");
+    // get local share
+    var shareLocal = localStorage.getItem("seedShare");
+    // combine shares into original seed (in hex)
+    var seedHex = combineShares(shareLocal, shareRemote);
+    // encrypt message with seed
+    var cipherText = encryptMessageWithSeed(seedHex, msg);
+    return cipherText;
+}
+
+// decrypt incoming message by combining local and remote seed shares
+var decryptMessageIn = function(cipherText){
+    // get remote share
+    var shareRemote = sessionStorage.getItem("keypath");
+    // get local share
+    var shareLocal = localStorage.getItem("seedShare");
+    // combine shares into original seed (in hex)
+    var seedHex = combineShares(shareLocal, shareRemote);
+    var plainText = decryptCipher(seedHex, cipherText);
+    // return plaintext
+    return plainText;
+}
+
+
+// decrypt message history formatted on server
+var decryptGroupInit = function (msgHistory) {
+    console.log(msgHistory);
+    $(msgHistory).each(function () {
+        console.log($(this));
+    });
 }

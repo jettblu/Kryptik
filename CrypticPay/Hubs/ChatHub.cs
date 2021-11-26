@@ -15,11 +15,11 @@ namespace CrypticPay.Hubs
         private readonly UserManager<CrypticPayUser> _userManager;
         private Data.CrypticPayContext _context;
         private ChatHandler _chatter;
-        private ICrypto _crypto;
+        private Crypto _crypto;
         private WalletHandler _walletHandler;
 
 
-        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context, ChatHandler chatHandler, ICrypto crypto, WalletHandler walletHandler)
+        public ChatHub(UserManager<CrypticPayUser> userManager, Data.CrypticPayContext context, ChatHandler chatHandler, Crypto crypto, WalletHandler walletHandler)
         {
             _userManager = userManager;
             _context = context;
@@ -32,9 +32,10 @@ namespace CrypticPay.Hubs
         {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _walletHandler.GetUserandWallet(userId, _context);
-            var userAndCrypto = _crypto.GetClientCrypto(user);
             var uName = user.UserName;
             Groups.AddToGroupAsync(Context.ConnectionId, uName);
+            // initialize values on client side for encryption
+            var userAndCrypto = _crypto.GetClientCrypto(user);
             Clients.Group(uName).SendAsync("SetCrypto", userAndCrypto.KeyPath, userAndCrypto.KeyShare);
             return base.OnConnectedAsync();
         }
@@ -42,8 +43,10 @@ namespace CrypticPay.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+        
+
         // UPDATE THIS TO SUPPORT >2 GROUPS. MAYBE SEARCH GROUP AND BROADCAST TO ALL MEMBERS.
-        public Task SendMessageToGroup(string receiver, string message, string groupId)
+        public Task SendMessageToGroup(string receiver, string message, string messageSender, string messageReciever, string groupId)
         {
             var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _context.Users.Find(sender);
@@ -53,6 +56,8 @@ namespace CrypticPay.Hubs
             {
                 GroupId = groupId,
                 Message = message,
+                MessageFrom = messageSender,
+                MessageTo = messageReciever,
                 SenderId = user.Id,
                 IsRead = false,
                 CreationTime = DateTime.Now
@@ -66,14 +71,14 @@ namespace CrypticPay.Hubs
             };
             _context.Chats.Add(msg);
             _context.SaveChanges();
-            string sideBox = createSideBox(grouper, user);
+            string sideBox = CreateSideBox(grouper, user);
             // FIX GROUP NAME 
             return Clients.Group(receiver).SendAsync("ReceiveMessage", uName, message, groupId, sideBox);
         }
         // MAKE SURE MESSAGES ARE IN CORRECT VIEW AND SIDEBAR IS UPDATED ON CLIENT
 
         // create sideBox string to display on client
-        public string createSideBox(Services.DataTypes.GroupAndMembers gu, CrypticPayUser currUser )
+        public string CreateSideBox(Services.DataTypes.GroupAndMembers gu, CrypticPayUser currUser )
         {
             var nameList = new List<string>();
             var photoList = new List<string>();

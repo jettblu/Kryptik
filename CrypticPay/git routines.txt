@@ -1,0 +1,5 @@
+Remove folder
+
+git rm -r --cached folderName
+git commit -m "Coment"
+git push origin master
