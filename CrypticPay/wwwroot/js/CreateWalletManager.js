@@ -12,6 +12,7 @@ $("#btnCreateWallet").on("click", function () {
 
     // add ext. pub. key and shamir secret for secure storage on server
     var remoteData = createShares();
+    console.log(remoteData);
     // update form values w/ client gen. values
     $("#extPubKey").val(remoteData.xpub);
     $("#remoteShare").val(remoteData.seedShareHex);

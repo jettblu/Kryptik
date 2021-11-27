@@ -143,7 +143,7 @@ namespace CrypticPay.Services
         public BlockchainAddress CreateAddress(CurrencyWallet currWallet, CrypticPayCoins coin, string extPub, bool isTestnet=false, bool isOnChain=true)
         {
             // increment index, so we can generate new address from extended key
-            int indexAddy = 0;
+            int indexAddy = 1;
             var masterPubKey = ExtPubKey.Parse(extPub, Network.Main);
             
             
@@ -160,7 +160,8 @@ namespace CrypticPay.Services
                 // generate P2PKH for onchhain tx.
                 if (isOnChain)
                 {
-                    ethAddy = ethWallet.GetAddress(indexAddy);
+                    // ethereum addy is not case sensitive. use lower case to be consistent w/ tatum.
+                    ethAddy = ethWallet.GetAddress(indexAddy).ToLower();
                 }
                 else
                 {
@@ -329,7 +330,7 @@ namespace CrypticPay.Services
             // comment below is format for generating local addy with tatum
             // var testAddress = Tatum.Wallet.GenerateAddress(Tatum.Model.Currency.BTC, wallBtc.XPub, rand.Next(1, 1000000), testnet: isTestNet);
 
-
+            
             var respBtcAddy = await _tatumClient.AssignDepositAddress(btcAccount.Id, chainDataBtc.Address);
             // ensure deposit address is same on Tatum 
             if (!IsValidResponse(respBtcAddy, chainDataBtc)){
@@ -340,7 +341,7 @@ namespace CrypticPay.Services
             var currencyWalletBtc = new CurrencyWallet()
             {
                 AccountId = btcAccount.Id,
-                CoinId = Utils.FindCryptoByName("Bitcoin", contextCoins).Id,
+                CoinId = btc.Id,
                 AddressOnChain = chainDataBtc,
                 DepositQrBlockchain = btcQr,
                 WalletKryptik = user.WalletKryptik,
@@ -358,7 +359,7 @@ namespace CrypticPay.Services
             var currencyWalletBch = new CurrencyWallet()
             {
                 AccountId = bchAccount.Id,
-                CoinId = Utils.FindCryptoByName("Bitcoin Cash", contextCoins).Id,
+                CoinId = bch.Id,
                 AddressOnChain = chainDataBch,
                 DepositQrBlockchain = bchQr,
                 WalletKryptik = user.WalletKryptik,
@@ -367,7 +368,7 @@ namespace CrypticPay.Services
 
             var respEthAddy = await _tatumClient.AssignDepositAddress(ethAccount.Id, chainDataEth.Address);
             // ensure deposit address is same on Tatum 
-            if (!IsValidResponse(respEthAddy, chainDataBtc))
+            if (!IsValidResponse(respEthAddy, chainDataEth))
             {
                 throw new Exception("Error: Remote and local deposit addresses are not the same.");
             };
@@ -376,7 +377,7 @@ namespace CrypticPay.Services
             var currencyWalletEth = new CurrencyWallet()
             {
                 AccountId = ethAccount.Id,
-                CoinId = Utils.FindCryptoByName("Ethereum", contextCoins).Id,
+                CoinId = eth.Id,
                 AddressOnChain = chainDataEth,
                 DepositQrBlockchain = ethQr,
                 WalletKryptik = user.WalletKryptik,
@@ -395,7 +396,7 @@ namespace CrypticPay.Services
             var currencyWalletLtc = new CurrencyWallet()
             {
                 AccountId = ltcAccount.Id,
-                CoinId = Utils.FindCryptoByName("Litecoin", contextCoins).Id,
+                CoinId = ltc.Id,
                 AddressOnChain = chainDataLtc,
                 DepositQrBlockchain = ltcQr,
                 WalletKryptik = user.WalletKryptik,

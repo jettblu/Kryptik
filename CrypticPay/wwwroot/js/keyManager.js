@@ -6,13 +6,17 @@ var createShares = function () {
     var mnemonic = bip.generateMnemonic();
     console.log(mnemonic);
     // retrieve seed from mnemonic to be used for xpub generation
-    var seed = bip.mnemonicToSeed(mnemonic);
+    var seed = bip.mnemonicToSeedSync(mnemonic);
+    console.log("Seed:");
+    console.log(seed);
     var hdk = hdkey.fromMasterSeed(seed);
+    console.log("Hdk:");
+    console.log(hdk);
     // get extended key for remote storage
     var extPubKey = hdk.publicExtendedKey;
-    console.log("Extended public key.");
-    
+    console.log("Extended public key:");
     console.log(extPubKey);
+
     // convert mnemonic to hex
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
@@ -38,7 +42,7 @@ var combineShares = function (share1, share2) {
     // combine 2 shares
     comb = shamir.combine([share1, share2])
     // return hex version of combined shares
-    return res;
+    return comb;
 }
 
 // decrypt message w/ client seed
