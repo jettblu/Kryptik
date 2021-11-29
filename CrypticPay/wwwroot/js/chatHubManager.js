@@ -216,7 +216,7 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     if (groupId == thisGroupId) {
         var isEncrypted = metaTag.data("encrypted");
         // convert cipherText to plaintext
-        if(isEncrypted) message = decryptMessageIn(message);
+        if(isEncrypted) message = await decryptMessageIn(message);
         addMessageIn(message);
     }
     updateHub(groupId, sideBox);
