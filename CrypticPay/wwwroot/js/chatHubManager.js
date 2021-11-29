@@ -209,7 +209,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 //Disable send button until connection is established
 document.getElementById("btnSendMsg").disabled = true;
 
-connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
+connection.on("ReceiveMessage", async function (user, message, groupId, sideBox) {
     // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var metaTag = $("#msgMeta");
     var thisGroupId = metaTag.data("group");
