@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using CrypticPay.Areas.Identity.Data;
 using CrypticPay.Services;
+using Newtonsoft.Json;
 
 namespace CrypticPay.Hubs
 {
@@ -46,18 +47,20 @@ namespace CrypticPay.Hubs
         
 
         // UPDATE THIS TO SUPPORT >2 GROUPS. MAYBE SEARCH GROUP AND BROADCAST TO ALL MEMBERS.
-        public Task SendMessageToGroup(string receiver, string message, string messageSender, string messageReciever, string groupId)
+        public Task SendMessageToGroup(string receiver, string message, object messageSender, object messageReciever, string groupId)
         {
             var sender = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _context.Users.Find(sender);
             var uName = user.UserName;
+            var msgFrom = messageSender.ToString();
+            var msgTo = messageReciever.ToString();
             // save message
             var msg = new Data.ChatData()
             {
                 GroupId = groupId,
                 Message = message,
-                MessageFrom = messageSender,
-                MessageTo = messageReciever,
+                MessageFrom = msgFrom,
+                MessageTo = msgTo,
                 SenderId = user.Id,
                 IsRead = false,
                 CreationTime = DateTime.Now

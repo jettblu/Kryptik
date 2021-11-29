@@ -1,5 +1,6 @@
 ﻿// creates shares for a given secret
 // returns xpub and 1 seed share for remote storage
+
 // one seed share is saved on client
 var createShares = function () {
     console.log("Creating shares");
@@ -46,34 +47,39 @@ var combineShares = function (share1, share2) {
 }
 
 // decrypt message w/ client seed
-var decryptCipher= function (seed, cipherText) {
+var decryptCipher= function (seed, encrypted) {
     // create hd key from client seed
-    hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
-    crypt.decrypt(childKey.privateKey, cipherText).then(function (plaintext) {
-        console.log("Message to part A:", plaintext.toString());
-        return plaintext;
-    });
+    var hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    var path = sessionStorage.getItem("keypath");
+    var childKey = hdk.derive(path);
+    console.log("Decryption key:");
+    console.log(childKey);
+    return crypt.decrypt(childKey.privateKey, encrypted);
 }
 
 // encrypt smessage with client seed
 var encryptMessageWithSeed = function (seed, plainText){
-    hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    var hdk = hdkey.fromMasterSeed(buffer.Buffer.from(seed, 'hex'));
+    var path = sessionStorage.getItem("keypath");
     // child key used to encrypt and decrypt messages
     var childKey = hdk.derive(path);
-    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText)).then(function (encrypted) {
-        // return ciphertext
-        return encrypted;
-    });
+    console.log("Encryption key:");
+    console.log(childKey);
+    return crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText));
 }
 
 // encrypt smessage with recipient public key
-var encryptMessageWithPub = function (pubKeyString, plainText) {
+var encryptMessageWithPub = function (xpubKeyString, plainText) {
+    console.log("Extended pub key passed in:");
+    console.log(xpubKeyString);
+    // path already derived on server
+    var childKey = hdkey.fromExtendedKey(xpubKeyString);
+    console.log(childKey);
     // child key used to encrypt and decrypt messages
-    var keyBuffer = buffer.Buffer.from(pubKeyString);
-    crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText)).then(function (encrypted) {
-        // return ciphertext
-        return encrypted;
-    });
+    /*var keyBuffer = buffer.Buffer.from(pubKeyString);
+    console.log("Pub key buffer passed in:");
+    console.log(keyBuffer);*/
+    return crypt.encrypt(childKey.publicKey, buffer.Buffer.from(plainText));
 }
 
 var generateEncryptorTest = function (seed, message, path) {

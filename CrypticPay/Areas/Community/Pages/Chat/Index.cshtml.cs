@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
 
 namespace CrypticPay.Areas.Community.Pages
 {
@@ -54,10 +55,22 @@ namespace CrypticPay.Areas.Community.Pages
         public async Task OnGet()
         {
             var currUserId = _userManager.GetUserId(User);
-            
+
             var user = _walletHandler.GetUserandWallet(currUserId, _context);
             // load groups user is a member of
             UserGroups = _chatter.GroupsUserHas(user);
+        }
+        public class MessageBox
+        {
+            public List<MessageForClient> Messages { get; set; }
+            public string MetaTag { get; set; }
+            public bool IsEncrypted { get; set; }
+        }
+        public class MessageForClient
+        {
+            public Data.MsgEncrypted.Root MsgEncrypted { get; set; }
+            // indicate whether message is incoming or outgoing
+            public bool IsIn { get; set; }
         }
 
         public async Task<JsonResult> OnPostSearchAsync()
@@ -81,7 +94,7 @@ namespace CrypticPay.Areas.Community.Pages
             return new JsonResult(Users);
         }
         // returns existing group w/ members or new group
-        public async Task<IActionResult> OnPostCreateGroupAsync()
+        public async Task<JsonResult> OnPostCreateGroupAsync()
         {
             var currUserId = _userManager.GetUserId(User);
 
@@ -103,17 +116,55 @@ namespace CrypticPay.Areas.Community.Pages
             // UPDATE TO SUPPORT MULTIPLE MEMBERS
             var reciever = _walletHandler.GetUserandWallet(members[0], _context);
             // set recipient key for group
-            /*group.RecipientKey = _crypto.GetUserMsgKey(reciever);*/
-            group.RecipientKey = "HEY!";
+            group.RecipientKey = _crypto.GetUserMsgKey(reciever);
+            group.Xpub = reciever.WalletKryptik.Xpub;
 
-            return new PartialViewResult()
+            var resultMsgs = new List<MessageForClient>();
+            foreach (var msg in group.Messages)
+            {
+                Data.MsgEncrypted.Root msgEncrypted;
+                bool isIn;
+                if (msg.SenderId == user.Id)
+                {
+                    msgEncrypted = JsonConvert.DeserializeObject<Data.MsgEncrypted.Root>(msg.MessageFrom);
+                    isIn = false;
+                    
+                }
+                else
+                {
+                    msgEncrypted = JsonConvert.DeserializeObject<Data.MsgEncrypted.Root>(msg.MessageTo);
+                    isIn = true;
+                }
+                var thisMsg = new MessageForClient()
+                {
+                    MsgEncrypted = msgEncrypted,
+                    IsIn = isIn
+                };
+                resultMsgs.Add(thisMsg);
+            }
+
+            var result = new MessageBox()
+            {
+                Messages = resultMsgs,
+                MetaTag = MakeMetaTag(group),
+                IsEncrypted = group.Group.IsEncrypted
+            };
+            return new JsonResult(result);
+/*            return new PartialViewResult()
             {
                 ViewName = "shared/_GroupMessagesPartial",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = group
                 }
-            };
+            };*/
+        }
+
+        public string MakeMetaTag(Services.DataTypes.GroupAndMembers group)
+        {
+            var memberString = string.Join(",", group.UserIds);
+            var result = $@"<div hidden id=""msgMeta"" data-members=""{memberString}"" data-group=""{group.Group.Id}"" data-recipientkey=""{group.RecipientKey}"" data-isencrypted=""{group.Group.IsEncrypted}"" data-xpub=""{group.Xpub}""><p> POOP! </p></div>";
+            return result;
         }
     }
 }

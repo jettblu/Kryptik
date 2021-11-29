@@ -1,4 +1,7 @@
-﻿@using CrypticPay.Services.DataTypes
+﻿@using CrypticPay.Services.DataTypes;
+@using Newtonsoft.Json;
+@using CrypticPay; 
+
 @inject UserManager<CrypticPayUser> UserManager
 
 @model GroupAndMembers
@@ -10,8 +13,8 @@
     if (Model.Messages.Count() == 0)
     {
         @*<div id="msgHistoryPlaceHolder" class="col l4 offset-l5 s10 offset-s1" style="position: fixed; top: 20%; left: 5%;">
-            <h5 class="textGlow" style="margin-top: 5%">Encrypted History will Appear Here</h5>
-        </div>*@
+                <h5 class="textGlow" style="margin-top: 5%">Encrypted History will Appear Here</h5>
+            </div>*@
     }
     // loop through all of group messages
     foreach (var msg in Model.Messages)
@@ -19,12 +22,13 @@
         // message out
         if (msg.SenderId == userInfo.Id)
         {
-            <div class="row">
+            <div class="row msgEncrypted">
                 <div class="col offset-l9 offset-s8 l3 s4">
                     @if (Model.Group.IsEncrypted)
                     {
+                        // var msgEncrypted = JsonConvert.DeserializeObject<CrypticPay.Data.MsgEncrypted.Root>(msg.MessageFrom);
                         @*add message encrypted with user seed*@
-                        <p class="msgText rounded msgBox msgOut" style="border: solid 1px;">@msg.MessageFrom</p>
+                        <p class="msgText rounded msgBox msgOut" data-encrypted="@msg.MessageFrom" style="border: solid 1px;"></p>
                     }
                     else
                     {
@@ -36,12 +40,13 @@
         // message in
         else
         {
-            <div class="row">
+            <div class="row msgEncrypted">
                 <div class="col offset-l4 l8 s10 offset-s2">
                     @if (Model.Group.IsEncrypted)
                     {
+                        //var msgEncrypted = JsonConvert.DeserializeObject<CrypticPay.Data.MsgEncrypted.Root>(msg.MessageTo);
                         @*add message encrypted with user seed*@
-                        <p class="msgText rounded msgBox msgIn" style="border: solid 1px;">@msg.MessageTo</p>
+                        <p class="msgText rounded msgBox msgIn msgEncrypted" data-encrypted="@msg.MessageTo" style="border: solid 1px;"></p>
                     }
                     else
                     {
@@ -51,7 +56,7 @@
             </div>
         }
     }
-    <div hidden id="msgMeta" data-members="@string.Join(",", Model.UserIds)" data-group="@Model.Group.Id" data-recipientkey="@Model.RecipientKey" data-encrypted="@Model.Group.IsEncrypted">
+    <div hidden id="msgMeta" data-members="@string.Join(",", Model.UserIds)" data-group="@Model.Group.Id" data-recipientkey="@Model.RecipientKey" data-isencrypted="@Model.Group.IsEncrypted" data-xpub="@Model.Xpub">
         <p>POOP!</p>
     </div>
 }

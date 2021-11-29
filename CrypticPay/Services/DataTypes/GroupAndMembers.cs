@@ -11,5 +11,6 @@ namespace CrypticPay.Services.DataTypes
         public IEnumerable<string> UserIds { get; set; }
         public IEnumerable<Data.ChatData> Messages { get; set; }
         public string RecipientKey { get; set; }
+        public string Xpub { get; set; }
     }
 }

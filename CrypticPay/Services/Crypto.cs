@@ -66,7 +66,7 @@ namespace CrypticPay.Services
         {
             var masterPubKey = ExtPubKey.Parse(user.WalletKryptik.Xpub, Network.Main);
             var toKey = masterPubKey.Derive(new KeyPath("m/0/1/2/3/4"));
-            return toKey.ToString();
+            return toKey.ToString(Network.Main);
         }
 
     }

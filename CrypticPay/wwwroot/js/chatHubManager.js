@@ -121,17 +121,19 @@ var addMessageOut = function (txt) {
 
 // async. completion for new group
 completeNewGroup = function (res) {
-    var metaTag = $("#msgMeta");
-    var isEncrypted = metaTag.data("encrypted");
-   
-    console.log("Completing msg history");
-    // append messages formatted by server
-    
-    var result = res.responseText;
-    if (isEncrypted) var result = decryptGroupInit(result);
-    // decrypt each message
+    console.log(res);
     $("#msgHistoryArea").empty();
-    $("#msgHistoryArea").append(result);
+    var result = res.responseJSON;
+    // UPDATE to be dynamic
+    var isEncrypted = result.isEncrypted;
+    console.log(result);
+    console.log("Completing msg history");
+    $("#msgHistoryArea").append(result.metaTag);
+    // append messages formatted by server
+    // decrypt each message if encrypted
+    if (isEncrypted) decryptGroupInit(result.messages, isEncrypted);
+    // decrypt each message
+    /*$("#msgHistoryArea").append(result);*/
     // ADD decryption on client side
 
     // hide non-msg history elements
@@ -224,6 +226,7 @@ connection.on("ReceiveMessage", function (user, message, groupId, sideBox) {
     // should be aware of possible script injection concerns.
 });
 
+// client handler to set user crypto
 connection.on("SetCrypto", function (keyPath, keyShare) {
     console.log("Setting crypto");
     // save remote data in session storage
@@ -231,31 +234,40 @@ connection.on("SetCrypto", function (keyPath, keyShare) {
     sessionStorage.setItem("remoteshare", keyShare);
 });
 
-
+// client handler once conection with signalr is made
 connection.start().then(function (share) {
     document.getElementById("btnSendMsg").disabled = false;
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
-document.getElementById("btnSendMsg").addEventListener("click", function (event) {
+document.getElementById("btnSendMsg").addEventListener("click", async function (event) {
     // $("#msgHistory").find("#msgHistoryPlaceHolder").hide();
     var message = document.getElementById("msgInput").value;
     var metaTag = $("#msgMeta");
-    var isEncrypted = metaTag.data("encrypted");
+    console.log(metaTag);
+    var isEncrypted = metaTag.data("isencrypted");
+    console.log(isEncrypted);
     var messageReciever = "";
     var messageSender = "";
     if (isEncrypted) {
+        console.log("Encrypting messages");
         // convert plaintext message to ciphertext for receiver
-        messageReciever = encryptMessageOut(message);
+        messageReciever = await encryptMessageOut(message);
         // convert plaintext message to cipherText for sender
-        messageSender = encryptMessageOutSender(message);
+        messageSender = await encryptMessageOutSender(message);
     }
+    console.log("msg. sender:");
+    console.log(messageSender);
+    var txt = await decryptMessageIn(messageSender);
+    console.log("Decrypted sender:");
+    console.log(txt);
+    console.log("msg. reciever:");
+    console.log(messageReciever);
     addMessageOut(message);
     setScroll();
     var receiver = $(".msgTitleText").data("username");
     // get group id from meta div
-    var metaTag = $("#msgMeta");
     var groupId = metaTag.data("group");
     if (receiver != "") {
         connection.invoke("SendMessageToGroup", receiver, message, messageSender, messageReciever, groupId).catch(function (err) {
@@ -271,19 +283,33 @@ document.getElementById("btnSendMsg").addEventListener("click", function (event)
 
 // encrypt message for receiver
 var encryptMessageOut = function (msg) {
+    console.log("Encrypting: ");
+    console.log(msg);
     var metaTag = $("#msgMeta");
     // recipient's public key
-    var receiverPubKey = metaTag.data("recieverkey");
-    var cipherText = encryptMessageWithPub(receiverPubKey, msg);
+    var receiverXpubKey = metaTag.data("recipientkey");
+    console.log("Recip. Pub Key:")
+    console.log(receiverXpubKey);
+    console.log("xpub passed to client:");
+    var xpub = metaTag.data("xpub");
+    console.log(xpub);
+    console.log("Key generated on client:");
+    var hdk = hdkey.fromExtendedKey(xpub);
+    path = sessionStorage.getItem("keypath");
+    console.log(hdk.derive(path).publicKey);
+    var cipherText = encryptMessageWithPub(receiverXpubKey, msg);
     return cipherText;
 }
 
 // encrypt message for sender
 var encryptMessageOutSender = function (msg) {
     // get remote share
-    var shareRemote = sessionStorage.getItem("keypath");
+    var shareRemote = sessionStorage.getItem("remoteshare");
+    console.log("User Shares:");
+    console.log(shareRemote);
     // get local share
     var shareLocal = localStorage.getItem("seedShare");
+    console.log(shareLocal);
     // combine shares into original seed (in hex)
     var seedHex = combineShares(shareLocal, shareRemote);
     // encrypt message with seed
@@ -292,23 +318,70 @@ var encryptMessageOutSender = function (msg) {
 }
 
 // decrypt incoming message by combining local and remote seed shares
-var decryptMessageIn = function(cipherText){
+var decryptMessageIn = async function(encrypted){
     // get remote share
-    var shareRemote = sessionStorage.getItem("keypath");
+    var shareRemote = sessionStorage.getItem("remoteshare");
     // get local share
     var shareLocal = localStorage.getItem("seedShare");
     // combine shares into original seed (in hex)
     var seedHex = combineShares(shareLocal, shareRemote);
-    var plainText = decryptCipher(seedHex, cipherText);
+    
+    var plainText = await decryptCipher(seedHex, encrypted);
+    console.log("Plain text");
+    console.log(plainText);
+    console.log(plainText.toString());
     // return plaintext
-    return plainText;
+    return plainText.toString();
 }
 
 
 // decrypt message history formatted on server
-var decryptGroupInit = function (msgHistory) {
+/*var decryptGroupInit = function (msgHistory) {
+    console.log("Decrypting initial msg. batch.......");
     console.log(msgHistory);
     $(msgHistory).each(function () {
         console.log($(this));
+        if ($(this).hasClass("msgEncrypted")) {
+            console.log("Is text: ");
+            console.log($(this));
+            console.log("Inner: ");
+            console.log($(this).find(".msgText"));
+            var encryptedMsg = JSON.parse($(this).data("encrypted"));
+            console.log(encryptedMsg);
+            // decrypt message cipher text
+            $(this).text = decryptMessageIn(encryptedMsg);
+        }
     });
+}*/
+
+var decryptGroupInit = async function (msgList, isEncrypted) {
+    console.log("message list:");
+    console.log(msgList);
+    console.log(msgList.length);
+    for (var i = 0; i < msgList.length; i++) {
+        console.log("------MsgList Next------");
+        console.log(msgList[i]);
+        console.log("Msg. Encrypted:");
+        var msg = msgList[i].msgEncrypted;
+        console.log(msg.ciphertext);
+        console.log(msg.ciphertext.data);
+        msg.ciphertext = buffer.Buffer.from(msg.ciphertext.data);
+        msg.ephemPublicKey = buffer.Buffer.from(msg.ephemPublicKey.data);
+        msg.iv = buffer.Buffer.from(msg.iv.data);
+        msg.mac = buffer.Buffer.from(msg.mac.data);
+        console.log(msg);
+        var text;
+        // decrypt if message is encrypted
+        if (isEncrypted) text = await decryptMessageIn(msg);
+        else text = msg;
+        // display message
+        if (msgList[i].isIn) {
+            addMessageIn(text);
+            console.log("is in");
+        }
+        else {
+            addMessageOut(text);
+            console.log("is out");
+        }
+    } 
 }
