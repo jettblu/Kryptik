@@ -32,6 +32,7 @@ Kryptik does the hard stuff, so users won’t have to.
 *Current Features*
 * Social Network
 * HD Wallet
+* Encrypted chat
 * Profile Management
 * Asset and User Search
 * Price charts
@@ -40,7 +41,6 @@ Kryptik does the hard stuff, so users won’t have to.
 *Pending Features*
 * NFT marketplace
 * Transaction Broadcasting
-* Encrypted chat
 * Multisig
 * Automated Exchange Integration
 
