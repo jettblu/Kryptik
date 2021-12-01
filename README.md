@@ -45,7 +45,7 @@ Kryptik does the hard stuff, so users won’t have to.
 * Automated Exchange Integration
 
 ## Tech Stack
-Backend: C#
+Backend: C#, SignalR
 
 Front end: Razor, Javascript, Ajax, CSS
 
