@@ -114,6 +114,7 @@ namespace CrypticPay.Services
                 var userTo = GetUserandWallet(inputTo, contextUsers);
                 tx.UserTo = userTo;
                 publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).AddressOnChain.Address;
+                
             }
             catch
             {   

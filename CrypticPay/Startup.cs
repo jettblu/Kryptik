@@ -99,6 +99,13 @@ namespace CrypticPay
                 )
             );
 
+            services.AddTransient<DecentralizedStorage>(implementationFactory =>
+            new DecentralizedStorage(
+                apiKey: Configuration["PinataAccount:ApiKey"],
+                apiSecret: Configuration["PinataAccount:ApiSecret"]
+                )
+            );
+
             services.AddSignalR(o =>
             {
                 o.EnableDetailedErrors = true;
