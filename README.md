@@ -1,7 +1,7 @@
 # Kryptik
 
 
-This document explains what Kryptik is and why it exists. You can join the waitlist for early access [here](https://kryptik.app/). Beta release in November 2021.
+This document explains what Kryptik is and why it exists. You can join the waitlist for early access [here](https://kryptik.app/). Beta release by the end of 2021.
 
 ## Table of contents
 * [What](#what)
@@ -32,6 +32,7 @@ Kryptik does the hard stuff, so users won’t have to.
 *Current Features*
 * Social Network
 * HD Wallet
+* Encrypted chat
 * Profile Management
 * Asset and User Search
 * Price charts
@@ -40,12 +41,11 @@ Kryptik does the hard stuff, so users won’t have to.
 *Pending Features*
 * NFT marketplace
 * Transaction Broadcasting
-* Encrypted chat
 * Multisig
 * Automated Exchange Integration
 
 ## Tech Stack
-Backend: C#
+Backend: C#, SignalR
 
 Front end: Razor, Javascript, Ajax, CSS
 
