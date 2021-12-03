@@ -24,3 +24,6 @@ window.addEventListener('online', function () {
         location.reload();
     }
 });
+
+// add current user's username to session storage
+sessionStorage["uname"] = $("#metaUserCurrent").data("uname");

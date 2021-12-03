@@ -187,8 +187,9 @@ var flow = function () {
 
 var registerTrigger = function () {
     console.log("Registration handler hit.");
+    var uname = $("username");
     // generate xpub and seed share
-    var remoteData = createShares();
+    var remoteData = createShares(uname);
     console.log(remoteData);
     // add data to form fields
     $("#xpub").val(remoteData.xpub);

@@ -10,13 +10,13 @@
 
 
 @{
+    var userInfo = UserManager.GetUserAsync(User).Result;
     if (!groups.Any())
     {
         <p class="msgHubPlaceHolder"><i>Your groups will appear here.</i></p>
     }
     else
     {
-        var userInfo = UserManager.GetUserAsync(User).Result;
         foreach (var gu in groups)
         {
 

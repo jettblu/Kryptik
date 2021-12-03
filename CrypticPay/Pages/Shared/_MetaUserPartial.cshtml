@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Areas.Identity.Data
+@inject UserManager<CrypticPayUser> UserManager
+@{
+    var userInfo = UserManager.GetUserAsync(User).Result;
+    if (userInfo != null)
+    {
+        <div id="metaUserCurrent" data-uname="@userInfo.UserName">
+
+        </div>
+    }
+}
+
+

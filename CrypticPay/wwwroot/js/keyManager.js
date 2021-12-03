@@ -1,8 +1,8 @@
 ﻿// creates shares for a given secret
 // returns xpub and 1 seed share for remote storage
-
 // one seed share is saved on client
-var createShares = function () {
+// uniqueId is used to differentiate if multiple local shares
+var createShares = function (unqiqueId) {
     console.log("Creating shares");
     var mnemonic = bip.generateMnemonic();
     console.log(mnemonic);
@@ -22,8 +22,10 @@ var createShares = function () {
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
     console.log(shares);
+    // Add unique identifier so there can be multiple accounts on same browser
+    var seedStorageName = "seedShare" + uniqueId;
     // save one share to browser's local memory
-    localStorage.setItem("seedShare", shares[0]);
+    localStorage.setItem(seedStorageName, shares[0]);
     // use another share for remote storage
     var remoteShare = shares[1];
     // create return object
@@ -32,7 +34,7 @@ var createShares = function () {
         xpub: extPubKey
     };
     console.log("Shares created.");
-    var mnemonicRes = combineShares(localStorage.getItem("seedShare"), remoteShare);
+    var mnemonicRes = combineShares(localStorage.getItem(seedStorageName), remoteShare);
     console.log(mnemonicRes);
     return remoteData;
 }
@@ -102,4 +104,11 @@ var generateEncryptorTest = function (seed, message, path) {
     });
   }
 
+// returns current user's local seed share
+var getLocalShare = function () {
+    var uniqueId = sessionStorage.getItem("uname");
+    var remoteStorageName = "seedShare" + uniqueId;
+    var shareLocal = localStorage.getItem(remoteStorageName);
+    return shareLocal;
+}
         

@@ -308,7 +308,7 @@ var encryptMessageOutSender = function (msg) {
     console.log("User Shares:");
     console.log(shareRemote);
     // get local share
-    var shareLocal = localStorage.getItem("seedShare");
+    var shareLocal = getLocalShare();
     console.log(shareLocal);
     // combine shares into original seed (in hex)
     var seedHex = combineShares(shareLocal, shareRemote);
@@ -322,7 +322,7 @@ var decryptMessageIn = async function(encrypted){
     // get remote share
     var shareRemote = sessionStorage.getItem("remoteshare");
     // get local share
-    var shareLocal = localStorage.getItem("seedShare");
+    var shareLocal = getLocalShare();
     // combine shares into original seed (in hex)
     var seedHex = combineShares(shareLocal, shareRemote);
     
