@@ -165,10 +165,7 @@ var flow = function () {
         }
 
         else if (step == "1") {
-            showNumber();
-            $("#btnNext").data("step", "2");
-            $("#btnNext").hide();
-            setValue(50);
+            validateTrigger();
         }
 
         else if (step == "2") {
@@ -181,7 +178,6 @@ var flow = function () {
             hideSteps();
         };
     }
-
 
 };
 
@@ -244,4 +240,23 @@ var handleVerify = function (res) {
         $("#codeInput").val("");
         // pass for now
     }
+}
+
+
+var validateTrigger = function () {
+    var uname = $("#username").val();
+    $("#unameValidate").val(uname);
+    // submit username form for validation
+    $("#unameForm").submit();
+}
+
+
+var handleValidateUname(res){
+    var result = response.responseJSON;
+    if (result == true) {
+        showNumber();
+        $("#btnNext").data("step", "2");
+        $("#btnNext").hide();
+        setValue(50);
+    };
 }

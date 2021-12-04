@@ -101,6 +101,12 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             public string VerificationCode { get; set; }
         }
 
+        public class ValidateUsernameModel
+        {
+            [Display(Name = "User Name")]
+            public string UserName { get; set; }
+        }
+
         public class InputModel
         {
             [Required]
@@ -120,6 +126,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             public SendModel SendMod { get; set; }
 
             public VerifyModel VerifyMod { get; set; }
+            public ValidateUsernameModel ValidateUnameMod { get; set; }
 
             [Required]
             [Display(Name = "Code")]
@@ -166,6 +173,12 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             {
                 // check if number is still valid
                 var verified = await IsVerified(Input.PhoneNumber, Input.PhoneNumberCountryCode, Input.VerificationCode);
+                // ensure username is unique
+                if(!Utils.ValidUsername(_context, Input.UserName))
+                {
+                    ModelState.AddModelError("Username error:", "Username already taken.");
+                    return Page();
+                }
                 // get phone number in correct format
                 if (verified)
                 {
@@ -190,6 +203,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                 var user = new CrypticPayUser 
                 {
                     UserName = Input.UserName,
+                    NormalizedUserName = Input.UserName.ToUpper(),
                     Name = Input.FullName,
                     PhoneNumber = PhoneNumberToSave,
                     PhoneNumberConfirmed = true,
@@ -227,6 +241,21 @@ namespace CrypticPay.Areas.Identity.Pages.Account
 
             return new JsonResult(verified);
         }   
+
+        public IActionResult OnPostValidateUsername()
+        {
+            var uname = Input.ValidateUnameMod.UserName;
+            if (Input.ValidateUnameMod == null || !Utils.ValidUsername(_context, uname))
+            {
+                // make sure error is not permanent
+                ModelState.AddModelError("Error:", "username is already taken.");
+                return new JsonResult(false);
+            }
+            else
+            {
+                return new JsonResult(true);
+            }
+        }
 
 
         public async Task<bool> IsVerified(string num, string country, string code)

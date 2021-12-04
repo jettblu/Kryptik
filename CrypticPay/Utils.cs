@@ -609,6 +609,11 @@ namespace CrypticPay
             return result;
         }
 
+        public static bool ValidUsername(CrypticPayContext context, string uname)
+        {
+            return context.Users.Any(u => u.NormalizedUserName == uname.ToUpper());
+        }
+
 
 
 

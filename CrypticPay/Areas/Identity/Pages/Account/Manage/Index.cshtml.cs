@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using CrypticPay.Areas.Identity.Data;
+using CrypticPay.Data;
 using CrypticPay.ProfilePhoto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +29,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
         private readonly TwilioVerifySettings _settings;
         private readonly IEmailSender _emailSender;
         private readonly StorageAccountOptions _storageSettings;
+        private readonly CrypticPayContext _context;
 
         public IndexModel(
             UserManager<CrypticPayUser> userManager,
@@ -37,8 +37,10 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
             CountryService countryService,
             IOptions<TwilioVerifySettings> settings,
             IEmailSender emailSender,
-            IOptions<StorageAccountOptions> storagSettings)
+            IOptions<StorageAccountOptions> storagSettings,
+            CrypticPayContext context)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _settings = settings.Value;
@@ -297,6 +299,13 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
             if(Input.NewUserName != user.UserName)
             {
+                // ensure username is unique
+                if (!Utils.ValidUsername(_context, Input.NewUserName))
+                {
+                    ModelState.AddModelError("Username error:", "Username already taken.");
+                    return Page();
+                }
+                user.NormalizedUserName = Input.NewUserName.ToUpper();
                 user.UserName = Input.NewUserName;
             }
 

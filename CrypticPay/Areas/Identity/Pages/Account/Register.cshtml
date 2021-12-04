@@ -50,6 +50,9 @@
                                 <input id="phoneCountryVerify" asp-for="Input.VerifyMod.PhoneNumberCountryCode" type="hidden" />
                                 <input id="phoneCodeVerify" asp-for="Input.VerifyMod.VerificationCode" type="hidden" />
                             </form>
+                            <form id="unameForm" data-ajax="true" data-ajax-method="post" method="post" data-ajax-complete="handleValidateUname" asp-page-handler="ValidateUsername">
+                                <input id="unameValidate" asp-for="Input.ValidateUnameMod.UserName" type="hidden" />
+                            </form>
 
                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                                 <input id="seedShare" asp-for="Input.SeedShare" type="hidden" />
@@ -168,7 +171,7 @@
 
 </div>
 
-scripts needed for key generation
+@*scripts needed for key generation*@
 <script src="~/js/keyManager.js" type="module"></script>
 <script src="~/js/registerManager.js"></script>
 <script src="~/js/changeText.js"></script>
