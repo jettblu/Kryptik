@@ -1,6 +1,7 @@
 ﻿using CrypticPay.Areas.Identity.Data;
 using CrypticPay.Data;
 using CrypticPay.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -614,8 +615,15 @@ namespace CrypticPay
             return context.Users.Any(u => u.NormalizedUserName == uname.ToUpper());
         }
 
-
-
+        // converts iform file to byte array
+        public static async Task<byte[]> GetBytes(IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
 
 
     }

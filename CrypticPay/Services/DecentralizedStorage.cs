@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Pinata.Client;
 
 namespace CrypticPay.Services
@@ -22,8 +23,9 @@ namespace CrypticPay.Services
             };
         }
         // uploads given bytes to IPFS via Pinata
-        public async void UploadFile(string strFileName, byte[] fileData)
+        public async void UploadFile(string strFileName, IFormFile file)
         {
+            byte[] fileData = await Utils.GetBytes(file);
             var client = new PinataClient(_config);
             var response = await client.Pinning.PinFileToIpfsAsync(content =>
             {
