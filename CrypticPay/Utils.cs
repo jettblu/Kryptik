@@ -618,11 +618,13 @@ namespace CrypticPay
         // converts iform file to byte array
         public static async Task<byte[]> GetBytes(IFormFile formFile)
         {
+            byte[] result;
             using (var memoryStream = new MemoryStream())
             {
-                await formFile.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
+                formFile.CopyTo(memoryStream);
+                result =  memoryStream.ToArray();
             }
+            return result;
         }
 
 

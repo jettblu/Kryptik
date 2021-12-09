@@ -42,7 +42,7 @@ namespace CrypticPay.Areas.Community.Pages.Content
             if (Input.NewFile == null || !Utils.IsValidPhoto(Input.NewFile.FileName)) return RedirectToPage();
 
             // upload file
-            _dstorage.UploadFile(Input.NewFile.FileName, Input.NewFile);
+            Globals.Status uploadStatus = await _dstorage.UploadFile(Input.NewFile.FileName, Input.NewFile);
 
             return RedirectToPage();
         }

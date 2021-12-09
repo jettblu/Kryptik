@@ -23,8 +23,9 @@ namespace CrypticPay.Services
             };
         }
         // uploads given bytes to IPFS via Pinata
-        public async void UploadFile(string strFileName, IFormFile file)
+        public async Task<Globals.Status> UploadFile(string strFileName, IFormFile file)
         {
+            // get bytes for arg. file
             byte[] fileData = await Utils.GetBytes(file);
             var client = new PinataClient(_config);
             var response = await client.Pinning.PinFileToIpfsAsync(content =>
@@ -37,9 +38,12 @@ namespace CrypticPay.Services
             if (response.IsSuccess)
             {
                 //File uploaded to Pinata Cloud. Can be accessed on IPFS!
-                var hash = response.IpfsHash; 
+                var cid = response.IpfsHash;
+                return Globals.Status.Success;
             }
-            
+
+            // if we made it this far something went wrong....
+            return Globals.Status.Failure;
         }
     }
 }
