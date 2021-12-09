@@ -621,6 +621,16 @@ a {
     -moz-text-fill-color: transparent;
 }
 
+.textGradientGreen {
+    background-color: #f3ec78;
+    background-image: linear-gradient(to right, #79c9d6, #2bc700);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+}
+
 /**** Progress Style ****/
 
 .Progressbar {
