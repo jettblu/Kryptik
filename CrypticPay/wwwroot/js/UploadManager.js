@@ -111,6 +111,11 @@ var showPending = function () {
     $("#pendingTitle").show();
 }
 
+var hidePending = function () {
+    $("#pendingContainer").hide();
+    $("#pendingTitle").hide();
+}
+
 var uploadTrigger = function () {
     $("#uploadForm").submit();
     $("#progressContainer").hide();
@@ -132,16 +137,5 @@ var handleSend = function (res) {
     var result = res.responseJSON;
     if (result == false) {
         hideCode();
-    }
-};
-
-var completeUpload = function (res) {
-    // true if successful
-    var result = res.responseJSON;
-    if (result == false) {
-        showFile();
-    }
-    else {
-        
     }
 };
