@@ -30,7 +30,7 @@
                 <img src="~/Media/fileUpload.svg" style="width: 80px; margin-top: 5%;">
                 <h5>Upload your favorite <span class="textGradientBlue">art</span>, <span class="textGradientBlue">moment</span>, or <span class="textGradientBlue">memory</span><a class="activator"><i class="material-icons activator tiny">info</i></a></h5>
             </center>
-            <form method="post" class="col s12" enctype="multipart/form-data" asp-page-handler="Upload">
+            <form id="uploadForm" post" class="col s12" enctype="multipart/form-data" asp-page-handler="Upload">
                 <div id="stepFormContainer">
 
                     <div id="fileStep" class="row step">
@@ -90,4 +90,7 @@
     </div>
 
 </div>
+
+
+<script src="~/js/UploadManager.js"></script>
 
