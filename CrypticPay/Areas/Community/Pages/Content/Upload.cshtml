@@ -6,40 +6,88 @@
 
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
+
+<div class="section hide-on-small-only"></div>
+<div class="section hide-on-small-only"></div>
+
 <div class="row">
-    <h4 class="textGradientGreen">Create New Item</h4>
+    <div class="col offset-l2 l4 s10 l8 offset-s1">
+        <div class="row">
+            <h4 class="textGradientGreen">Create New Item</h4>
+            <p>Each upload is stored on the Interplanetary File System (IPFS). IPFS is decntralized, giving you full ownership of your upload.</p>
+        </div>
+
+    </div>
 </div>
 
+
 <div class="row">
 
-    <div class="card horizontal hoverable col l6 s10" style="border-radius: 25px 25px 25px 25px; padding-top: 5%;">
+    <div class="card horizontal hoverable col l6 s10 offset-s1 offset-l3 " style="border-radius: 25px 25px 25px 25px;">
         <div class="row">
-            <center>
-                <img src="media/fileUpload.svg" style="width: 80px;">
-                <h5>Upload <span class="textGradientBlue">photo</span>, <span class="textGradientBlue">video</span>, or <span class="textGradientBlue">audio</span> files</h5>
+            <p id="pendingTitle" class="card-title grey-text text-darken-4 textGradientBlue" hidden>Submitted</p>
+            <center id="fileStepInfo" class="step">
+                <img src="~/Media/fileUpload.svg" style="width: 80px; margin-top: 5%;">
+                <h5>Upload your favorite <span class="textGradientBlue">art</span>, <span class="textGradientBlue">moment</span>, or <span class="textGradientBlue">memory</span><a class="activator"><i class="material-icons activator tiny">info</i></a></h5>
             </center>
             <form method="post" class="col s12" enctype="multipart/form-data" asp-page-handler="Upload">
-                <div class="row">
-                    <div class="file-field input-field">
-                        <div class="btn btn-file">
-                            <span>File</span>
-                            <input type="file" asp-for="Input.NewFile">
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input type="text" class="file-path" placeholder="Choose an image" onchange="form.submit()" accept="image/png, image/jpeg">
+                <div id="stepFormContainer">
+
+                    <div id="fileStep" class="row step">
+                        <div class="file-field input-field">
+                            <div class="btn btn-file">
+                                <span>File</span>
+                                <input type="file" asp-for="Input.NewFile">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="fileInput" type="text" class="file-path" placeholder="Choose an image" accept="image/png, image/jpeg">
+                            </div>
                         </div>
                     </div>
 
+                    <div id="metaStep" class="row step" hidden>
+                        <div class="input-field col l12 s12">
+                            <label for="name" type="text"><i class="tiny material-icons">person</i> Name</label>
+                            <input id="name" type="text" class="form-control" autocomplete="off" />
+                        </div>
+                        <div class="input-field col l12 s12">
+                            <textarea id="description" placeholder="Description of your new upload..." class="materialize-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div id="pendingContainer" class="row" hidden>
+                        <p>Your file has been sent to IPFS! The upload process may take up to 30 seconds. Please do not close this page.</p>
+                        <br>
+                        <center>
+                            <img src="spin.gif" class="animation-small" />
+                            <br>
+                        </center>
+                    </div>
+
+                </div>
+                <div id="btnContainer" class="row" hidden>
+                    <a id="btnBack" class="btnStep btn btn-flow rounded col s5">← Back</a>
+                    <a id="btnNext" data-step="0" class="btnStep btn btn-flow col s5 offset-s6 rounded" hidden>Next →</a>
+                    <a id="btnSubmit" class="btn btn-glow col s6 offset-s1">Upload</a>
+                </div>
+                <div id="progressContainer" hidden>
+                    <div class="Progressbar">
+                        <div class="Progressbar__value"></div>
+                        <progress value="0" max="100">100%</progress>
+                    </div>
                 </div>
             </form>
+
         </div>
 
+
+
+        <div class="card-reveal">
+            <span class="card-title grey-text text-darken-4">Supported Files<i class="material-icons right">close</i></span>
+            <p>Right now, Kryptik only supports photos. But don't worry! Support for other file types will be added soon.</p>
+        </div>
 
     </div>
 
 </div>
 
-
-<script>
-
-</script>
