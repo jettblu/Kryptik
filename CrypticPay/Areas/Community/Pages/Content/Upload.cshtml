@@ -48,10 +48,10 @@
                     <div id="metaStep" class="row step" hidden>
                         <div class="input-field col l12 s12">
                             <label for="name" type="text"><i class="tiny material-icons">person</i> Name</label>
-                            <input id="name" type="text" class="form-control" autocomplete="off" />
+                            <input id="name" type="text" asp-for="Input.Name" class="form-control" autocomplete="off" />
                         </div>
                         <div class="input-field col l12 s12">
-                            <textarea id="description" placeholder="Description of your new upload..." class="materialize-textarea"></textarea>
+                            <textarea id="description" asp-for="Input.Description" placeholder="Description of your new upload..." class="materialize-textarea"></textarea>
                         </div>
                     </div>
 
