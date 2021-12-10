@@ -30,7 +30,7 @@
                 <img src="~/Media/fileUpload.svg" style="width: 80px; margin-top: 5%;">
                 <h5>Upload your favorite <span class="textGradientBlue">art</span>, <span class="textGradientBlue">moment</span>, or <span class="textGradientBlue">memory</span><a class="activator"><i class="material-icons activator tiny">info</i></a></h5>
             </center>
-            <form id="uploadForm" post" class="col s12" enctype="multipart/form-data" asp-page-handler="Upload">
+            <form id="uploadForm" method="post" class="col s12" enctype="multipart/form-data" data-ajax="true" data-ajax-complete="completeUpload" asp-page-handler="Upload">
                 <div id="stepFormContainer">
 
                     <div id="fileStep" class="row step">
@@ -56,14 +56,17 @@
                     </div>
 
                     <div id="pendingContainer" class="row" hidden>
-                        <p>Your file has been sent to IPFS! The upload process may take up to 30 seconds. Please do not close this page.</p>
+                        <p>Your file has been sent to IPFS for storage! The upload process may take up to 30 seconds. Please do not close this page.</p>
                         <br>
                         <center>
-                            <img src="spin.gif" class="animation-small" />
+                            <img src="~/Media/fileUpload.svg" class="animation-small" />
                             <br>
                         </center>
                     </div>
-
+                    <div id="pendingContainer" class="row" hidden>
+                        <p>Wooohooo! Your file was successfully stored on IPFS. Check it out on your <a asp-page="~/Identity/Account/Profile">profile</a>.</p>
+                        <br>
+                    </div>
                 </div>
                 <div id="btnContainer" class="row" hidden>
                     <a id="btnBack" class="btnStep btn btn-flow rounded col s5">← Back</a>
@@ -92,5 +95,8 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+        integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10="
+        crossorigin="anonymous"></script>
 <script src="~/js/UploadManager.js"></script>
 

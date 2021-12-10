@@ -136,8 +136,12 @@ var handleSend = function (res) {
 };
 
 var completeUpload = function (res) {
+    // true if successful
     var result = res.responseJSON;
     if (result == false) {
-        hideCode();
+        showFile();
+    }
+    else {
+        
     }
 };
