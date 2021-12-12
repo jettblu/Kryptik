@@ -33,7 +33,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        
+        public IQueryable<FileUpload> Uploads { get; set; }
         public string FriendOnGetInfo { get; set; }
         public FriendRequestData FriendRequestInfo { get; set; }
         public class FriendRequestData
@@ -69,6 +69,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             FriendRequestInfo = new FriendRequestData() { FriendsPending = await Utils.GetPendingFriendshipsRecieved(_contextFriends, _userManager,currUser.Id)};
             Input = new InputModel { Id = currUser.Id };
             FriendOnGetInfo = JsonConvert.SerializeObject(FriendRequestInfo);
+            
             return Page();
         }
 

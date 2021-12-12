@@ -627,6 +627,12 @@ namespace CrypticPay
             return result;
         }
 
+        // return list of uploads owned by a given user
+        public static IQueryable<FileUpload> GetUploads(CrypticPayContext context, CrypticPayUser user)
+        {
+            return context.Uploads.Where(up => up.OwnerId == user.Id);
+        }
+
 
     }
 
