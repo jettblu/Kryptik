@@ -19,6 +19,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
 {
     public class ProfileModel : PageModel
     {
+        private readonly CrypticPayContext _context;
         private readonly CrypticPayFriendshipContext _contextFriends;
         private readonly UserManager<CrypticPayUser> _userManager;
 
@@ -50,11 +51,12 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             public string Id { get; set; }
         }
 
-        public ProfileModel(UserManager<CrypticPayUser> userManager, CrypticPayFriendshipContext contextFriends, CrypticPayCoinContext context, WalletHandler walletHandler, CrypticPayContext contextUsers)
+        public ProfileModel(UserManager<CrypticPayUser> userManager, CrypticPayFriendshipContext contextFriends, WalletHandler walletHandler, CrypticPayContext contextUsers)
         {
             _userManager = userManager;
             _contextFriends = contextFriends;
             _userManager = userManager;
+            _context = contextUsers;
         }
 
 
@@ -64,7 +66,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             FriendRequestInfo = new FriendRequestData() { FriendsPending = await Utils.GetPendingFriendshipsRecieved(_contextFriends, _userManager,currUser.Id)};
             Input = new InputModel { Id = currUser.Id };
             FriendOnGetInfo = JsonConvert.SerializeObject(FriendRequestInfo);
-            
+            // retreive current users
+            Uploads = Utils.GetUploads(_context, currUser);
             return Page();
         }
 
