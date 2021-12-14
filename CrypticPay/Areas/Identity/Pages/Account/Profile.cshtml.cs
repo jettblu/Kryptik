@@ -22,9 +22,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         private readonly CrypticPayFriendshipContext _contextFriends;
         private readonly UserManager<CrypticPayUser> _userManager;
 
-        private readonly CrypticPayCoinContext _contextCoins;
-        private readonly CrypticPayContext _contextUsers;
-        private WalletHandler _walletHandler;
+        
 
 
         [TempData]
@@ -56,10 +54,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         {
             _userManager = userManager;
             _contextFriends = contextFriends;
-            _contextUsers = contextUsers;
-            _contextCoins = context;
             _userManager = userManager;
-            _walletHandler = walletHandler;
         }
 
 
@@ -105,30 +100,5 @@ namespace CrypticPay.Areas.Identity.Pages.Account
         }
 
 
-        public async Task<IActionResult> OnPostObtainWalletDataAsync()
-        {
-            // get current user's ID
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // load relational data for user
-            var currUser = _contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).Where(us => us.Id == userId).FirstOrDefault();
-            var walletCoinContainer = Utils.GetCoinsForWallet(currUser, _contextCoins);
-            if(currUser.WalletKryptik != null)
-            {
-                var resultBalUpdate = await _walletHandler.UpdateBalances(walletCoinContainer);
-                // update user after updating balances
-                _contextUsers.Users.Update(currUser);
-                _contextUsers.SaveChanges();
-            }
-           
-
-            return new PartialViewResult()
-            {
-                ViewName = "_Balance",
-                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = walletCoinContainer
-                }
-            };
-        }
     }
 }
