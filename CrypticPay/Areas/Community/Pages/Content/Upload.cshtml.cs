@@ -61,7 +61,7 @@ namespace CrypticPay.Areas.Community.Pages.Content
             if(response.Status == Globals.Status.Success)
             {
                 // save upload to local DB
-                var upload = new Data.FileUpload()
+                var upload = new FileUpload()
                 {
                     CID = response.CID,
                     CreationTime = DateTime.Now,
