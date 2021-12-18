@@ -22,6 +22,7 @@ var createShares = function (unqiqueId) {
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
     console.log(shares);
+    var uniqueId = $("")
     // Add unique identifier so there can be multiple accounts on same browser
     var seedStorageName = "seedShare" + uniqueId;
     // save one share to browser's local memory

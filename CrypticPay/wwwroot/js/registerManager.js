@@ -214,7 +214,7 @@ $("#btnSubmit").click(function () {
 $("#confirmPhone").on('click', confirmFlow)
 
 
-var handleSend = function(res) {
+var handleSend = function (res) {
     var result = res.responseJSON;
     if (result == false) {
         hideCode();
@@ -251,7 +251,7 @@ var validateTrigger = function () {
 }
 
 
-var handleValidateUname(res){
+var handleValidateUname = function(res){
     var result = response.responseJSON;
     if (result == true) {
         showNumber();
