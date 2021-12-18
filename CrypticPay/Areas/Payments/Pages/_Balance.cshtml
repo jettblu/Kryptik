@@ -2,7 +2,7 @@
 @model WalletHandler.WalletandCoins
 
 @{
-    if(Model.User.WalletKryptik == null)
+    if(Model.User.WalletKryptik == null || !Model.User.WalletKryptikExists)
     {
         <center><p>No wallet has been created for (@Model.User.Name). Create a wallet <a asp-area="Payments" asp-page="/Wallet/Manage">here</a>. </p></center>
         return;

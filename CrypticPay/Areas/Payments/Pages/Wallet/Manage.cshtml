@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="row">
-                    <p><span class="info-header">Date Created</span>: @(Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString())</p>
+                    <p><span class="info-header">Date Created</span>: @Model.CurrUser.WalletKryptik.CreationTime.ToShortDateString()</p>
                     <p><span class="info-header">Coins Supported</span>: 7</p>
                     <p><span class="info-header">Wallet Type</span><a href="#typeModal" class="modal-trigger"><i class="material-icons" style="font-size: 14px; color: grey">info</i></a>: Noncustodial</p>
                 </div>
@@ -90,7 +90,7 @@
             <div class="modal-content">
                 <h4 style="color: #00c72e;">Wallet Type</h4>
                 <p>
-                    Crypto wallets can be either custodial or non custodial. Custodial wallets allow a third party to manage your private key and execute transactions on your behalf. Noncustodial wallets give you full control over your crypto experience.
+                    Crypto wallets can be either custodial or non custodial. Noncustodial wallets give you full control over your crypto experience. Custodial wallets allow a third party to manage your private key and execute transactions on your behalf.
                 </p>
                 <p>Kryptik wallets are noncustodial by default.</p>
             </div>

@@ -34,9 +34,9 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
             // get current user's ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             // load relational data for user
-            var currUser = _contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).Where(us => us.Id == userId).FirstOrDefault();
+            var currUser = _walletHandler.GetUserandWallet(userId, _contextUsers);
             var walletCoinContainer = Utils.GetCoinsForWallet(currUser, _contextCoins);
-            if (currUser.WalletKryptik != null)
+            if (currUser.WalletKryptikExists && currUser.WalletKryptik != null)
             {
                 var resultBalUpdate = await _walletHandler.UpdateBalances(walletCoinContainer);
                 // update user after updating balances

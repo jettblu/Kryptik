@@ -419,6 +419,7 @@ namespace CrypticPay.Services
 
             user.WalletKryptik.CreationTime = DateTime.Now;
             user.WalletKryptik.Owner = user;
+            user.WalletKryptikExists = true;
 
             return Globals.Status.Done;
             
@@ -449,6 +450,7 @@ namespace CrypticPay.Services
             foreach (var account in walletAndCoins.User.WalletKryptik.CurrencyWallets)
             {
                 var responseBal = await _tatumClient.GetAccountBalance(account.AccountId);
+                
                
                 var balance = Convert.ToDouble(responseBal.Balance);
                 account.AccountBalanceFiat = balance;
