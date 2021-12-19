@@ -22,7 +22,7 @@ var createShares = function (unqiqueId) {
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
     console.log(shares);
-    var uniqueId = getUniqueIdFromView();
+    var uniqueId = getUniqueId();
     // Add unique identifier so there can be multiple accounts on same browser
     var seedStorageName = "seedShare" + uniqueId;
     // save one share to browser's local memory
@@ -106,15 +106,28 @@ var generateEncryptorTest = function (seed, message, path) {
   }
 
 // returns current user's local seed share
-var getLocalShare = function () {
-    var uniqueId = sessionStorage.getItem("uname");
+var getLocalShare = function (id = null) {
+    var uniqueId = "";
+    // use arg. id if supplied... else retrieve
+    if (id != null) {
+        uniqueId = id;
+    }
+    else {
+        uniqueId = getUniqueId();
+    }
     var remoteStorageName = "seedShare" + uniqueId;
     var shareLocal = localStorage.getItem(remoteStorageName);
     return shareLocal;
 }
 
-// gets unqique id supplied in html by server
-var getUniqueIdFromView = function () {
-    $("#metaUserCurrent").data("uname");
+// updates seed key with new unqiue id
+var updateLocalSeedName = function (oldname, newname) {
+    var currshare = getLocalShare(oldname);
+    var remoteStorageName = "seedShare" + newname;
+    localStorage.setItem(remoteStorageName, currshare);
 }
-        
+
+// returns unique id set on page load
+var getUniqueId = function () {
+    return sessionStorage.getItem("uname");
+}        

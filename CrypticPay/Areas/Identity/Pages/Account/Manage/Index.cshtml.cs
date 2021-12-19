@@ -114,6 +114,14 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
         }
 
+        public class UnameResult
+        {
+            // all lowercase to avoid issues with js removing case formatting
+            public bool updated { get; set; }
+            public string oldname { get; set; }
+            public string newname { get; set; }
+        }
+
         private async Task LoadAsync(CrypticPayUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
@@ -276,52 +284,66 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
         }
 
-
             public async Task<IActionResult> OnPostUpdateBasicDetailsAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
-
-
-            if (Input.Name != user.Name)
-            {
-                user.Name = Input.Name;
-            }
-
-            if(Input.NewUserName != user.UserName)
-            {
-                // ensure username is unique
-                if (!Utils.ValidUsername(_context, Input.NewUserName))
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
                 {
-                    ModelState.AddModelError("Username error:", "Username already taken.");
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(user);
                     return Page();
                 }
-                user.NormalizedUserName = Input.NewUserName.ToUpper();
-                user.UserName = Input.NewUserName;
+
+
+                if (Input.Name != user.Name)
+                {
+                    user.Name = Input.Name;
+                }
+
+                // username will return regardless 
+                if(Input.NewUserName != user.UserName)
+                {
+                    var unameResult = new UnameResult()
+                    {
+                        updated = true,
+                        oldname = user.UserName,
+                        newname = Input.NewUserName
+                    };
+
+                    // ensure username is unique
+                    if (!Utils.ValidUsername(_context, Input.NewUserName))
+                    {
+                        ModelState.AddModelError("Username error:", "Username already taken.");
+                        return Page();
+                    }
+                    user.NormalizedUserName = Input.NewUserName.ToUpper();
+                    user.UserName = Input.NewUserName;
+                    // save changes to database
+                    await _userManager.UpdateAsync(user);
+                    await _signInManager.RefreshSignInAsync(user);
+                    StatusMessage = "Your profile has been updated";
+                    // create and return new username result for client view
+                    unameResult.updated = true;
+                    return new JsonResult(unameResult);
             }
 
-            if (Input.DOB != user.DOB)
-            {
-                user.DOB = Input.DOB;
-            }
+                if (Input.DOB != user.DOB)
+                {
+                    user.DOB = Input.DOB;
+                }
 
 
-            await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(user);
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+                await _signInManager.RefreshSignInAsync(user);
+                StatusMessage = "Your profile has been updated";
 
 
-            return RedirectToPage();
+                return RedirectToPage();
         }
 
 
