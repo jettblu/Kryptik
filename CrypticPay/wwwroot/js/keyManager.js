@@ -22,7 +22,7 @@ var createShares = function (unqiqueId) {
     var mnemonicHex = shamir.str2hex(mnemonic);
     var shares = shamir.share(mnemonicHex, 4, 2);
     console.log(shares);
-    var uniqueId = $("")
+    var uniqueId = getUniqueIdFromView();
     // Add unique identifier so there can be multiple accounts on same browser
     var seedStorageName = "seedShare" + uniqueId;
     // save one share to browser's local memory
@@ -111,5 +111,10 @@ var getLocalShare = function () {
     var remoteStorageName = "seedShare" + uniqueId;
     var shareLocal = localStorage.getItem(remoteStorageName);
     return shareLocal;
+}
+
+// gets unqique id supplied in html by server
+var getUniqueIdFromView = function () {
+    $("#metaUserCurrent").data("uname");
 }
         
