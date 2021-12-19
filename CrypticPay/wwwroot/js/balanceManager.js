@@ -1,4 +1,5 @@
-﻿var showBal = function (res) {
+﻿var showBal = function (res) { 
+    console.log(res);
     var result = res.responseText;
     $("#balContainer").empty();
     $("#balContainer").append(result);

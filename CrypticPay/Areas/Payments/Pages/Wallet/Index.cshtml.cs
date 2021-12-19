@@ -44,8 +44,8 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
                 _contextUsers.SaveChanges();
             }
 
-
-            return new PartialViewResult()
+            
+            var balancesPartial = new PartialViewResult()
             {
                 ViewName = "_Balance",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
@@ -53,7 +53,9 @@ namespace CrypticPay.Areas.Payments.Pages.Wallet
                     Model = walletCoinContainer
                 }
             };
+            
 
+            return balancesPartial;
         }
     }
 }
