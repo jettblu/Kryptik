@@ -32,3 +32,16 @@ function copyToClip(toCopy) {
     createNotification();
     console.log("Address Copied!");
 }
+
+
+function showPassword() {
+    var pwordDisplay = document.getElementById("pword");
+    var pwordConfirmDisplay = document.getElementById("pwordConfirm");
+    if (pwordDisplay.type === "password") {
+        pwordDisplay.type = "text";
+        pwordConfirmDisplay.type = "text";
+    } else {
+        pwordDisplay.type = "password";
+        pwordConfirmDisplay.type = "password";
+    }
+}

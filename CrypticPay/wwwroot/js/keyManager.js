@@ -106,7 +106,7 @@ var generateEncryptorTest = function (seed, message, path) {
   }
 
 // returns current user's local seed share
-var getLocalShare = function (id = null) {
+var getLocalShare = function (id) {
     var uniqueId = "";
     // use arg. id if supplied... else retrieve
     if (id != null) {
@@ -115,6 +115,7 @@ var getLocalShare = function (id = null) {
     else {
         uniqueId = getUniqueId();
     }
+    console.log(uniqueId);
     var remoteStorageName = "seedShare" + uniqueId;
     var shareLocal = localStorage.getItem(remoteStorageName);
     return shareLocal;

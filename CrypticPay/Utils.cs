@@ -612,7 +612,7 @@ namespace CrypticPay
 
         public static bool ValidUsername(CrypticPayContext context, string uname)
         {
-            return context.Users.Any(u => u.NormalizedUserName == uname.ToUpper());
+            return !context.Users.Any(u => u.NormalizedUserName == uname.ToUpper());
         }
 
         // converts iform file to byte array

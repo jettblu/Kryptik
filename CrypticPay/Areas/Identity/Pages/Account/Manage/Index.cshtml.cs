@@ -118,8 +118,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
         {
             // all lowercase to avoid issues with js removing case formatting
             public bool updateduname { get; set; }
-            public string oldname { get; set; }
-            public string newname { get; set; }
+            public string olduname { get; set; }
+            public string newuname { get; set; }
             public bool refresh { get; set; }
         }
 
@@ -301,8 +301,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
                 var basicResult = new BasicUpdateResult()
                 {
                     updateduname = true,
-                    oldname = user.UserName,
-                    newname = Input.NewUserName,
+                    olduname = user.UserName,
+                    newuname = Input.NewUserName,
                     refresh = false
                 };
 
@@ -318,7 +318,8 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
                 {
                     basicResult.refresh = true;
                     // ensure username is unique
-                    if (!Utils.ValidUsername(_context, Input.NewUserName))
+                    bool isValidUname = Utils.ValidUsername(_context, Input.NewUserName);
+                    if (!isValidUname)
                     {
                         ModelState.AddModelError("Username error:", "Username already taken.");
                         return Page();
