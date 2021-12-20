@@ -1,9 +1,8 @@
 ﻿var completeBasicUpdate = function (res) {
-    console.log(res);
     result = res.responseJSON;
     // update local seedshare's name
     if (result.updateduname) {
-        updateLocalSeedName(res.olduname, res.newuname);
+        updateLocalSeedName(result.olduname, result.newuname);
     }
     // reload page
     if (result.refresh) {

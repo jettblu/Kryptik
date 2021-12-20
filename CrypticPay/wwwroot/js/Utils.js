@@ -33,7 +33,7 @@ function copyToClip(toCopy) {
     console.log("Address Copied!");
 }
 
-
+// toggles password visibility
 function showPassword() {
     var pwordDisplay = document.getElementById("pword");
     var pwordConfirmDisplay = document.getElementById("pwordConfirm");
