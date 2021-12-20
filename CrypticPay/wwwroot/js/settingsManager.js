@@ -4,10 +4,13 @@ var updateUsername = function () {
     $("#profileForm").submit();
 }
 
-var completeUsernameUpdate = function(res) {
-    if (!res.updated) return;
+var completeBasicUpdate = function (res) {
     // update local seedshare's name
-    updateLocalSeedName(res.oldname, res.newname);
+    if (res.updateduname) {
+        updateLocalSeedName(res.oldname, res.newname);
+    }
     // reload page
-    location.reload();
+    if (res.refresh) {
+        location.reload();
+    }
 }

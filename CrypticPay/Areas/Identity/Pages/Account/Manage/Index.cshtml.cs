@@ -114,12 +114,13 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
 
         }
 
-        public class UnameResult
+        public class BasicUpdateResult
         {
             // all lowercase to avoid issues with js removing case formatting
-            public bool updated { get; set; }
+            public bool updateduname { get; set; }
             public string oldname { get; set; }
             public string newname { get; set; }
+            public bool refresh { get; set; }
         }
 
         private async Task LoadAsync(CrypticPayUser user)
@@ -297,23 +298,25 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
                     await LoadAsync(user);
                     return Page();
                 }
+                var basicResult = new BasicUpdateResult()
+                {
+                    updateduname = true,
+                    oldname = user.UserName,
+                    newname = Input.NewUserName,
+                    refresh = false
+                };
 
 
                 if (Input.Name != user.Name)
                 {
+                    basicResult.refresh = true;
                     user.Name = Input.Name;
                 }
 
                 // username will return regardless 
                 if(Input.NewUserName != user.UserName)
                 {
-                    var unameResult = new UnameResult()
-                    {
-                        updated = true,
-                        oldname = user.UserName,
-                        newname = Input.NewUserName
-                    };
-
+                    basicResult.refresh = true;
                     // ensure username is unique
                     if (!Utils.ValidUsername(_context, Input.NewUserName))
                     {
@@ -322,14 +325,11 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
                     }
                     user.NormalizedUserName = Input.NewUserName.ToUpper();
                     user.UserName = Input.NewUserName;
-                    // save changes to database
-                    await _userManager.UpdateAsync(user);
-                    await _signInManager.RefreshSignInAsync(user);
-                    StatusMessage = "Your profile has been updated";
+                    
                     // create and return new username result for client view
-                    unameResult.updated = true;
-                    return new JsonResult(unameResult);
-            }
+                    basicResult.updateduname = true;
+                    
+                }
 
                 if (Input.DOB != user.DOB)
                 {
@@ -343,7 +343,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account.Manage
                 StatusMessage = "Your profile has been updated";
 
 
-                return RedirectToPage();
+                return new JsonResult(basicResult);
         }
 
 
