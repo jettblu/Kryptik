@@ -58,6 +58,7 @@ namespace CrypticPay.Services
                 Currency = currency,
                 Id = currencyWallet.AccountId,
                 CounterAccount = currencyWallet.AccountId,
+                TransactionType = "CREDIT"
             };
             var transactions = await _tatumClient.GetTransactionsForAccount(filterTrans);
             
