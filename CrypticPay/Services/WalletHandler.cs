@@ -356,7 +356,7 @@ namespace CrypticPay.Services
             {
                 throw new Exception("Error: Remote and local deposit addresses are not the same.");
             };
-            var bchAddress = chainDataBtc.Address;
+            var bchAddress = chainDataBch.Address;
             var bchQr = Utils.QrForWebGenerator(bchAddress);
             var currencyWalletBch = new CurrencyWallet()
             {
@@ -392,7 +392,7 @@ namespace CrypticPay.Services
             {
                 throw new Exception("Error: Remote and local deposit addresses are not the same.");
             };
-            var ltcAddress = chainDataBtc.Address;
+            var ltcAddress = chainDataLtc.Address;
             var ltcQr = Utils.QrForWebGenerator(ltcAddress);
 
             var currencyWalletLtc = new CurrencyWallet()
