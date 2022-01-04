@@ -69,8 +69,10 @@ namespace CrypticPay.Data
             return coinHistory;
         }
 
-        public static List<Double> GetCoinsExchangeRates(List<CrypticPayCoins> coins)
+        // returns a dictionary with a currency name as key and currency price as value
+        public static Dictionary<string, double> GetCoinsExchangeRates(List<CrypticPayCoins> coins)
         {
+            Dictionary<string, double> resultDict = new Dictionary<string, double>();
             string coinString = "";
             foreach (var coin in coins)
             {
@@ -95,9 +97,10 @@ namespace CrypticPay.Data
             var result = new List<double>();
             foreach (var item in jsonParsed)
             {
-                result.Add(Convert.ToDouble(item.Value.First.First));
+                var price = Convert.ToDouble(item.Value.First.First);
+                resultDict.Add(item.Key, price);
             }
-            return result;
+            return resultDict;
         }
     }
 }

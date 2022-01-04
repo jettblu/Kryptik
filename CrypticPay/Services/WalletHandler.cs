@@ -450,13 +450,17 @@ namespace CrypticPay.Services
             int index = 0;
             foreach (var account in walletAndCoins.User.WalletKryptik.CurrencyWallets)
             {
+                // balance should be denominated in crypto units
                 var responseBal = await _tatumClient.GetAccountBalance(account.AccountId);
                 
                
                 var balance = Convert.ToDouble(responseBal.Balance);
-                account.AccountBalanceFiat = balance;
+                // retrie
+                var coin = walletAndCoins.Coins[index];
+                var coinExchangeRate = coinExchangeRates[coin.ApiTag];
+                account.AccountBalanceFiat = balance * coinExchangeRate;
                 // convert fiat rate to crypto rate
-                account.AccountBalanceCrypto = balance / coinExchangeRates[index];
+                account.AccountBalanceCrypto = balance;
                 totalBalance += balance;
                 index += 1;
             }
