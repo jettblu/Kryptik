@@ -21,16 +21,14 @@ const createNotification = (message = null, type = null) => {
 
 function copyToClip(toCopy) {
     var dummy = document.createElement('input');
-    
     var text = toCopy;
     document.body.appendChild(dummy);
+    console.log("Copied: ");
     console.log(text);
     dummy.value = text;
     dummy.select();
     document.execCommand('copy');
     document.body.removeChild(dummy);
-    createNotification();
-    console.log("Address Copied!");
 }
 
 // toggles password visibility
@@ -45,3 +43,14 @@ function showPassword() {
         pwordConfirmDisplay.type = "password";
     }
 }
+
+// copy data to clipboard when selectable class is clicked
+$("#pageContent").on('click', ".selectable", function () {
+    var toCopy = $(this).data("tocopy");
+    console.log($(this).data());
+    console.log(toCopy);
+    copyToClip(toCopy);
+    // notify user content has been copied
+    createNotification("Address Copied", "info");
+    console.log("Address Copied!");
+});
