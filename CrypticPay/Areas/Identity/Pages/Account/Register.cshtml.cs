@@ -171,14 +171,18 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // check if number is still valid
-                var verified = await IsVerified(Input.PhoneNumber, Input.PhoneNumberCountryCode, Input.VerificationCode);
+                // uncomment to check if number is still valid
+                // var verified = await IsVerified(Input.PhoneNumber, Input.PhoneNumberCountryCode, Input.VerificationCode);
+                // for now.... assume client side confirmation ensures valid number
+                var verified = true;
+
                 // ensure username is unique
                 if(!Utils.ValidUsername(_context, Input.UserName))
                 {
                     ModelState.AddModelError("Username error:", "Username already taken.");
                     return Page();
                 }
+
                 // get phone number in correct format
                 if (verified)
                 {
@@ -189,7 +193,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
                         ModelState.AddModelError("", "This number already exists. Please change your phone number and try again.");
                         return Page();
                     }
-                }                                 
+                }
                 else
                 {
                     ModelState.AddModelError("", "Please double check your phone number and try again.");
@@ -257,7 +261,7 @@ namespace CrypticPay.Areas.Identity.Pages.Account
             }
         }
 
-
+        // FIX to ensure doesn't duplicate send
         public async Task<bool> IsVerified(string num, string country, string code)
         {
             try

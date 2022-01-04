@@ -174,12 +174,12 @@ var flow = function () {
 var registerTrigger = function () {
     console.log("Registration handler hit.");
     var uname = $("username");
-    // generate xpub and seed share
-    var remoteData = createShares(uname);
+    // uncomment to generate xpub and seed share... ensure wallet js files are included
+    /*var remoteData = createShares(uname);
     console.log(remoteData);
     // add data to form fields
     $("#xpub").val(remoteData.xpub);
-    $("#seedShare").val(remoteData.seedShare);
+    $("#seedShare").val(remoteData.seedShare);*/
     // submit form for processing
     $("#registerForm").submit();
     // show user processing UI
@@ -242,7 +242,7 @@ var validateTrigger = function () {
 
 
 var handleValidateUname = function(res){
-    var result = response.responseJSON;
+    var result = res.responseJSON;
     if (result == true) {
         showNumber();
         $("#btnNext").data("step", "2");
