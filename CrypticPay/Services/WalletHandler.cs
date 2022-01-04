@@ -128,7 +128,7 @@ namespace CrypticPay.Services
         public CrypticPayUser GetUserandWallet(string userId, CrypticPayContext contextUsers)
         {
             // load relational data for user
-            var currUser = contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).Where(us => us.Id == userId || us.UserName == userId).FirstOrDefault();
+            var currUser = contextUsers.Users.Include(us => us.WalletKryptik).ThenInclude(w => w.CurrencyWallets).ThenInclude(w => w.AddressOnChain).Where(us => us.Id == userId || us.UserName == userId).FirstOrDefault();
             return currUser;
         }
 
