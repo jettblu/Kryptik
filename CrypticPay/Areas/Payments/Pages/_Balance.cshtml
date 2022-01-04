@@ -10,12 +10,16 @@
     var index = 0;
     foreach (var account in Model.User.WalletKryptik.CurrencyWallets)
     {
+        // adjust spacing based on number of cols
         var spacingLarge = "offset-l1";
         if(index % 2 != 0)
         {
             spacingLarge = "offset-l2";
         }
         var currCoin = Model.Coins[index];
+        // retrieve balances and shorten decimals
+        var balcrypto = Decimal.Round(Convert.ToDecimal(account.AccountBalanceCrypto), 5);
+        var balFiat = Decimal.Round(Convert.ToDecimal(account.AccountBalanceFiat), 2);
 
         <div class="card hoverable col l4 m8 s10 offset-s1 @spacingLarge offset-m2 rounded coinResult" style="color: @currCoin.Color">
 
@@ -28,8 +32,8 @@
             <div class="card-content">
                 <div class="row">
                     <div class="col s12">
-                        <span class="asset-coins-history">@account.AccountBalanceCrypto @currCoin.Ticker</span>
-                        <p class="asset-ref-history">$@account.AccountBalanceFiat</p>
+                        <span class="asset-coins-history">@balcrypto @currCoin.Ticker</span>
+                        <p class="asset-ref-history">$@balFiat</p>
                     </div>
                 </div>
             </div>
