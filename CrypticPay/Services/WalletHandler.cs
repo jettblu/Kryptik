@@ -47,26 +47,21 @@ namespace CrypticPay.Services
                 Wordlist.English);
             var hdRoot = mnemo.DeriveExtKey("my password");
         }*/
-
+        
+        // retrieves incoming transactions for a given user and currency
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
-            var currency = Tatum.Model.Currency.LTC.ToString();
             var currencyWallet = GetCurrencyWallet(coin, user);
             // visit https://tatum.io/apidoc#operation/getTransactionsByAccountId for more info on construction
             var filterTrans = new Tatum.Model.Requests.TransactionFilterAccount() {
-                Currency = currency,
+                Currency = coin.Ticker,
                 Id = currencyWallet.AccountId,
-                CounterAccount = currencyWallet.AccountId,
-                TransactionType = "CREDIT"
+                TransactionType = "CREDIT_DEPOSIT"
             };
+
             var transactions = await _tatumClient.GetTransactionsForAccount(filterTrans);
             
-            var filterLedger = new Tatum.Model.Requests.TransactionFilterLedger() { Account = currencyWallet.AccountId, Currency = currency};
-            var trans = await _tatumClient.GetTransactionsForLedger(filterLedger);
-
-
-            var tester = await _tatumClient.GenerateDepositAddress(currencyWallet.AccountId, 89);
             return transactions;
         }
 
