@@ -5,7 +5,7 @@ Kryptik is an online platform for sending and collecting cryptocurrency. The Kry
 
 Kryptik operations are currently supported by a Carnegie Mellon research grant. You can join the waitlist for early access [here](https://kryptik.app/).
 
-![Wallet Page screenshot](https://jetthays.com/media/external/kryptikSearch.png)
+![Wallet Page screenshot](https://jetthays.com/media/external/kryptikSearch.png | width=100)
 
 ## Key Management
 To give users full control over their crypto assets, Kryptik separates client-server responsibilities. The client is responsible for seed generation and signatures; the server is responsible for key recovery and address creation. This is accomplished via shamir secret sharing.
