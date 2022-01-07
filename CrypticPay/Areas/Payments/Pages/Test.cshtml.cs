@@ -20,6 +20,7 @@ namespace CrypticPay.Areas.Payments.Pages
         private WalletHandler _walletHandler;
         private UserManager<CrypticPayUser> _userManager;
 
+       
         public TestModel(CrypticPayContext context, CrypticPayCoinContext contextCoins, WalletHandler walletHandler, UserManager<CrypticPayUser> userManager)
         {
             _contextUsers = context;

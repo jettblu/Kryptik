@@ -18,6 +18,7 @@ using Nethereum.Web3.Accounts;
 using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.HdWallet;
+using Nethereum.RPC.Eth.DTOs;
 
 namespace CrypticPay.Services
 {
@@ -73,15 +74,31 @@ namespace CrypticPay.Services
             public bool ShowData { get; set; }
         }
 
-
-        public Globals.Status ConstructTransaction(string toString, Data.Transaction tx, CrypticPayContext contextUsers, CrypticPayCoinContext contextCoins)
+        // generates transaction data to be signed by client, before broadcast
+        // toString should be either a user id or a blockchain address
+        public async Task<Globals.Status> ConstructTransaction(string toString, Data.Transaction tx, CrypticPayContext contextUsers, CrypticPayCoinContext contextCoins)
         {
             var coin = Utils.FindCryptoByID(contextCoins, tx.CoinId);
+            var currWallet = GetCurrencyWallet(coin, tx.UserFrom);
             try
             {
                 var publicToAddress = GetBlockChainAddress(toString, coin, contextUsers, tx);
+                // UPDATE so coin doesn't need to be requeried throughout transaction flow
+                if (coin.Ticker == "ETH")
+                {
+                    var transaction = new TransactionInput()
+                    {
+                        From = currWallet.AddressOnChain.Address,
+                        To = publicToAddress
+                    };
+                }
+                else
+                {
+                    var transactions = await GetTransactions(tx.UserFrom.Id, contextUsers, coin);
+                }
                 
-                var signed = SignTransactionLocally(publicToAddress, tx);
+                
+
                 return Globals.Status.Success;
             }
             catch
@@ -106,11 +123,9 @@ namespace CrypticPay.Services
             // first check to see if the input refers to a user or to a valid public address
             try
             {
-                
                 var userTo = GetUserandWallet(inputTo, contextUsers);
                 tx.UserTo = userTo;
-                publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).AddressOnChain.Address;
-                
+                publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).AddressOnChain.Address;  
             }
             catch
             {   

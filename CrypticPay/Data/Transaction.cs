@@ -12,7 +12,8 @@ namespace CrypticPay.Data
     {
         Complete = 0,
         Failure = 1,
-        Pending = 2
+        Pending = 2,
+        Unassigned = 3
     }
     public enum BroadCast
     {
@@ -30,7 +31,8 @@ namespace CrypticPay.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public string Message { get; set; }
-        public string Amount { get; set; }
+        public Decimal AmountCrypto { get; set; }
+        public Decimal AmountFiat { get; set; }
         public string CoinId { get; set; }
         public CrypticPayUser UserFrom { get; set; }
         public CrypticPayUser UserTo { get; set; }
