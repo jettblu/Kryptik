@@ -1,48 +1,25 @@
 # Kryptik
 
+## What is Kryptik?
+Kryptik is an online platform for sending and collecting cryptocurrency. The Kryptik website simplifies digital ownership, by providing a simple cryptocurrency wallet— compatible with multiple blockchains— and a social NFT marketplace. All software is free and open source, with the belief that better blockchain technology will lead to a better world. 
 
-This document explains what Kryptik is and why it exists. You can join the waitlist for early access [here](https://kryptik.app/). Beta release by the end of 2021.
+Kryptik operations are currently supported by a Carnegie Mellon research grant. You can join the waitlist for early access [here](https://kryptik.app/).
 
-## Table of contents
-* [What](#what)
-* [Value](#value)
-* [Novelty](#novelty)
-* [Technical Details](#technical-details)
-* [Stack](#tech-stack)
+<img src="https://jetthays.com/media/external/kryptikSearch.png" alt="Wallet Page screenshot" width="150">
 
-![Wallet Page screenshot](https://jetthays.com/media/external/kryptikPage.PNG)
-
-
-## What
-Kryptik is an online platform for sending cryptocurrency and collecting NFTs.
+## Key Management
+To give users full control over their crypto assets, Kryptik separates client-server responsibilities. The client is responsible for seed generation and signatures; the server is responsible for key recovery and address creation. This is accomplished via shamir secret sharing.
 	
-## Value
-Kryptik adds value by subtracting high transaction fees and complex user flows. This will open the gates of cryptocurrency and digital assets to those with limited resources/ experience.
+## Wallet 
+Kryptik uses a hierarchical deterministic (HD) wallet derived from a BIP32 seed. This HD wallet creates a new address for every transaction. Kryptik currently supports the following currencies:
+* Bitcoin
+* Bitcoin Cash
+* Ethereum
+* Litecoin
 
-## Novelty
-With Kryptik, users can send crypto (either onchain or offchain) to a blockchain address or phone number. Coinbase allows users to send crypto to phone numbers, but their implementation ties you to the exchange. In contrast, Kryptik does not care where you get your crypto: as a payments service, the primary concern is making transactions cheap and easy. Transactions can also be made public, which makes the opaque world of blockchain a bit more fun and social. Venmo and Cash app do a good job of making payments social, but their solutions do not integrate cryptocurrency payments.
- 
-In addition to payments, digital collectibles are incorporated within a feed of transactions. This allows users to engage— like, comment, share, etc.— with what has traditionally been a passive activity centered around investment. Mintable and Cryptopunks do a great job of making NFTs accessible, but Kryptik aims to create a social marketplace for NFTs. This means that in addition to viewing other collections of NFTs in a feed, users can also mint their own NFTs and auction them off (think of being able to purchase an instagram post). Users will be able to select their chain of choice, unlike on OpenSea, which only supports Ethereum.
+## Decentralized File Storage
+Kryptik provides access to IPFS, allowing users to store and display decentralized media. This is an essential first step to enabling an NFT marketplace where unique files can be bought and sold via a social feed. 
 
-Kryptik has also enabled onchain *and offchain* transactions without needing to see your private keys. Ever. *Your* wallet seed is kept on *your* device. This is accomplished through a simple combination of multisig and shamir secret sharing. 
-
-## Technical Details
-Kryptik does the hard stuff, so users won’t have to.
-
-*Current Features*
-* Social Network
-* HD Wallet
-* Encrypted chat
-* Profile Management
-* Asset and User Search
-* Price charts
-* Two factor authentication
-
-*Pending Features*
-* NFT marketplace
-* Transaction Broadcasting
-* Multisig
-* Automated Exchange Integration
 
 ## Tech Stack
 Backend: C#, SignalR
