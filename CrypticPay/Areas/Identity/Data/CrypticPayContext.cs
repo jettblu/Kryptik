@@ -15,6 +15,7 @@ namespace CrypticPay.Data
         public DbSet<GroupUser> GroupUsers { get; set; }
         public DbSet<ChatData> Chats { get; set; }
         public DbSet<FileUpload> Uploads { get; set; }
+        DbSet<Transaction> Transactions { get; set; }
 
         public CrypticPayContext(DbContextOptions<CrypticPayContext> options)
             : base(options)

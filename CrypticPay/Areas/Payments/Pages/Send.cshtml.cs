@@ -116,8 +116,8 @@ namespace CrypticPay.Areas.Payments
 
             var tx = new Transaction()
             {
-                UserFrom = currUser,
-                Amount = Input.Amount,
+                SenderId = currUser.Id,
+                AmountFiat = Double.Parse(Input.Amount),
                 CoinId = coinToSend.Id,
                 // update to reflect actual values
                 PrivacyLevel = Privacy.Public,
@@ -126,8 +126,6 @@ namespace CrypticPay.Areas.Payments
             };
 
             
-            
-
         }
 
         

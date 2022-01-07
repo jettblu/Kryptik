@@ -31,14 +31,19 @@ namespace CrypticPay.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public string Message { get; set; }
-        public Decimal AmountCrypto { get; set; }
-        public Decimal AmountFiat { get; set; }
+        public double AmountCrypto { get; set; }
+        public double AmountFiat { get; set; }
         public string CoinId { get; set; }
-        public CrypticPayUser UserFrom { get; set; }
-        public CrypticPayUser UserTo { get; set; }
+        // user ID for payment sender
+        public string SenderId { get; set; }
+        // user ID for payment recipient
+        public string RecieverId { get; set; }
         public string OutsideAddressTo { get; set; }
+        // network status of transaction
         public Status StatusCurrent { get; set; }
+        // whether onchain or offchain
         public BroadCast BroadcastType { get; set; }
+        // transaction visibility within Kryptik
         public Privacy PrivacyLevel { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreationTime { get; set; }

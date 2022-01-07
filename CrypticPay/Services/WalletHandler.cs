@@ -49,6 +49,7 @@ namespace CrypticPay.Services
             var hdRoot = mnemo.DeriveExtKey("my password");
         }*/
         
+        // UPDATE so userWallet is passed in... no need to duplicate initial query
         // retrieves incoming transactions for a given user and currency
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
@@ -79,7 +80,8 @@ namespace CrypticPay.Services
         public async Task<Globals.Status> ConstructTransaction(string toString, Data.Transaction tx, CrypticPayContext contextUsers, CrypticPayCoinContext contextCoins)
         {
             var coin = Utils.FindCryptoByID(contextCoins, tx.CoinId);
-            var currWallet = GetCurrencyWallet(coin, tx.UserFrom);
+            var userFrom = GetUserandWallet(tx.SenderId, contextUsers);
+            var currWallet = GetCurrencyWallet(coin, userFrom);
             try
             {
                 var publicToAddress = GetBlockChainAddress(toString, coin, contextUsers, tx);
@@ -94,11 +96,9 @@ namespace CrypticPay.Services
                 }
                 else
                 {
-                    var transactions = await GetTransactions(tx.UserFrom.Id, contextUsers, coin);
+                    var transactions = await GetTransactions(userFrom.Id, contextUsers, coin);
                 }
                 
-                
-
                 return Globals.Status.Success;
             }
             catch
@@ -124,7 +124,7 @@ namespace CrypticPay.Services
             try
             {
                 var userTo = GetUserandWallet(inputTo, contextUsers);
-                tx.UserTo = userTo;
+                tx.SenderId = userTo.Id;
                 publicSendAddress = userTo.WalletKryptik.CurrencyWallets.Find(c => c.CoinId == coin.Id).AddressOnChain.Address;  
             }
             catch

@@ -4,14 +4,16 @@ using CrypticPay.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CrypticPay.Migrations
 {
     [DbContext(typeof(CrypticPayContext))]
-    partial class CrypticPayContextModelSnapshot : ModelSnapshot
+    [Migration("20220107031749_tx type")]
+    partial class txtype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,11 +272,11 @@ namespace CrypticPay.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("AmountCrypto")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AmountCrypto")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("AmountFiat")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AmountFiat")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BroadcastType")
                         .HasColumnType("int");
