@@ -19,6 +19,7 @@ using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.HdWallet;
 using Nethereum.RPC.Eth.DTOs;
+using NBitcoin;
 
 namespace CrypticPay.Services
 {
@@ -67,6 +68,54 @@ namespace CrypticPay.Services
             return transactions;
         }
 
+        // returns network given coin
+        public NBitcoin.Network GetNetwork(CrypticPay.Data.CrypticPayCoins coin, bool isTestnet)
+        {
+            Network network;
+            if (isTestnet)
+            {
+                switch (coin.Ticker)
+                {
+                    case "BTC":
+                        network = Network.TestNet;
+                        break;
+
+                    case "LTC":
+                        network = NBitcoin.Altcoins.Litecoin.Instance.Testnet;
+                        break;
+
+                    case "BCH":
+                        network = NBitcoin.Altcoins.BCash.Instance.Testnet;
+                        break;
+
+                    default:
+                        throw new Exception("Coin type not found. Network could not be specified.");
+                }
+            }
+            else
+            {
+
+                switch (coin.Ticker)
+                {
+                    case "BTC":
+                        network = Network.Main;
+                        break;
+
+                    case "LTC":
+                        network = NBitcoin.Altcoins.Litecoin.Instance.Mainnet;
+                        break;
+
+                    case "BCH":
+                        network = NBitcoin.Altcoins.BCash.Instance.Mainnet;
+                        break;
+
+                    default:
+                        throw new Exception("Coin type not found. Network could not be specified.");
+                }
+
+            }
+            return network;
+        }
 
         public class WalletandCoins
         {
@@ -96,7 +145,22 @@ namespace CrypticPay.Services
                 }
                 else
                 {
+                    var transaction = NBitcoin.Transaction.Create(NBitcoin.Network.Main);
                     var transactions = await GetTransactions(userFrom.Id, contextUsers, coin);
+                    List<Coin> coinsToSpend = new List<Coin>();
+                    foreach (var inputTx in transactions)
+                    {
+                        /*var out = new OutPoint()
+                        {
+                            Hash = inputTx.
+                        }
+                        var newCoinIn = new Coin()
+                        {
+                            Amount = inputTx.Amount,
+                            a
+                        }*/
+                    }
+                    
                 }
                 
                 return Globals.Status.Success;
@@ -197,49 +261,13 @@ namespace CrypticPay.Services
             Network network;
             bool isSegwit = true;
 
-            if (isTestnet)
+            network = GetNetwork(coin, isTestnet);
+
+            // MOVE CONDITIONAL for segwit into different area to make more robust
+            if(coin.Ticker == "BCH")
             {
-                switch (coin.Ticker)
-                {
-                    case "BTC":
-                        network = Network.TestNet;
-                        break;
-
-                    case "LTC":
-                        network = NBitcoin.Altcoins.Litecoin.Instance.Testnet;
-                        break;
-
-                    case "BCH":
-                        network = NBitcoin.Altcoins.BCash.Instance.Testnet;
-                        break;
-
-                    default:
-                        throw new Exception("Coin type not found. Network could not be specified.");
-                }
-            }
-            else
-            {
-
-                switch (coin.Ticker)
-                {
-                    case "BTC":
-                        network = Network.Main;
-                        break;
-
-                    case "LTC":
-                        network = NBitcoin.Altcoins.Litecoin.Instance.Mainnet;
-                        break;
-
-                    case "BCH":
-                        // bch does NOT support segregated witness addresses as of 9-17-21
-                        isSegwit = false;
-                        network = NBitcoin.Altcoins.BCash.Instance.Mainnet;
-                        break;
-
-                    default:
-                        throw new Exception("Coin type not found. Network could not be specified.");
-                }
-               
+                // BCH does NOT support segregated witness addresses as of 9-17-21
+                isSegwit = false;
             }
 
             ScriptPubKeyType keyType;
