@@ -19,7 +19,7 @@ using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.HdWallet;
 using Nethereum.RPC.Eth.DTOs;
-using NBitcoin;
+
 
 namespace CrypticPay.Services
 {
@@ -28,13 +28,23 @@ namespace CrypticPay.Services
 
         private readonly ITatumClient _tatumClient;
         private readonly IBitcoinClient _bitcoinClient;
+        private readonly IBitcoinCashClient _bitcoinCashClient;
+        private readonly IEthereumClient _ethereumClient;
+        private readonly ILitecoinClient _litecoinClient;
         private readonly string _encryptKeyPub;
         private readonly string _encryptKeyPriv;
         private readonly string _mnem;
 
         public WalletHandler(string baseUrl, string apiKey, string encryptKeyPub, string encryptKeyPriv, string mnemonic)
         {
+            // general tatum client for customer data
             _tatumClient = TatumClient.Create(baseUrl, apiKey);
+            // add clients for onchain data and transactions
+            _bitcoinClient = BitcoinClient.Create(baseUrl, apiKey);
+            _bitcoinCashClient = BitcoinCashClient.Create(baseUrl, apiKey);
+            _ethereumClient = EthereumClient.Create(baseUrl, apiKey);
+            _litecoinClient = LitecoinClient.Create(baseUrl, apiKey);
+            // keys for enecryption
             _encryptKeyPriv = encryptKeyPriv;
             _encryptKeyPub = encryptKeyPub;
             _mnem = mnemonic;
@@ -51,6 +61,7 @@ namespace CrypticPay.Services
         }*/
         
         // UPDATE so userWallet is passed in... no need to duplicate initial query
+        // UPDATE sp onchain data is pulled for each tx.
         // retrieves incoming transactions for a given user and currency
         public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
@@ -63,13 +74,15 @@ namespace CrypticPay.Services
                 TransactionType = "CREDIT_DEPOSIT"
             };
 
+            // base ledger transactions from Tatum
             var transactions = await _tatumClient.GetTransactionsForAccount(filterTrans);
-            
+
             return transactions;
         }
 
+
         // returns network given coin
-        public NBitcoin.Network GetNetwork(CrypticPay.Data.CrypticPayCoins coin, bool isTestnet)
+        public Network GetNetwork(CrypticPay.Data.CrypticPayCoins coin, bool isTestnet)
         {
             Network network;
             if (isTestnet)
@@ -148,6 +161,7 @@ namespace CrypticPay.Services
                     var transaction = NBitcoin.Transaction.Create(NBitcoin.Network.Main);
                     var transactions = await GetTransactions(userFrom.Id, contextUsers, coin);
                     List<Coin> coinsToSpend = new List<Coin>();
+
                     foreach (var inputTx in transactions)
                     {
                         /*var out = new OutPoint()
