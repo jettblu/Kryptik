@@ -52,18 +52,27 @@ namespace CrypticPay.Services
 
 
 
-/*        public Key GenerateKey(string currency)
+        /*        public Key GenerateKey(string currency)
+                {
+                    var words = DecryptMnemonic(user);
+                    var mnemo = new Mnemonic(words,
+                        Wordlist.English);
+                    var hdRoot = mnemo.DeriveExtKey("my password");
+                }*/
+
+        public class TransactionAndMeta
         {
-            var words = DecryptMnemonic(user);
-            var mnemo = new Mnemonic(words,
-                Wordlist.English);
-            var hdRoot = mnemo.DeriveExtKey("my password");
-        }*/
+            public Tatum.Model.Responses.Transaction Transaction { get; set; }
+            public CrypticPayCoins Currency { get; set; }
+            public Network NetworkOnChain { get; set; }
+        }
+        
+
         
         // UPDATE so userWallet is passed in... no need to duplicate initial query
         // UPDATE sp onchain data is pulled for each tx.
         // retrieves incoming transactions for a given user and currency
-        public async Task<List<Tatum.Model.Responses.Transaction>> GetTransactions(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
+        public async Task<List<TransactionAndMeta>> GetTransactionsLedger(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
             var currencyWallet = GetCurrencyWallet(coin, user);
@@ -76,8 +85,44 @@ namespace CrypticPay.Services
 
             // base ledger transactions from Tatum
             var transactions = await _tatumClient.GetTransactionsForAccount(filterTrans);
+            List<TransactionAndMeta> txResult = new List<TransactionAndMeta>();
+            foreach (var tx in transactions)
+            {
+                txResult.Add(new TransactionAndMeta()
+                {
+                    Transaction = tx,
+                    Currency = coin,
+                    NetworkOnChain = GetNetwork(coin, isTestnet: false)
+                });
 
-            return transactions;
+            }
+            return txResult;
+        }
+
+        public async Task GetTransactionOnChain(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
+        {
+            var user = GetUserandWallet(userId, contextUsers);
+            var currencyWallet = GetCurrencyWallet(coin, user);
+            switch (coin.Ticker)
+            {
+                case "BTC":
+                    await _bitcoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    break;
+
+                case "LTC":
+                    await _litecoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    break;
+
+                case "BCH":
+                    await _bitcoinCashClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    break;
+                case "ETH":
+                    await _ethereumClient.GetAccountTransactions(currencyWallet.AddressOnChain.Address);
+                    break;
+
+                default:
+                    throw new Exception("Coin type not found. Currency client could not be established.");
+            }
         }
 
 
