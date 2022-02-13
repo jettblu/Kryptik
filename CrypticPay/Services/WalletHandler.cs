@@ -106,18 +106,18 @@ namespace CrypticPay.Services
             switch (coin.Ticker)
             {
                 case "BTC":
-                    await _bitcoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    var txBtc = await _bitcoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
                     break;
 
                 case "LTC":
-                    await _litecoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    var txLtc = await _litecoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
                     break;
 
                 case "BCH":
-                    await _bitcoinCashClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    var txBCh = await _bitcoinCashClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
                     break;
                 case "ETH":
-                    await _ethereumClient.GetAccountTransactions(currencyWallet.AddressOnChain.Address);
+                    var txEth = await _ethereumClient.GetAccountTransactions(currencyWallet.AddressOnChain.Address);
                     break;
 
                 default:
@@ -204,11 +204,12 @@ namespace CrypticPay.Services
                 else
                 {
                     var transaction = NBitcoin.Transaction.Create(NBitcoin.Network.Main);
-                    var transactions = await GetTransactions(userFrom.Id, contextUsers, coin);
+                    var transactions = await GetTransactionsLedger(userFrom.Id, contextUsers, coin);
                     List<Coin> coinsToSpend = new List<Coin>();
 
                     foreach (var inputTx in transactions)
                     {
+
                         /*var out = new OutPoint()
                         {
                             Hash = inputTx.
