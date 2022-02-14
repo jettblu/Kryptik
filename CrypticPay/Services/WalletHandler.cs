@@ -19,7 +19,7 @@ using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.HdWallet;
 using Nethereum.RPC.Eth.DTOs;
-
+using NBitcoin.Altcoins;
 
 namespace CrypticPay.Services
 {
@@ -99,10 +99,12 @@ namespace CrypticPay.Services
             return txResult;
         }
 
-        public async Task GetTransactionOnChain(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
+        public async Task<List<TransactionOutput>> GetTransactionOnChain(string userId, CrypticPayContext contextUsers, CrypticPayCoins coin)
         {
             var user = GetUserandWallet(userId, contextUsers);
             var currencyWallet = GetCurrencyWallet(coin, user);
+            var resultOutputs = new List<TransactionOutput>();
+            TransactionOutput outputToAdd = new TransactionOutput();
             switch (coin.Ticker)
             {
                 case "BTC":
@@ -111,6 +113,23 @@ namespace CrypticPay.Services
 
                 case "LTC":
                     var txLtc = await _litecoinClient.GetTxForAccount(currencyWallet.AddressOnChain.Address);
+                    foreach (var tx in txLtc)
+                    {
+                        outputToAdd.TransactionHash = StringToUint256(tx.Hash);
+                        outputToAdd.TransactionId = StringToUint256(tx.Hash);
+                        outputToAdd.Fee = tx.Fee;
+                        uint opIndex = 0;
+                        foreach (var op in tx.Outputs)
+                        {
+                            if(op.Address == currencyWallet.AddressOnChain.Address)
+                            {
+                                outputToAdd.OutputIndex = opIndex;
+                                outputToAdd.AddressTo = op.Address;
+                                
+                                resultOutputs.Add(outputToAdd);
+                            }
+                        }
+                    }
                     break;
 
                 case "BCH":
@@ -123,7 +142,14 @@ namespace CrypticPay.Services
                 default:
                     throw new Exception("Coin type not found. Currency client could not be established.");
             }
+            return resultOutputs;
         }
+
+
+        /*public async Task<List<OutPoint>> TransactionsToOutpoints()
+        {
+            
+        }*/
 
 
         // returns network given coin
@@ -182,6 +208,11 @@ namespace CrypticPay.Services
             public bool ShowData { get; set; }
         }
 
+        private uint256 StringToUint256(string input)
+        {
+            return new uint256(input);
+        }
+
         // generates transaction data to be signed by client, before broadcast
         // toString should be either a user id or a blockchain address
         public async Task<Globals.Status> ConstructTransaction(string toString, Data.Transaction tx, CrypticPayContext contextUsers, CrypticPayCoinContext contextCoins)
@@ -204,25 +235,28 @@ namespace CrypticPay.Services
                 else
                 {
                     var transaction = NBitcoin.Transaction.Create(NBitcoin.Network.Main);
-                    var transactions = await GetTransactionsLedger(userFrom.Id, contextUsers, coin);
+                    var transactions = await GetTransactionOnChain(userFrom.Id, contextUsers, coin);
                     List<Coin> coinsToSpend = new List<Coin>();
 
                     foreach (var inputTx in transactions)
                     {
-
-                        /*var out = new OutPoint()
+                        var outPointToSpend = new OutPoint()
                         {
-                            Hash = inputTx.
-                        }
-                        var newCoinIn = new Coin()
+                            Hash = inputTx.TransactionHash
+                        };
+                        
+                        transaction.Inputs.Add(new TxIn()
                         {
-                            Amount = inputTx.Amount,
-                            a
-                        }*/
+                            PrevOut = outPointToSpend
+                        });
                     }
-                    
+                    // 2x check if amount unit is correct
+                    // calculate miner fees
+                    // outamount = in - fees
+                    // serialize and return
+
                 }
-                
+
                 return Globals.Status.Success;
             }
             catch

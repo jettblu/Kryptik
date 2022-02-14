@@ -38,7 +38,7 @@ namespace CrypticPay.Areas.Payments.Pages
             Message = "Testing";
             var userId = _userManager.GetUserId(User);
             var coin = Utils.FindCryptoByTicker("Ltc", _contextCoins);
-            var transactions = await _walletHandler.GetTransactionsLedger(userId, _contextUsers, coin);
+            /*var transactions = await _walletHandler.GetTransactionsLedger(userId, _contextUsers, coin);*/
             await _walletHandler.GetTransactionOnChain(userId, _contextUsers, coin);
         }
     }
