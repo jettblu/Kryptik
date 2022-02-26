@@ -25,3 +25,5 @@ export function normalizeHexAddress(address: string | Buffer): string {
     const even = noPrefix.length % 2 === 0 ? noPrefix : `0${noPrefix}`
     return `0x${Buffer.from(even, "hex").toString("hex")}`
 }
+
+
