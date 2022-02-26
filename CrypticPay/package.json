@@ -5,7 +5,11 @@
   "dependencies": {
     "@types/node": "17.0.21",
     "bip39": "3.0.4",
-    "commonjs": "0.0.1"
+    "commonjs": "0.0.1",
+    "@ethersproject/abstract-provider": "5.5.1",
+    "@ethersproject/hdnode": "5.5.0",
+    "@ethersproject/abstract-signer": "5.5.0",
+    "@ethersproject/wallet": "5.5.0"
   },
   "devDependencies": {
     "@types/jquery": "3.3.33"

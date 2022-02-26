@@ -1,4 +1,2 @@
-import { test } from "./utils.js";
-test();
-console.log('It works here');
+export {};
 //# sourceMappingURL=keyRing.js.map
