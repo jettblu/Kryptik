@@ -7,7 +7,7 @@
 let coinTypes = { btc: 0, ltc: 2, doge: 3, eth: 60, xmr: 128, zec: 133, bch: 145, sol: 501, pokt:635, bnb: 714, avax: 9000, axaxc:9005, one: 1023};
 
 
-export default class Coin implements HDCoin {
+export class Coin implements HDCoin {
     readonly Name: string
     readonly Ticker: string
     // base path used for hdnode derivation

@@ -18,5 +18,5 @@ var Coin = /** @class */ (function () {
     };
     return Coin;
 }());
-export default Coin;
+export { Coin };
 //# sourceMappingURL=coin.js.map
