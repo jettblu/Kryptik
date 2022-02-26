@@ -28,7 +28,7 @@ Front end: Razor, Javascript, Ajax, CSS
 
 Database: SQL and Azure
 
-Blockchain Infrastructure: Tatum
+Blockchain Infrastructure: Pocket Network
 
 
 
