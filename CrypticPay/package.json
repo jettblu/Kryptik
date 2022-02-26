@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "@types/node": "17.0.21",
+    "bip39": "3.0.4",
+    "commonjs": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/jquery": "3.3.33"
+  }
+}

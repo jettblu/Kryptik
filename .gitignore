@@ -267,6 +267,9 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# source maps
+*.map
+
 # Visual Studio 6 build log
 *.plg
 
@@ -339,3 +342,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /CrypticPay/wwwroot/lib
+/CrypticPay/Scripts/lib/bip39

@@ -15,10 +15,6 @@
       "destination": "wwwroot/lib/requirejs/"
     },
     {
-      "library": "bip39@3.0.4",
-      "destination": "wwwroot/bip39/"
-    },
-    {
       "provider": "unpkg",
       "library": "@microsoft/signalr@latest",
       "destination": "wwwroot/js/signalr/",
@@ -31,36 +27,48 @@
       "provider": "unpkg",
       "library": "eccrypto@1.1.6",
       "destination": "wwwroot/lib/eccrypto/"
+    },
+    {
+      "library": "buffer@6.0.3",
+      "destination": "wwwroot/lib/buffer/"
+    },
+    {
+      "library": "Buffer@0.0.0",
+      "destination": "wwwroot/lib/Buff/"
+    },
+    {
+      "library": "base64-js@1.5.1",
+      "destination": "wwwroot/lib/base64-js/"
+    },
+    {
+      "library": "safe-buffer@5.2.1",
+      "destination": "wwwroot/lib/safe-buffer/"
+    },
+    {
+      "library": "bip39@3.0.4",
+      "destination": "scripts/lib/bip39/"
+    },
+    {
+      "library": "webpack@5.69.1",
+      "destination": "wwwroot/lib/webpack/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "ts-loader@9.2.6",
+      "destination": "wwwroot/lib/ts-loader/"
+    },
+    {
+      "library": "node@17.4.0",
+      "destination": "wwwroot/lib/node/"
+    },
+    {
+      "library": "commonjs@0.0.1",
+      "destination": "wwwroot/lib/commonjs/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "node@17.4.0",
+      "destination": "wwwroot/lib/node/"
     }
-  ,
-{
-  "library": "buffer@6.0.3",
-  "destination": "wwwroot/lib/buffer/"
-}
-,
-{
-  "library": "Buffer@0.0.0",
-  "destination": "wwwroot/lib/Buffer/"
-}
-,
-{
-  "library": "Buffer@0.0.0",
-  "destination": "wwwroot/lib/Buffer/"
-}
-,
-{
-  "library": "Buffer@0.0.0",
-  "destination": "wwwroot/lib/Buff/"
-}
-,
-{
-  "library": "base64-js@1.5.1",
-  "destination": "wwwroot/lib/base64-js/"
-}
-,
-{
-  "library": "safe-buffer@5.2.1",
-  "destination": "wwwroot/lib/safe-buffer/"
-}
-]
+  ]
 }
