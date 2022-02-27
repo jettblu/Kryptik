@@ -1,32 +1,17 @@
-﻿import { generateMnemonic } from "bip39"
+﻿var bip = require("../ext/bip39.min.js")
 import { Wallet } from "@ethersproject/wallet"
 import { HDNode } from "@ethersproject/hdnode"
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer"
-import { Coin } from "./coin.js"
-import { normalizeHexAddress, validateAndFormatMnemonic } from "./utils"
+import { normalizeHexAddress, validateAndFormatMnemonic, Options, defaultOptions } from "./utils"
+import { Chain, chainFromTicker } from "./chain.js"
+
 
 export {
     normalizeHexAddress,
-    normalizeMnemonic,
-    validateAndFormatMnemonic,
+    normalizeMnemonic
 } from "./utils"
 
-
-
-
-export type Options = {
-    strength?: number
-    path?: string
-    mnemonic?: string | null
-}
-
-const defaultOptions = {
-    // default path is BIP-44 ethereum coin type, where depth 5 is the address index
-    path: "m/44'/60'/0'/0",
-    strength: 256,
-    mnemonic: null,
-}
 
 export type SerializedHDKeyring = {
     version: number
@@ -35,6 +20,7 @@ export type SerializedHDKeyring = {
     path: string
     keyringType: string
     addressIndex: number
+    chainTicker: string
 }
 
 export interface Keyring<T> {
@@ -77,6 +63,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
     #addressToWallet: { [address: string]: Wallet }
 
     #mnemonic: string
+    readonly chain: Chain
 
     // constructor that builds hdkeyring on init
     constructor(options: Options = {}) {
@@ -86,7 +73,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
         }
 
         const mnemonic = validateAndFormatMnemonic(
-            hdOptions.mnemonic || generateMnemonic(hdOptions.strength)
+            hdOptions.mnemonic || bip.generateMnemonic(hdOptions.strength)
         )
 
         if (!mnemonic) {
@@ -94,7 +81,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
         }
 
         this.#mnemonic = mnemonic
-
+        this.chain = chainFromTicker(hdOptions.chainTicker)
         this.path = hdOptions.path
         this.#hdNode = HDNode.fromMnemonic(mnemonic, undefined, "en").derivePath(
             this.path
@@ -113,6 +100,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
             keyringType: HDKeyring.type,
             path: this.path,
             addressIndex: this.#addressIndex,
+            chainTicker: this.chain.ticker
         }
     }
 
@@ -121,7 +109,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
     }
 
     static deserialize(obj: SerializedHDKeyring): HDKeyring {
-        const { version, keyringType, mnemonic, path, addressIndex } = obj
+        const { version, keyringType, mnemonic, path, addressIndex, chainTicker } = obj
         if (version !== 1) {
             throw new Error(`Unknown serialization version ${obj.version}`)
         }
@@ -133,6 +121,7 @@ export default class HDKeyring implements Keyring<SerializedHDKeyring> {
         const keyring = new HDKeyring({
             mnemonic,
             path,
+            chainTicker
         })
 
         keyring.addAddressesSync(addressIndex)

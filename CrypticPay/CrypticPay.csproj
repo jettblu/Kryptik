@@ -10,6 +10,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="src\ext\bip39.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="src\ext\bip39.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.9.0" />
     <PackageReference Include="CoinGeckoAsyncApi" Version="1.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.10" />
@@ -43,6 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="src\Services\" />
     <Folder Include="wwwroot\Media\devSamples\" />
   </ItemGroup>
 

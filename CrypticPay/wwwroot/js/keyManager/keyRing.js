@@ -9,12 +9,13 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _HDKeyring_instances, _HDKeyring_hdNode, _HDKeyring_addressIndex, _HDKeyring_wallets, _HDKeyring_addressToWallet, _HDKeyring_mnemonic, _HDKeyring_coin, _HDKeyring_deriveChildWallet;
-import { generateMnemonic } from "bip39";
+var _HDKeyring_instances, _HDKeyring_hdNode, _HDKeyring_addressIndex, _HDKeyring_wallets, _HDKeyring_addressToWallet, _HDKeyring_mnemonic, _HDKeyring_deriveChildWallet;
+var bip = require("../ext/bip39.min.js");
 import { Wallet } from "@ethersproject/wallet";
 import { HDNode } from "@ethersproject/hdnode";
 import { normalizeHexAddress, validateAndFormatMnemonic, defaultOptions } from "./utils";
-export { normalizeHexAddress, normalizeMnemonic, validateAndFormatMnemonic, } from "./utils";
+import { chainFromTicker } from "./chain.js";
+export { normalizeHexAddress, normalizeMnemonic } from "./utils";
 export default class HDKeyring {
     // constructor that builds hdkeyring on init
     constructor(options = {}) {
@@ -24,13 +25,13 @@ export default class HDKeyring {
         _HDKeyring_wallets.set(this, void 0);
         _HDKeyring_addressToWallet.set(this, void 0);
         _HDKeyring_mnemonic.set(this, void 0);
-        _HDKeyring_coin.set(this, void 0);
         const hdOptions = Object.assign(Object.assign({}, defaultOptions), options);
-        const mnemonic = validateAndFormatMnemonic(hdOptions.mnemonic || generateMnemonic(hdOptions.strength));
+        const mnemonic = validateAndFormatMnemonic(hdOptions.mnemonic || bip.generateMnemonic(hdOptions.strength));
         if (!mnemonic) {
             throw new Error("Invalid mnemonic.");
         }
         __classPrivateFieldSet(this, _HDKeyring_mnemonic, mnemonic, "f");
+        this.chain = chainFromTicker(hdOptions.chainTicker);
         this.path = hdOptions.path;
         __classPrivateFieldSet(this, _HDKeyring_hdNode, HDNode.fromMnemonic(mnemonic, undefined, "en").derivePath(this.path), "f");
         this.id = __classPrivateFieldGet(this, _HDKeyring_hdNode, "f").fingerprint;
@@ -46,14 +47,14 @@ export default class HDKeyring {
             keyringType: HDKeyring.type,
             path: this.path,
             addressIndex: __classPrivateFieldGet(this, _HDKeyring_addressIndex, "f"),
-            coinTicker: __classPrivateFieldGet(this, _HDKeyring_coin, "f").ticker
+            chainTicker: this.chain.ticker
         };
     }
     async serialize() {
         return this.serializeSync();
     }
     static deserialize(obj) {
-        const { version, keyringType, mnemonic, path, addressIndex, coinTicker } = obj;
+        const { version, keyringType, mnemonic, path, addressIndex, chainTicker } = obj;
         if (version !== 1) {
             throw new Error(`Unknown serialization version ${obj.version}`);
         }
@@ -63,7 +64,7 @@ export default class HDKeyring {
         const keyring = new HDKeyring({
             mnemonic,
             path,
-            coinTicker
+            chainTicker
         });
         keyring.addAddressesSync(addressIndex);
         return keyring;
@@ -109,7 +110,7 @@ export default class HDKeyring {
         return this.getAddressesSync();
     }
 }
-_HDKeyring_hdNode = new WeakMap(), _HDKeyring_addressIndex = new WeakMap(), _HDKeyring_wallets = new WeakMap(), _HDKeyring_addressToWallet = new WeakMap(), _HDKeyring_mnemonic = new WeakMap(), _HDKeyring_coin = new WeakMap(), _HDKeyring_instances = new WeakSet(), _HDKeyring_deriveChildWallet = function _HDKeyring_deriveChildWallet(index) {
+_HDKeyring_hdNode = new WeakMap(), _HDKeyring_addressIndex = new WeakMap(), _HDKeyring_wallets = new WeakMap(), _HDKeyring_addressToWallet = new WeakMap(), _HDKeyring_mnemonic = new WeakMap(), _HDKeyring_instances = new WeakSet(), _HDKeyring_deriveChildWallet = function _HDKeyring_deriveChildWallet(index) {
     const newPath = `${index}`;
     const childNode = __classPrivateFieldGet(this, _HDKeyring_hdNode, "f").derivePath(newPath);
     const wallet = new Wallet(childNode);

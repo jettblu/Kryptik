@@ -1,4 +1,22 @@
-﻿import { validateMnemonic } from "bip39"
+﻿var bip = require("../ext/bip39.min.js")
+
+
+export type Options = {
+    strength?: number
+    path?: string
+    mnemonic?: string | null
+    chainTicker?: string
+    isCreation?: boolean
+}
+
+export const defaultOptions = {
+    // default path is BIP-44 ethereum coin type, where depth 5 is the address index
+    path: "m/44'/60'/0'/0",
+    strength: 128,
+    mnemonic: null,
+    chainTicker: "Eth",
+    isCreation: true
+}
 
 export function normalizeMnemonic(mnemonic: string): string {
     return mnemonic.trim().toLowerCase().replace(/\r/, " ").replace(/ +/, " ")
@@ -10,7 +28,7 @@ export function validateAndFormatMnemonic(
 ): string | null {
     const normalized = normalizeMnemonic(mnemonic)
 
-    if (validateMnemonic(normalized, wordlist)) {
+    if (bip.validateMnemonic(normalized, wordlist)) {
         return normalized
     }
     return null
