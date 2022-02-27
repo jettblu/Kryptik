@@ -8,14 +8,16 @@ Kryptik operations are currently supported by a Carnegie Mellon research grant. 
 <img src="https://jetthays.com/media/external/kryptikSearch.png" alt="Wallet Page screenshot" width="150">
 
 ## Key Management
-To give users full control over their crypto assets, Kryptik separates client-server responsibilities. The client is responsible for seed generation and signatures; the server is responsible for key recovery and address creation. This is accomplished via shamir secret sharing.
+To give users full control over their crypto assets, Kryptik separates client-server responsibilities. The client is responsible for key management and transactions; the server helps with key recovery and address sharing. This is accomplished via shamir secret sharing.
 	
 ## Wallet 
-Kryptik uses a hierarchical deterministic (HD) wallet derived from a BIP32 seed. This HD wallet creates a new address for every transaction. Kryptik currently supports the following currencies:
-* Bitcoin
-* Bitcoin Cash
+Kryptik uses a hierarchical deterministic (HD) wallet derived from a BIP32 seed. Each blockchain has its own keyring and keyrings that share a common seed hang from a 'seed loop'. Kryptik currently supports the following currencies:
+* Avalanche
 * Ethereum
-* Litecoin
+* Harmony
+* Solana
+
+Note: UTXO based blockchains like Bitcoin will be addded soon.
 
 ## Decentralized File Storage
 Kryptik provides access to IPFS, allowing users to store and display decentralized media. This is an essential first step to enabling an NFT marketplace where unique files can be bought and sold via a social feed. 
