@@ -54,7 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Services\" />
     <Folder Include="wwwroot\Media\devSamples\" />
   </ItemGroup>
 
