@@ -7,4 +7,8 @@ console.log("Seed loop:");
 console.log(seedLoop);
 var serializedSeedLoop = seedLoop.serializeSync();
 console.log(serializedSeedLoop);
+console.log("One way trip complete!");
+var seedLoopRoundTrip = HDSeedLoop.deserialize(serializedSeedLoop);
+console.log("Deserialized seed loop:");
+console.log(seedLoopRoundTrip);
 //# sourceMappingURL=keyManagerTests.js.map

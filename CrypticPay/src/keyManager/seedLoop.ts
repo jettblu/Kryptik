@@ -9,6 +9,7 @@ import { normalizeHexAddress, validateAndFormatMnemonic, Options, defaultOptions
 export type SerializedSeedLoop = {
     version: number
     mnemonic: string
+    // note: each key ring is SERIALIZED
     keyrings: SerializedHDKeyring[]
 }
 
@@ -25,9 +26,10 @@ export interface KeyringClass<T> {
 
 
 export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
-    #mnemonic: string
-    #keyrings: HDKeyring[] = []
-    #chainToKeyring = {}
+    // TODO.. make private in production. Public for testing right now.
+    mnemonic: string
+    keyrings: HDKeyring[] = []
+    chainToKeyring = {}
 
     constructor(options: Options = {}) {
         const hdOptions: Required<Options> = {
@@ -36,11 +38,11 @@ export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
         }
 
 
-        this.#mnemonic = validateAndFormatMnemonic(
+        this.mnemonic = validateAndFormatMnemonic(
             hdOptions.mnemonic || bip.generateMnemonic(hdOptions.strength)
         )
 
-        if (!this.#mnemonic) {
+        if (!this.mnemonic) {
             throw new Error("Invalid mnemonic.")
         }
 
@@ -59,7 +61,7 @@ export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
                 // default path is BIP-44 ethereum coin type, where depth 5 is the address index
                 path: chain.path,
                 strength: 128,
-                mnemonic: this.#mnemonic,
+                mnemonic: this.mnemonic,
                 chainTicker: chain.ticker
             }
             // create new key ring for chain given setup options
@@ -73,16 +75,16 @@ export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
     serializeSync(): SerializedSeedLoop{
         let serializedKeyRings: SerializedHDKeyring[] = []
         // serialize the key ring for every coin that's on the seed loop and add to serialized list output
-        for (let ticker in this.#chainToKeyring)
+        for (let ticker in this.chainToKeyring)
         {
-            var keyring: HDKeyring = this.#chainToKeyring[ticker]
+            var keyring: HDKeyring = this.chainToKeyring[ticker]
             var serializedKeyRing: SerializedHDKeyring = keyring.serializeSync()
             serializedKeyRings.push(serializedKeyRing)
         }
 
         return {
             version: 1,
-            mnemonic: this.#mnemonic,
+            mnemonic: this.mnemonic,
             keyrings: serializedKeyRings
         }
     }
@@ -93,8 +95,8 @@ export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
 
     // add keyring to dictionary and list of fellow key rings
     async addKeyRing(keyring: HDKeyring) {
-        this.#keyrings.push(keyring)
-        this.#chainToKeyring[keyring.chain.ticker] = keyring
+        this.keyrings.push(keyring)
+        this.chainToKeyring[keyring.chain.ticker] = keyring
     }
 
     // DESERIALIZE CODE
@@ -104,18 +106,28 @@ export default class HDSeedLoop implements SeedLoop<SerializedSeedLoop>{
             throw new Error(`Unknown serialization version ${obj.version}`)
         }
 
+        // create loop options with prexisting mnemonic
+        // TODO add null check for mnemonic
+        let loopOptions = {
+            // default path is BIP-44 ethereum coin type, where depth 5 is the address index
+            strength: 128,
+            mnemonic: mnemonic,
+            isCreation: false
+        }
+        // create seed loop that will eventually be returned
+        var seedLoopNew: HDSeedLoop = new HDSeedLoop(loopOptions)
         // deserialize keyrings
         keyrings.forEach(function (serializedKeyRing) {
-            var hdKeyRing: HDKeyring = HDKeyring.deserialize(serializedKeyRing);
-        })
-        
-        
-        return 
+            var keyRing: HDKeyring = HDKeyring.deserialize(serializedKeyRing);
+            seedLoopNew.addKeyRing(keyRing);
+        })     
+
+        return seedLoopNew;
     }
 
 
     async getKeyRing(chain: Chain): Promise<HDKeyRing> {
-        return this.#chainToKeyring[chain.ticker];
+        return this.chainToKeyring[chain.ticker];
     }
 }
 

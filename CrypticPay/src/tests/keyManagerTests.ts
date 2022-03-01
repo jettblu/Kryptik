@@ -12,3 +12,11 @@ var serializedSeedLoop: SerializedSeedLoop = seedLoop.serializeSync();
 
 console.log(serializedSeedLoop);
 
+console.log("One way trip complete!")
+
+var seedLoopRoundTrip = HDSeedLoop.deserialize(serializedSeedLoop);
+
+console.log("Deserialized seed loop:")
+console.log(seedLoopRoundTrip);
+
+
